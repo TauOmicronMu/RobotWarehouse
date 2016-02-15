@@ -1,0 +1,12 @@
+[submodule "Torchj"]
+	path = Torchj
+	url = https://github.com/SamTebbs33/Torchj
+[submodule "rp-utils"]
+	path = rp-utils
+	url = git@github.com:hawesie/rp-utils.git
+[submodule "rp-shared"]
+	path = rp-shared
+	url = git@github.com:hawesie/rp-shared.git
+[submodule "slf4j"]
+	path = slf4j
+	url = git@github.com:qos-ch/slf4j
