@@ -11,6 +11,11 @@ public abstract class Action {
         public int distance;
         public Location destination;
 
+        public MoveAction(boolean moveInX, int distance, Location destination) {
+            this.moveInX = moveInX;
+            this.distance = distance;
+            this.destination = destination;
+        }
     }
 
     public static class PickupAction extends Action {

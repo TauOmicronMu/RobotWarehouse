@@ -13,4 +13,8 @@ public class Job {
     public Location dropLocation;
     public LinkedList<ItemPickup> pickups;
 
+    public Job(Location dropLocation, LinkedList<ItemPickup> pickups) {
+        this.dropLocation = dropLocation;
+        this.pickups = pickups;
+    }
 }

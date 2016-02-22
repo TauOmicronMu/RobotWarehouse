@@ -9,4 +9,9 @@ public class ItemPickup {
     public Location location;
     public int itemCount;
 
+    public ItemPickup(String itemName, Location location, int itemCount) {
+        this.itemName = itemName;
+        this.location = location;
+        this.itemCount = itemCount;
+    }
 }
