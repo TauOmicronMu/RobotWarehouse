@@ -20,4 +20,9 @@ public class AssignedJob extends Job {
         this.route = route;
         this.robot = robot;
     }
+
+    public AssignedJob(Job job, Route route, Robot robot) {
+        this(job.dropLocation, job.pickups, route, robot);
+    }
+
 }
