@@ -9,7 +9,7 @@ public class EventDispatcher {
 
     private HashMap<Object, HashMap<Class, Method>> subscribers = new HashMap<>();
 
-    public void onPacket(Object packet) {
+    public void onEvent(Object packet) {
         for (Object subscriber : subscribers.keySet()) {
             HashMap<Class, Method> subscriberMethods = subscribers.get(subscriber);
             if (subscriberMethods.containsKey(packet.getClass())) {

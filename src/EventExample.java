@@ -7,9 +7,9 @@ public class EventExample {
         EventDispatcher dispatcher = new EventDispatcher();
         dispatcher.subscribe(new EventExample());
         // As we are sending a String to the onEvent method, our subscriber method with a String parameter will be called
-        dispatcher.onPacket("Hi!");
+        dispatcher.onEvent("Hi!");
         // Now the subscriber method with the Integer parameter will be called
-        dispatcher.onPacket(new Integer(3));
+        dispatcher.onEvent(new Integer(3));
     }
 
     @Subscriber
