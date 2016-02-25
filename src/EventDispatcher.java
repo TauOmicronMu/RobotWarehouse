@@ -44,7 +44,6 @@ public class EventDispatcher {
             // If the method has the @Subscriber annotation and it takes one parameter, add it
             if (mth.getParameters().length == 1 && mth.getAnnotationsByType(Subscriber.class).length > 0) {
                 map.put(mth.getParameters()[0].getType(), mth);
-                break;
             }
         }
     }
