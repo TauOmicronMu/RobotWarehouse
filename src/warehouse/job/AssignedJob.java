@@ -8,7 +8,15 @@ import warehouse.Route;
  */
 public class AssignedJob extends Job {
 
-    public Route route;
-    public Robot robot;
+    private Route route;
+    private Robot robot;
 
+    public AssignedJob(Job job, Robot robot){
+    	
+    	super(job.getDropLocation(), job.getPickups());
+    	
+    	this.robot = robot;
+    	
+    	//TODO Get route?
+    }
 }

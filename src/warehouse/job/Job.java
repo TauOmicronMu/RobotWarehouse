@@ -10,7 +10,27 @@ import java.util.LinkedList;
  */
 public class Job {
 
-    public Location dropLocation;
-    public LinkedList<ItemPickup> pickups;
+    private Location dropLocation;
+    private LinkedList<ItemPickup> pickups;
 
+    public Job(Location dropLocation, LinkedList<ItemPickup> pickups){
+    	
+    	this.dropLocation = dropLocation;
+    	this.pickups = pickups;
+    }
+    
+    public Location getDropLocation(){
+    	
+    	return this.dropLocation;
+    }
+    
+    public LinkedList<ItemPickup> getPickups(){
+    	
+    	return this.pickups;
+    }
+    
+    public String toString(){
+    	
+    	return "Job of pickups :" + this.pickups.toString() + " to location " + this.dropLocation.toString();
+    }
 }
