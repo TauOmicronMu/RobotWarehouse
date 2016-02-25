@@ -39,13 +39,9 @@ public class EventDispatcher {
         Class cls = obj.getClass();
         HashMap<Class, Method> map = new HashMap<>();
         subscribers.put(obj, map);
-        // Search through the class' methods for those that should receive the packets
-        for (Method mth : cls.getMethods()) {
-            // If the method has the @Subscriber annotation and it takes one parameter, add it
-            if (mth.getParameters().length == 1 && mth.getAnnotationsByType(Subscriber.class).length > 0) {
-                map.put(mth.getParameters()[0].getType(), mth);
-            }
-        }
+        // Filter class' methods for those that have one parameter and have the subscriber annotation
+        List<Method> methods = Arrays.stream(cls.getMethods()).filter(mth -> mth.getParameters().length == 0 && mth.getAnnotationsByType(Subscriber.class).length > 0);
+        methods.forEach(mth -> map.put(mth.getParameters()[0].getType(), mth))
     }
 
 }
