@@ -1,3 +1,6 @@
+package warehouse;
+import warehouse.Subscriber;
+
 /**
  * Created by samtebbs on 24/02/2016.
  */
