@@ -21,4 +21,25 @@ public class AssignedJob extends Job {
     public AssignedJob(Job job, Route route, Robot robot) {
         this(job.dropLocation, job.pickups, route, robot);
     }
+    
+    /**
+     * Get method for the robot doing the assigned job.
+     * 
+     * @return the robot that the job has been assigned to
+     */
+    public Robot getRobot(){
+    	
+    	return this.robot;
+    }
+    
+    /**
+     * To String method for debugging.
+     */
+    @Override
+    public String toString(){
+    	
+    	return "Job of pickups :" + this.getPickups().toString() + 
+    			" to location " + this.getDropLocation().toString() +
+    			 " assigned to " + this.robot.getName();
+    }
 }
