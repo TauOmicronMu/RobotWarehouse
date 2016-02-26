@@ -5,9 +5,6 @@ import warehouse.Location;
 
 import java.util.LinkedList;
 
-/**
- * Created by samtebbs on 22/02/2016.
- */
 public class Job {
 
     public Location dropLocation;
