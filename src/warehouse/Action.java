@@ -1,8 +1,5 @@
 package warehouse;
 
-/**
- * Created by samtebbs on 22/02/2016.
- */
 public abstract class Action {
 
     public static class MoveAction extends Action {
