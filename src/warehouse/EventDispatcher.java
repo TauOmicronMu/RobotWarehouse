@@ -10,6 +10,7 @@ import java.util.HashMap;
 public class EventDispatcher {
 
     private HashMap<Object, HashMap<Class, Method>> subscribers = new HashMap<>();
+    public static final EventDispatcher INSTANCE = new EventDispatcher();
 
     /**
      * Called when an event occurs, and dispatches the event to all subscriber methods that have a parameter of the event's type.
