@@ -44,7 +44,7 @@ public class EventDispatcher {
             if (subscriberMethods.containsKey(obj)) {
                 try {
                     // Invoke the method from the subscriber object with the obj as the argument
-                    subscriberMethods.get(obj.getClass()).invoke(isClass(subscriber) ? null : subscriber, obj);
+                    subscriberMethods.get(obj.getClass()).invoke(Modifier.isStatic(mth.getModifiers()) ? null : subscriber, obj);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 } catch (InvocationTargetException e) {
