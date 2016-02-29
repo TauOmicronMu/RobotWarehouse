@@ -17,15 +17,10 @@ public class Message implements Serializable {
 	 */
 	protected final Date timestamp;
 	
-	/*
-	 * The nickname of the client that the Message is being
-	 * sent from.
-	 */
-	protected final String sender;
+	
 	
 	/*
 	 * The command detailing what to do with the data -
-	 * for example, "EndGame".
 	 */
 	protected final MessageType messageType;
 	
@@ -36,21 +31,14 @@ public class Message implements Serializable {
 	
 	public Message(String sender, MessageType messageType, Object data) {
 		
-		this.sender = sender;
+	
 		this.messageType = messageType;
 		this.data = data;
 		
 		this.timestamp = new Date();
 	}
 
-	/**
-	 * Returns the fromClient attribute of the Message.
-	 * @return The nickname of the client that the Message is being sent from.
-	 */
-	public String getSender() {
-		return sender;
-	}
-    
+	
 	/**
 	 * Returns the messageCommand attribute of the Message.
 	 * @return The command detailing what to do with the data.
