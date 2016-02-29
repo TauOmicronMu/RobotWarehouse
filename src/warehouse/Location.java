@@ -8,4 +8,9 @@ public class Location {
         this.x = x;
         this.y = y;
     }
+    
+    public int manhattanDistance(Location loc) {
+        return Math.abs(loc.x - x) + Math.abs(loc.y - y);
+    }
+    
 }
