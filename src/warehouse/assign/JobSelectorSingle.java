@@ -1,6 +1,10 @@
 package warehouse.assign;
 
+
+
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
 
 import warehouse.Robot;
 import warehouse.job.AssignedJob;
@@ -8,79 +12,64 @@ import warehouse.job.Job;
 
 /**
  * 
- * JOB SELECTION - (JobSelectorBasic class):
+ * JOB SELECTION - (JobSelectorSingle class):
  * 
- * Created by Owen on 25/02/2016
+ * Created by Owen on 28/02/2016
  * 
  * Preliminary class to:
- * - Get list of jobs from job input
- * - Give the first job to the robot when available
- * - Wait for the robot to become available again and assign the next job to it
+ * -Select the best job for a single robot
+ * -Base selection on the 'worth' of a job
  * 
  * @author Owen
  *
  */
-public class JobSelectorBasic {
+public class JobSelectorSingle {
 
 	private Robot robot;
-	private ArrayList<Job> jobs;
 	private boolean run;
 	
 	/**
-	 * Construct the Job Selector for an existing robot and an ArrayList of jobs,
-	 * then run the selector in a loop assigning jobs to the robot until there are no
-	 * more jobs in the list, or it is told to stop.
+	 * Create a job selector that chooses jobs for a single robot based on a list 
+	 * of available jobs.
 	 * 
-	 * @param robot the existing robot
-	 * @param jobs the ArrayList of jobs received from Job Input
+	 * @param robot the robot
+	 * @param jobs the list of available jobs
 	 */
-	public JobSelectorBasic(Robot robot, ArrayList<Job> jobs){
+	public JobSelectorSingle(Robot robot, ArrayList<Job> jobs){
 		
-		//Set this to run
+		this.robot = robot;
 		this.run = true;
 		
-		//Get the active robot
-		this.robot = robot;
+		LinkedList<JobWorth> jobworths = new LinkedList<JobWorth>();
 		
-		//Get the list of jobs from job input
-		this.jobs = jobs;
-		
-		//Loop until there are no more jobs, or told to stop
-		while((this.jobs.size() != 0) && run){
-		
-			if(this.robot.getBusy() == false){
-		
-				//Assign first job to robot
-				AssignedJob newJob = new AssignedJob(this.jobs.get(0), this.robot);
-		
-				//Remove first job from list
-				this.jobs.remove(0);
-		
-				//Make robot busy
-				this.robot.setBusy(true);
-		
-				//Send job to server to send to robot
-				sendCommand(newJob);
-	
-			}
+		//Calculate the worth of each job and make a new list
+		for(int i = 0; i < jobs.size(); i++){
 			
-			//TODO make robot not busy when the job is completed
+			jobworths.add(new JobWorth(jobs.get(i)));
+		}
+		
+		//Sort the list of job worths
+		Collections.sort(jobworths, Collections.reverseOrder());
+		
+		//continuously give the best job left to the robot until there are no more jobs
+		//or it is told to stop
+		while(run && (jobworths.size() > 0)){
+			
+			assign(this.robot, jobworths.remove().getJob());
 		}
 	}
 	
 	/**
-	 * Helper method to send a command to the server,
-	 * with an assigned job object describing both the job selected for the
-	 * robot, and the robot object itself.
+	 * Helper method to create a new assigned job for the robot.
 	 * 
-	 * Should turn the assigned job object into a form that can be sent
-	 * to and understood by the server.
-	 * 
-	 * @param job the assigned job
+	 * @param robot the robot
+	 * @param job the job to be assigned
+	 * @return an AssignedJob object
 	 */
-	private void sendCommand(AssignedJob job){
+	private AssignedJob assign(Robot robot, Job job){
 		
-		//TODO send assigned job to server
+		//TODO make an assigned job
+		return null;
 	}
 	
 	/**
