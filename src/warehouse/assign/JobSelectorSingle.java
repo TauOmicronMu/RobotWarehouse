@@ -2,7 +2,6 @@ package warehouse.assign;
 
 
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 
@@ -35,7 +34,7 @@ public class JobSelectorSingle {
 	 * @param robot the robot
 	 * @param jobs the list of available jobs
 	 */
-	public JobSelectorSingle(Robot robot, ArrayList<Job> jobs){
+	public JobSelectorSingle(Robot robot, LinkedList<Job> jobs){
 		
 		this.robot = robot;
 		this.run = true;
@@ -43,9 +42,9 @@ public class JobSelectorSingle {
 		LinkedList<JobWorth> jobworths = new LinkedList<JobWorth>();
 		
 		//Calculate the worth of each job and make a new list
-		for(int i = 0; i < jobs.size(); i++){
+		for(Job job : jobs){
 			
-			jobworths.add(new JobWorth(jobs.get(i)));
+			jobworths.add(new JobWorth(job));
 		}
 		
 		//Sort the list of job worths
