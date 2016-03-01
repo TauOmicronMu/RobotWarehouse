@@ -2,9 +2,6 @@ package warehouse.assign;
 
 
 
-import java.util.ArrayList;
-import java.util.List;
-
 import warehouse.ItemPickup;
 import warehouse.job.Job;
 
@@ -110,13 +107,11 @@ public class JobWorth implements Comparable<JobWorth>{
 		 * 	total time to execute all pickups
 		 */
 		
-		List<ItemPickup> pickups = new ArrayList<ItemPickup>(job.pickups);
-		
 		double sumReward = 0; 
 		
-		for(ItemPickup pickup : pickups){
+		for(ItemPickup pickup : job.pickups){
 			
-			double itemReward = 1; //TODO Need method to get reward for items.
+			double itemReward = pickup.reward;
 			
 			sumReward += (pickup.itemCount * itemReward);
 		}
@@ -145,15 +140,13 @@ public class JobWorth implements Comparable<JobWorth>{
 		 * 	number of items * item weight
 		 */
 		
-		List<ItemPickup> pickups = new ArrayList<ItemPickup>(job.pickups);
-		
 		double sumReward = 0; 
 		double sumWeight = 0;
 		
-		for(ItemPickup pickup : pickups){
+		for(ItemPickup pickup : job.pickups){
 			
-			double itemReward = 1; //TODO Need method to get reward for items.
-			double itemWeight = 1; //TODO Need method to get weight of items.
+			double itemReward = pickup.reward;
+			double itemWeight = pickup.weight;
 			
 			sumReward += (pickup.itemCount * itemReward);
 			sumWeight += (pickup.itemCount * itemWeight);
