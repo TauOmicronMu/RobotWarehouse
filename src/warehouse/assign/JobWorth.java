@@ -111,9 +111,7 @@ public class JobWorth implements Comparable<JobWorth>{
 		
 		for(ItemPickup pickup : job.pickups){
 			
-			double itemReward = pickup.reward;
-			
-			sumReward += (pickup.itemCount * itemReward);
+			sumReward += (pickup.itemCount * pickup.reward);
 		}
 		
 		int bestDistance = 1; //TODO Need way to get optimum distance from route planning.
@@ -145,11 +143,8 @@ public class JobWorth implements Comparable<JobWorth>{
 		
 		for(ItemPickup pickup : job.pickups){
 			
-			double itemReward = pickup.reward;
-			double itemWeight = pickup.weight;
-			
-			sumReward += (pickup.itemCount * itemReward);
-			sumWeight += (pickup.itemCount * itemWeight);
+			sumReward += (pickup.itemCount * pickup.reward);
+			sumWeight += (pickup.itemCount * pickup.weight);
 		}
 		
 		return (sumReward/sumWeight);
