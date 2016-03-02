@@ -1,8 +1,11 @@
 package warehouse.assign;
 
+<<<<<<< 19bea2916b5372f7dfb5db500f8b40704579b552
 
 
 import java.util.ArrayList;
+=======
+>>>>>>> Commit before checkout
 import java.util.Collections;
 import java.util.LinkedList;
 
@@ -23,7 +26,7 @@ import warehouse.job.Job;
  * @author Owen
  *
  */
-public class JobSelectorSingle {
+public class JobSelectorSingle{
 
 	private Robot robot;
 	private boolean run;
@@ -44,8 +47,8 @@ public class JobSelectorSingle {
 		
 		//Calculate the worth of each job and make a new list
 		for(int i = 0; i < jobs.size(); i++){
+			jobworths.add(new JobWorth(job, this.robot));
 			
-			jobworths.add(new JobWorth(jobs.get(i)));
 		}
 		
 		//Sort the list of job worths
@@ -55,7 +58,7 @@ public class JobSelectorSingle {
 		//or it is told to stop
 		while(run && (jobworths.size() > 0)){
 			
-			assign(this.robot, jobworths.remove().getJob());
+			assign(this.robot, jobworths.remove());
 		}
 	}
 	
@@ -66,10 +69,9 @@ public class JobSelectorSingle {
 	 * @param job the job to be assigned
 	 * @return an AssignedJob object
 	 */
-	private AssignedJob assign(Robot robot, Job job){
+	private void assign(Robot robot, JobWorth jobWorth){
 		
-		//TODO make an assigned job
-		return null;
+		AssignedJob assigned = new AssignedJob(jobWorth.getJob(), jobWorth.getRoute(), robot);
 	}
 	
 	/**

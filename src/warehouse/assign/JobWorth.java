@@ -3,6 +3,8 @@ package warehouse.assign;
 
 
 import warehouse.ItemPickup;
+import warehouse.Robot;
+import warehouse.Route;
 import warehouse.job.Job;
 
 /**
@@ -20,9 +22,12 @@ import warehouse.job.Job;
 public class JobWorth implements Comparable<JobWorth>{
 
 	private Job job;
+	
 	private double rewardTime;
 	private double rewardWeight;
 	private double metric;
+	
+	private Route route;
 	
 	/**
 	 * Create a new JobWorth object that contains a job and also describes
@@ -30,9 +35,11 @@ public class JobWorth implements Comparable<JobWorth>{
 	 * 
 	 * @param job the given job
 	 */
-	public JobWorth(Job job){
+	public JobWorth(Job job, Robot robot){
 		
 		this.job = job;
+		
+		//this.route = new TSP.getShortestRoute(job , robot.position);
 		
 		//Factor in the cancellation probability
 		double p = 1 - findCancellationProbability(job);
@@ -51,6 +58,16 @@ public class JobWorth implements Comparable<JobWorth>{
 	public Job getJob(){
 		
 		return this.job;
+	}
+	
+	/**
+	 * Get method for the route
+	 * 
+	 * @return the route
+	 */
+	public Route getRoute(){
+		
+		return this.route;
 	}
 	
 	/**
@@ -114,7 +131,7 @@ public class JobWorth implements Comparable<JobWorth>{
 			sumReward += (pickup.itemCount * pickup.reward);
 		}
 		
-		int bestDistance = 1; //TODO Need way to get optimum distance from route planning.
+		int bestDistance = this.route.totalDistance;
 		
 		return (sumReward/bestDistance);
 	}
