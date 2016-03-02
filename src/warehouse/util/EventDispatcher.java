@@ -16,6 +16,24 @@ public class EventDispatcher {
     private HashMap<Object, HashMap<Class, Method>> subscribers = new HashMap<>();
 
     /**
+     * Static wrapper for INSTANCE.onEvent()
+     *
+     * @param eventObj
+     */
+    public static void onEvent2(Object eventObj) {
+        INSTANCE.onEvent(eventObj);
+    }
+
+    /**
+     * Static wrapper for INSTANCE.subscribe()
+     *
+     * @param obj
+     */
+    public static void subscribe2(Object obj) {
+        INSTANCE.subscribe(obj);
+    }
+
+    /**
      * Called when an event occurs, and dispatches the event to all subscriber methods that have a parameter of the event's type.
      * @param obj - The event object
      **/
