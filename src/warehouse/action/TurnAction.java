@@ -1,5 +1,5 @@
-package warehouse;
-import warehouse.Action;
+package warehouse.action;
+import warehouse.action.Action;
 
 public class TurnAction extends Action {
 
