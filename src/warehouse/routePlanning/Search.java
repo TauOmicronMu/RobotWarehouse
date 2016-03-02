@@ -7,6 +7,8 @@ import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Set;
 
+import rp.robotics.mapping.GridMap;
+import rp.robotics.mapping.MapUtils;
 import warehouse.Action;
 import warehouse.Location;
 import warehouse.Route;
@@ -176,13 +178,13 @@ public class Search {
 		// The list of moves to make to reach goal
 		LinkedList<Location> path = new LinkedList<Location>();
 		// add the current location (goal in this case)
-		path.add(current);
+		path.addFirst(current);
 		// while not at the start node
 		while (cameFrom.containsKey(current)) {
 			// add the location which came before it
 			current = cameFrom.get(current);
 			// add the current location
-			path.add(current);
+			path.addFirst(current);
 		}
 		return path;
 	}
@@ -194,12 +196,20 @@ public class Search {
 	 *            the location to find the neighbours for
 	 * @return the array of neighbours
 	 */
-	private Location[] getNeighbours(Location node) {
-		Location[] neighbours = new Location[4];
-		neighbours[0] = map[node.y + 1][node.x];
-		neighbours[1] = map[node.y - 1][node.x];
-		neighbours[2] = map[node.y][node.x + 1];
-		neighbours[3] = map[node.y][node.x - 1];
+	private LinkedList<Location> getNeighbours(Location node) {
+		LinkedList<Location> neighbours = new LinkedList<Location>();
+		if(inMap(node.y + 1, node.x)){
+			neighbours.add(map[node.y + 1][node.x]);
+		}
+		if(inMap(node.y -1, node.x)){
+			neighbours.add(map[node.y - 1][node.x]);
+		}
+		if(inMap(node.y, node.x +1)){
+			neighbours.add(map[node.y][node.x + 1]);
+		}
+		if(inMap(node.y, node.x -1)){
+			neighbours.add(map[node.y][node.x - 1]);
+		}
 		return neighbours;
 	}
 
@@ -215,5 +225,9 @@ public class Search {
 	private Double manhatttenEstimate(Location l, Location goal) {
 		// returns Manhattan distance
 		return (double) (Math.abs(goal.x - l.x) + Math.abs(goal.y - l.y));
+	}
+	
+	private boolean inMap(int y, int x){
+		return (y >= 0 && y < map.length && x >= 0 && x < map[y].length);
 	}
 }

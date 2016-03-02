@@ -9,7 +9,7 @@ public class Test {
 
 	public static void main(String[] args) {
 		Search s = new Search();
-		Optional<LinkedList<Location>> o = s.testRoute(new Location(1,4), new Location(3, 4));
+		Optional<LinkedList<Location>> o = s.testRoute(new Location(0,0), new Location(11, 7));
 		if (o.isPresent()) {
 			LinkedList<Location> route = o.get();
 			for (Location r : route) {
