@@ -1,9 +1,9 @@
 package warehouse.job;
 
-import warehouse.ItemPickup;
-import warehouse.Location;
-import warehouse.Robot;
-import warehouse.Route;
+import warehouse.util.ItemPickup;
+import warehouse.util.Location;
+import warehouse.util.Robot;
+import warehouse.util.Route;
 
 import java.util.LinkedList;
 

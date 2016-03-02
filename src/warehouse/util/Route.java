@@ -1,4 +1,6 @@
-package warehouse;
+package warehouse.util;
+
+import warehouse.action.Action;
 
 import java.util.LinkedList;
 

@@ -1,4 +1,7 @@
-package warehouse;
+package warehouse.action;
+
+import warehouse.util.ItemPickup;
+import warehouse.util.Location;
 
 public abstract class Action {
 

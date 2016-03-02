@@ -1,7 +1,7 @@
 package warehouse.job;
 
-import warehouse.ItemPickup;
-import warehouse.Location;
+import warehouse.util.ItemPickup;
+import warehouse.util.Location;
 
 import java.util.LinkedList;
 
