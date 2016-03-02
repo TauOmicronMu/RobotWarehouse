@@ -14,7 +14,6 @@ public class EventDispatcher {
 
     public static final EventDispatcher INSTANCE = new EventDispatcher();
     private HashMap<Object, HashMap<Class, Method>> subscribers = new HashMap<>();
-    public static final EventDispatcher INSTANCE = new EventDispatcher();
 
     /**
      * Static wrapper for INSTANCE.onEvent()
