@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import rp.robotics.mapping.GridMap;
 import rp.robotics.mapping.MapUtils;
-import warehouse.Location;
+import warehouse.util.Location;
 
 public class Map {
 	private HashMap<Location, Boolean> available;

@@ -7,10 +7,8 @@ import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Set;
 
-import warehouse.Action;
-import warehouse.Location;
-import warehouse.Robot;
-import warehouse.Route;
+import warehouse.action.Action;
+import warehouse.util.*;;
 
 public class Search {
 	private HashMap<Location, Boolean> available;
@@ -40,11 +38,16 @@ public class Search {
 
 	/**
 	 * Gets the optimal route between two locations via basic A*
+<<<<<<< HEAD
 	 * 
 	 * @param start
 	 *            the start location
 	 * @param goal
 	 *            the goal location
+=======
+	 * @param start the start location
+	 * @param goal the goal location
+>>>>>>> 8d87a9d8dbe544164db851d17a37c5b6ede91cb3
 	 * @return a list of locations which form the optimal route to take
 	 */
 	private Optional<LinkedList<Location>> BasicAStar(Location start, Location goal) {
@@ -73,7 +76,7 @@ public class Search {
 		// adds start and set the distance from the start for the start to be 0
 		openSet.add(start);
 		gScore.put(start, 0.0);
-		fScore.put(start, manhatttenEstimate(start, goal));
+		fScore.put(start, (double) start.manhattanDistance(goal));
 
 		// Main loop
 		while (!openSet.isEmpty()) {
@@ -104,7 +107,7 @@ public class Search {
 						if (tempGScore < gScore.get(neighbour)) {
 							cameFrom.put(neighbour, current);
 							gScore.put(neighbour, tempGScore);
-							fScore.put(neighbour, manhatttenEstimate(neighbour, goal));
+							fScore.put(neighbour, (double) neighbour.manhattanDistance(goal));
 						}
 					}
 				}
@@ -200,20 +203,6 @@ public class Search {
 			neighbours.add(map[node.y][node.x - 1]);
 		}
 		return neighbours;
-	}
-
-	/**
-	 * Estimates the cost to travel from one node to the goal
-	 * 
-	 * @param l
-	 *            the start location
-	 * @param goal
-	 *            the goal location
-	 * @return the estimated distance
-	 */
-	private Double manhatttenEstimate(Location l, Location goal) {
-		// returns Manhattan distance
-		return (double) (Math.abs(goal.x - l.x) + Math.abs(goal.y - l.y));
 	}
 
 	private boolean inMap(int y, int x) {

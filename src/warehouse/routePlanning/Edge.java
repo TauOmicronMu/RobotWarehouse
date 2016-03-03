@@ -1,6 +1,6 @@
 package warehouse.routePlanning;
 
-import warehouse.Location;
+import warehouse.util.Location;
 
 /**
  * Helper class to store an edge between two locations

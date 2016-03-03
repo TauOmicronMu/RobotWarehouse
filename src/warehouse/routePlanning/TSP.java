@@ -2,19 +2,17 @@ package warehouse.routePlanning;
 
 import java.util.LinkedList;
 import java.util.Optional;
-
-import warehouse.Action;
-import warehouse.Action.MoveAction;
-import warehouse.ItemPickup;
-import warehouse.Location;
-import warehouse.Route;
+import warehouse.action.*;
+import warehouse.action.Action.MoveAction;
+import warehouse.util.*;
 import warehouse.job.Job;
 
 public class TSP {
 	private Search s = new Search();
 	private LinkedList<Action> moves;
 	private final Location dropOffLocation = new Location(4, 7);
-	private int numberOfNodes;
+	private int numberOfLocations;
+	private LinkedList<Location> allLocations;
 	LinkedList<Edge> bestRoute = new LinkedList<Edge>();
 	LinkedList<Location> finalRoute = new LinkedList<Location>();
 	double lowestWeight;
@@ -22,19 +20,29 @@ public class TSP {
 	private LinkedList<Location>[][] routeMatrix;
 
 	public Route getShortestRoute(Job j, Location startingPosition) {
-		numberOfNodes = j.pickups.size() + 2;
-		double[][] adjacencyMatrix = new double[numberOfNodes][numberOfNodes];
-		adjacencyMatrix = initiateMatrix(adjacencyMatrix);
-		adjacencyMatrix = adjMatrix(adjacencyMatrix, makeListLocations(j, startingPosition));
+		//builds full list of locations
+		allLocations = makeListLocations(j, startingPosition);
+		
+		//gets the number of locations to visit
+		numberOfLocations = allLocations.size();
+		
+		//creates a matrix containing the best route between every location
+		routeMatrix = new LinkedList[numberOfLocations][numberOfLocations];
+        
+        //creates a matrix to contain the best distance from one location to another
+		double[][] adjacencyMatrix = new double[numberOfLocations][numberOfLocations];
+		
+		//gives these matrices their initial values
+		adjacencyMatrix = setUpMatrices(adjacencyMatrix, allLocations);
 		moves = new LinkedList<Action>();
 
 		// initialises array of the amount of edges left available to each node
-		int[] edgesLeft = new int[numberOfNodes];
+		int[] edgesLeft = new int[numberOfLocations];
 		for (int x = 0; x < edgesLeft.length; x++) {
-			edgesLeft[x] = numberOfNodes - 1;
+			edgesLeft[x] = numberOfLocations - 1;
 		}
 		// initialises array of the amount of edges connected to each node
-		int[] edgesConnected = new int[numberOfNodes];
+		int[] edgesConnected = new int[numberOfLocations];
 		for (int x = 0; x < edgesLeft.length; x++) {
 			edgesConnected[x] = 0;
 		}
@@ -50,7 +58,8 @@ public class TSP {
 
 		// starts the first call of the route finding algorithm
 		getRoute(adjacencyMatrix, route, edgesLeft, edgesConnected, 0, 1, currentGroups);
-
+		
+		System.out.println("Final lowest Weight: "+ lowestWeight);
 		return new Route(moves, startingPosition, j.dropLocation);
 	}
 
@@ -90,8 +99,7 @@ public class TSP {
 	}
 
 	/**
-	 * creates an adjacency matrix to contain the distances between every node
-	 * is the system
+	 * sets up adjacency matrix and route matrix to contain values
 	 *
 	 * @param adjacencyMatrix
 	 *            The adjacency matrix which stores all of the connections
@@ -103,7 +111,7 @@ public class TSP {
 	 * @return adjacencyMatrix - The adjacency matrix which stores all of the
 	 *         connections between my nodes
 	 */
-	private double[][] adjMatrix(double[][] adjacencyMatrix, LinkedList<Location> allLocations) {
+	private double[][] setUpMatrices(double[][] adjacencyMatrix, LinkedList<Location> allLocations) {
 		for (int Node1 = 0; Node1 < allLocations.size() - 1; Node1++) {
 			for (int Node2 = Node1 + 1; Node2 < allLocations.size(); Node2++) {
 				Optional<Route> foundRoute = s.getRoute(allLocations.get(Node1), allLocations.get(Node2));
@@ -111,54 +119,23 @@ public class TSP {
 					Route r = foundRoute.get();
 					adjacencyMatrix[Node1][Node2] = r.totalDistance;
 					adjacencyMatrix[Node2][Node1] = r.totalDistance;
+					
+					//adds the route to a matrix of routes
 					for (Action foundLocation: r.actions) {
 						Action.MoveAction location = (MoveAction) foundLocation;
 						routeMatrix[Node1][Node2].add(location.destination);
 					}
-					foundRoute = dj.completeDijkstras(destinations.get(Node2), destinations.get(Node1), listOfNodes);
-					for (Node foundNode : foundRoute) {
-						routeMatrix[Node2][Node1].add(foundNode);
+					
+					//adds the route in the opposite direction for the other node
+					for (int i = routeMatrix[Node1][Node2].size() -1; i >= 0 ; i--) {
+						routeMatrix[Node2][Node1].add(routeMatrix[Node1][Node2].get(i));
 					}
+				}else{
+					System.err.println("Could not find a route in adjMatrix between: " + Node1 +" and " + Node2);
 				}
 			}
 		}
 		return adjacencyMatrix;
-	}
-
-	/**
-	 * Fills the adjacency matrix with values of infinity to represent no
-	 * connection before values are added
-	 *
-	 * @param adjacencyMatrix
-	 *            The adjacency matrix which stores all of the connections
-	 *            between my nodes
-	 * @return adjacencyMatrix - The adjacency matrix which stores all of the
-	 *         connections between my nodes
-	 */
-	private double[][] initiateMatrix(double[][] adjacencyMatrix) {
-		for (double[] adjacencyMatrix1 : adjacencyMatrix) {
-			for (int j = 0; j < adjacencyMatrix.length; j++) {
-				adjacencyMatrix1[j] = Double.POSITIVE_INFINITY;
-			}
-		}
-		return adjacencyMatrix;
-	}
-
-	/**
-	 * Fills the route matrix with values of infinity to represent no connection
-	 * before values are added
-	 *
-	 * @param routeMatrix
-	 *            Stores the route taken between each destination
-	 * @return routeMatrix - Stores the route taken between each destination
-	 */
-	private List<Node>[][] initiateRouteMatrix(List<Node>[][] routeMatrix) {
-		for (List<Node>[] routeMatrix1 : routeMatrix) {
-			for (int j = 0; j < routeMatrix.length; j++) {
-				routeMatrix1[j] = new ArrayList<>();
-			}
-		}
-		return routeMatrix;
 	}
 
 	/**
@@ -195,37 +172,18 @@ public class TSP {
 	 *            The list of groups (separate sections of route) which are
 	 *            involved in this subset of possible routes
 	 */
-	private void getRoute(double[][] adjacencyMatrix, List<Pair> route, int[] edgesLeft, int[] edgesConnected,
-			int currentNode, int connectedNode, List<List<Pair>> currentGroups) {
+	private void getRoute(double[][] adjacencyMatrix, LinkedList<Edge> route, int[] edgesLeft, int[] edgesConnected,
+			int currentNode, int connectedNode, LinkedList<LinkedList<Edge>> currentGroups) {
 		// split into two routes and adjacency matrices
-		Pair temp = new Pair();
-		temp.setNode1(currentNode);
-		temp.setNode2(connectedNode);
+		Edge temp = new Edge(allLocations.get(currentNode), allLocations.get(connectedNode));
 
 		// list of routes used to pass on both halves of split
-		List<List<Pair>> routes = new ArrayList<>();
-
-		// route for including edge
-		List<Pair> route1 = new ArrayList<>();
-		for (Pair z : route) {
-			route1.add(z);
-		}
-		route1.add(temp);
-
-		// route for removing edge
-		List<Pair> route2 = new ArrayList<>();
-		for (Pair z : route) {
-			route2.add(z);
-		}
-
-		routes.add(route1);
-		routes.add(route2);
+		LinkedList<LinkedList<Edge>> routes = splitRoutes(temp, route);
 
 		// matrix used to pass on adjacency matrices for both halves of split
-		int length = adjacencyMatrix.length;
-		double[][][] matrices = new double[2][length][length];
-		for (int i = 0; i < length; i++) {
-			for (int j = 0; j < length; j++) {
+		double[][][] matrices = new double[2][numberOfLocations][numberOfLocations];
+		for (int i = 0; i < numberOfLocations; i++) {
+			for (int j = 0; j < numberOfLocations; j++) {
 				matrices[0][i][j] = adjacencyMatrix[i][j];
 				matrices[1][i][j] = adjacencyMatrix[i][j];
 			}
@@ -254,11 +212,11 @@ public class TSP {
 		}
 
 		// groups split
-		List<List<Pair>>[] groupsArray = new ArrayList[2];
-		groupsArray[0] = new ArrayList<>();
-		groupsArray[1] = new ArrayList<>();
-		for (List<Pair> group : currentGroups) {
-			for (Pair p : group) {
+		LinkedList<LinkedList<Edge>>[] groupsArray = new LinkedList[2];
+		groupsArray[0] = new LinkedList<>();
+		groupsArray[1] = new LinkedList<>();
+		for (LinkedList<Edge> group : currentGroups) {
+			for (Edge p : group) {
 				groupsArray[0] = addToGroups(groupsArray[0], p);
 				groupsArray[1] = addToGroups(groupsArray[1], p);
 			}
@@ -268,8 +226,8 @@ public class TSP {
 		// checks impact of adding or removing nodes on the adjacency matrix and
 		// modifies accordingly
 		for (int x = 0; x < matrices.length; x++) {
-			List<Pair> currentRoute = routes.get(x);
-			List<List<Pair>> groups = groupsArray[x];
+			LinkedList<Edge> currentRoute = routes.get(x);
+			LinkedList<LinkedList<Edge>> groups = groupsArray[x];
 			double[][] currentMatrix = matrices[x];
 			int[] currentConnectedEdges = allEdges[x];
 			int[] edgesLeftNew = allEdgesLeft[x];
@@ -279,7 +237,7 @@ public class TSP {
 			for (int i = 0; i < currentConnectedEdges.length; i++) {
 				if (currentConnectedEdges[i] == 2) {
 					for (int linkedNode = 0; linkedNode < currentMatrix.length; linkedNode++) {
-						boolean notAdded = addedCheck(currentRoute, i, linkedNode);
+						boolean notAdded = addedCheck(currentRoute, allLocations.get(i), allLocations.get(linkedNode));
 						if (notAdded && currentMatrix[i][linkedNode] != Double.POSITIVE_INFINITY) {
 							// removes edge from the adjacency matrix
 							currentMatrix[i][linkedNode] = Double.POSITIVE_INFINITY;
@@ -305,12 +263,10 @@ public class TSP {
 						// find both of the edges which need to be added to the
 						// route
 						for (int linkedNode = 0; linkedNode < currentMatrix.length; linkedNode++) {
-							boolean notAdded = addedCheck(currentRoute, i, linkedNode);
+							boolean notAdded = addedCheck(currentRoute, allLocations.get(i), allLocations.get(linkedNode));
 							if (notAdded && currentMatrix[i][linkedNode] != Double.POSITIVE_INFINITY) {
 								// adds the edge to the route and updates values
-								Pair temp1 = new Pair();
-								temp1.setNode1(i);
-								temp1.setNode2(linkedNode);
+								Edge temp1 = new Edge(allLocations.get(i), allLocations.get(linkedNode));
 								currentRoute.add(temp1);
 								edgesLeftNew[i]--;
 								edgesLeftNew[linkedNode]--;
@@ -325,12 +281,10 @@ public class TSP {
 					if (currentConnectedEdges[i] == 1) {
 						// finds edge which needs to be added
 						for (int linkedNode = 0; linkedNode < currentMatrix.length; linkedNode++) {
-							boolean notAdded = addedCheck(currentRoute, i, linkedNode);
+							boolean notAdded = addedCheck(currentRoute, allLocations.get(i), allLocations.get(linkedNode));
 							if (notAdded && currentMatrix[i][linkedNode] != Double.POSITIVE_INFINITY) {
 								// adds the edge to the route and updates values
-								Pair temp2 = new Pair();
-								temp2.setNode1(i);
-								temp2.setNode2(linkedNode);
+								Edge temp2 = new Edge(allLocations.get(i), allLocations.get(linkedNode));
 								currentRoute.add(temp2);
 								edgesLeftNew[i]--;
 								edgesLeftNew[linkedNode]--;
@@ -351,20 +305,20 @@ public class TSP {
 				// checks through the entire rest of the adjacency matrix
 				for (int checkNode1 = currentNode; checkNode1 < adjacencyMatrix.length - 1; checkNode1++) {
 					for (int checkNode2 = checkNode1 + 1; checkNode2 < adjacencyMatrix.length; checkNode2++) {
-						boolean notAdded = addedCheck(currentRoute, checkNode1, checkNode2);
+						boolean notAdded = addedCheck(currentRoute, allLocations.get(checkNode1), allLocations.get(checkNode2));
 						if (notAdded && currentMatrix[checkNode1][checkNode2] != Double.POSITIVE_INFINITY) {
 
 							// check to see if edge would create a node with
 							// more than two edges or create a cycle
 							int[] foundPerGroup = new int[groups.size()];
 							for (int i = 0; i < groups.size(); i++) {
-								for (Pair k : groups.get(i)) {
+								for (Edge k : groups.get(i)) {
 									if (x == 0) {
 									}
-									if (k.getNode1() == checkNode1 || k.getNode1() == checkNode2) {
+									if (k.getStart().equals(allLocations.get(checkNode1)) || k.getEnd().equals(allLocations.get(checkNode2))) {
 										foundPerGroup[i]++;
 									}
-									if (k.getNode2() == checkNode1 || k.getNode2() == checkNode2) {
+									if (k.getEnd().equals(allLocations.get(checkNode1)) || k.getEnd().equals(allLocations.get(checkNode2))) {
 										foundPerGroup[i]++;
 									}
 								}
@@ -396,12 +350,10 @@ public class TSP {
 						// finds the two remaining edges which need to be added
 						// to the route
 						for (int linkedNode = 0; linkedNode < currentMatrix.length; linkedNode++) {
-							boolean notAdded = addedCheck(currentRoute, i, linkedNode);
+							boolean notAdded = addedCheck(currentRoute, allLocations.get(i), allLocations.get(linkedNode));
 							if (notAdded && currentMatrix[i][linkedNode] != Double.POSITIVE_INFINITY) {
 								// adds edge to route
-								Pair temp1 = new Pair();
-								temp1.setNode1(i);
-								temp1.setNode2(linkedNode);
+								Edge temp1 = new Edge(allLocations.get(i), allLocations.get(linkedNode));
 								currentRoute.add(temp1);
 								edgesLeftNew[i]--;
 								edgesLeftNew[linkedNode]--;
@@ -417,12 +369,10 @@ public class TSP {
 					if (currentConnectedEdges[i] == 1) {
 						// finds edge which needs to be added
 						for (int linkedNode = 0; linkedNode < currentMatrix.length; linkedNode++) {
-							boolean notAdded = addedCheck(currentRoute, i, linkedNode);
+							boolean notAdded = addedCheck(currentRoute, allLocations.get(i), allLocations.get(linkedNode));
 							if (notAdded && currentMatrix[i][linkedNode] != Double.POSITIVE_INFINITY) {
 								// adds the edge to the route and updates values
-								Pair temp2 = new Pair();
-								temp2.setNode1(i);
-								temp2.setNode2(linkedNode);
+								Edge temp2 = new Edge(allLocations.get(i), allLocations.get(linkedNode));
 								currentRoute.add(temp2);
 								edgesLeftNew[i]--;
 								edgesLeftNew[linkedNode]--;
@@ -476,6 +426,7 @@ public class TSP {
 		// checks which route has the lowest lower bound
 		if (lowerBounds[0] > lowerBounds[1]) {
 			int split = 1;
+			
 			// checks if we can prune either of the splits (i.e. not bother
 			// checking their children as their lower bounds are higher than the
 			// current best weight)
@@ -520,7 +471,7 @@ public class TSP {
 			// checks if we can prune either of the splits (i.e. not bother
 			// checking their children as their lower bounds are higher than the
 			// current best weight)
-			if (lowerBounds[0] < lowestWeight) {
+			if (lowerBounds[split] < lowestWeight) {
 				// check if the branch is complete
 				boolean complete = checkComplete(allEdges, split);
 				if (complete) {
@@ -589,14 +540,14 @@ public class TSP {
 	 * @param groupsArray
 	 *            The two different lists of groups for both splits
 	 */
-	private void call(List<List<Pair>> routes, double[][][] matrices, int[][] allEdges, int[][] allEdgesLeft,
-			int currentNode, int connectedNode, int split, List<List<Pair>>[] groupsArray) {
+	private void call(LinkedList<LinkedList<Edge>> routes, double[][][] matrices, int[][] allEdges, int[][] allEdgesLeft,
+			int currentNode, int connectedNode, int split, LinkedList<LinkedList<Edge>>[] groupsArray) {
 		// calls the next layer of recursion with split values
-		List<Pair> currentRoute = routes.get(split);
+		LinkedList<Edge> currentRoute = routes.get(split);
 		double[][] currentMatrix = matrices[split];
 		int[] currentConnectedEdges = allEdges[split];
 		int[] edgesLeftNew = allEdgesLeft[split];
-		List<List<Pair>> currentGroups = groupsArray[split];
+		LinkedList<LinkedList<Edge>> currentGroups = groupsArray[split];
 
 		// calls the next layer of function using split values
 		// increment connected and current nodes
@@ -612,16 +563,17 @@ public class TSP {
 					connectedNode = currentNode + 1;
 				} else {
 					// REACHED END OF ARRAY
+					System.err.println("No Route Found: Reached end of array");
 				}
 			} else {
 				// increment connectedNode
 				connectedNode++;
 			}
-			available = addedCheck(currentRoute, currentNode, connectedNode);
+			available = addedCheck(currentRoute, allLocations.get(currentNode), allLocations.get(connectedNode));
 		} while (currentMatrix[currentNode][connectedNode] == Double.POSITIVE_INFINITY || !available);
 
 		// call function with values found
-		getShortestRoute(currentMatrix, currentRoute, edgesLeftNew, currentConnectedEdges, currentNode, connectedNode,
+		getRoute(currentMatrix, currentRoute, edgesLeftNew, currentConnectedEdges, currentNode, connectedNode,
 				currentGroups);
 
 	}
@@ -663,114 +615,15 @@ public class TSP {
 	 * @return available - Boolean, true if the node has not been used as part
 	 *         of the route
 	 */
-	private boolean addedCheck(List<Pair> route, int currentNode, int connectedNode) {
+	private boolean addedCheck(LinkedList<Edge> route, Location currentNode, Location connectedNode) {
 		boolean available = true;
-		for (Pair p : route) {
-			if ((p.getNode1() == currentNode && p.getNode2() == connectedNode)
-					|| (p.getNode1() == connectedNode && p.getNode2() == currentNode)) {
+		for (Edge p : route) {
+			if ((p.getStart().equals(currentNode) && p.getEnd().equals(connectedNode))
+					|| (p.getStart().equals(connectedNode) && p.getEnd().equals(currentNode))) {
 				available = false;
 			}
 		}
 		return available;
-	}
-
-	/**
-	 * assembles the final route around all destinations
-	 *
-	 * @param startNode
-	 *            The user's chosen starting node, route must start and finish
-	 *            here
-	 * @param destinations
-	 *            The list of Nodes which the user has chosen to visit
-	 */
-	private void getFinalRoute(Node startNode, List<Node> destinations) {
-		Node[][] position = new Node[bestRoute.size()][2];
-		for (int pos = 0; pos < bestRoute.size(); pos++) {
-			position[pos][0] = destinations.get(bestRoute.get(pos).getNode1());
-			position[pos][1] = destinations.get(bestRoute.get(pos).getNode2());
-		}
-
-		// ensure route is empty
-		finalRoute.clear();
-		// begin recursion to create the route
-		createRoute(position, startNode, destinations);
-		finalRoute.add(startNode);
-	}
-
-	/**
-	 * method which recursively creates the final route
-	 *
-	 * @param position
-	 *            An array which contains both nodes from all the pairs in the
-	 *            best route found separately
-	 * @param nodeToFind
-	 *            The node which is being looked for in this round of recursion
-	 * @param destinations
-	 *            The list of Nodes which the user has chosen to visit
-	 */
-	private void createRoute(Node[][] position, Node nodeToFind, List<Node> destinations) {
-		// searches for node
-		for (int x = 0; x < bestRoute.size(); x++) {
-			for (int y = 0; y < 2; y++) {
-				if (position[x][y] == nodeToFind) {
-					int z = 1 - y;
-					nodeToFind = position[x][z];
-					position = addRoute(position, destinations, x, y, z);
-					createRoute(position, nodeToFind, destinations);
-				}
-			}
-		}
-	}
-
-	/**
-	 * Adds a section of route to the final route
-	 *
-	 * @param position
-	 *            An array which contains both nodes from all the pairs in the
-	 *            best route found separately
-	 * @param destinations
-	 *            The list of Nodes which the user has chosen to visit
-	 * @param x
-	 *            The value for which Pair location in the position array the
-	 *            node was found in
-	 * @param y
-	 *            The value for which Node location in the position array the
-	 *            node was found in
-	 * @param z
-	 *            The value for which Node location in the position array the
-	 *            next node to find is in
-	 * @return position An array which contains both nodes from all the pairs in
-	 *         the best route found separately
-	 */
-	private Node[][] addRoute(Node[][] position, List<Node> destinations, int x, int y, int z) {
-		// adds a route to the final route
-		List<Node> foundRoute = routeMatrix[findLocation(position[x][y], destinations)][findLocation(position[x][z],
-				destinations)];
-		for (int i = 0; i < foundRoute.size() - 1; i++) {
-			finalRoute.add(foundRoute.get(i));
-		}
-		position[x][y] = null;
-		position[x][z] = null;
-		return position;
-	}
-
-	/**
-	 * Finds the location of a specific Node within the destinations list
-	 *
-	 * @param n
-	 *            The node to find the location of
-	 * @param destinations
-	 *            The list of Nodes which the user has chosen to visit
-	 * @return location - The location the node within the destinations list
-	 */
-	private int findLocation(Node n, List<Node> destinations) {
-		int location = 0;
-		for (int x = 0; x < destinations.size(); x++) {
-			if (destinations.get(x) == n) {
-				location = x;
-			}
-		}
-		return location;
 	}
 
 	/**
@@ -785,11 +638,11 @@ public class TSP {
 	 * @return currentGroups - The list of groups (separate sections of route)
 	 *         which are involved in this subset of possible routes
 	 */
-	private List<List<Pair>> addToGroups(List<List<Pair>> currentGroups, Pair pairToAdd) {
+	private LinkedList<LinkedList<Edge>> addToGroups(LinkedList<LinkedList<Edge>> currentGroups, Edge pairToAdd) {
 		// adds a new edge to whichever group it belongs in and merges groups
 		// checks to see if it is the first node ever added
 		if (currentGroups.isEmpty()) {
-			List<Pair> g = new ArrayList<>();
+			LinkedList<Edge> g = new LinkedList<>();
 			g.add(pairToAdd);
 			currentGroups.add(g);
 		} else {
@@ -800,9 +653,9 @@ public class TSP {
 			}
 			// finds which groups to add to
 			for (int i = 0; i < currentGroups.size(); i++) {
-				for (Pair p : currentGroups.get(i)) {
-					if (p.getNode1() == pairToAdd.getNode1() || p.getNode1() == pairToAdd.getNode2()
-							|| p.getNode2() == pairToAdd.getNode1() || p.getNode2() == pairToAdd.getNode2()) {
+				for (Edge p : currentGroups.get(i)) {
+					if (p.getStart() == pairToAdd.getStart() || p.getStart() == pairToAdd.getEnd()
+							|| p.getEnd() == pairToAdd.getStart() || p.getEnd() == pairToAdd.getEnd()) {
 						groupsAddedTo[i] = true;
 					}
 				}
@@ -828,13 +681,35 @@ public class TSP {
 			}
 			// creates a new group if it did not fit into any groups
 			if (numberOfAdds == 0) {
-				List<Pair> g = new ArrayList<>();
+				LinkedList<Edge> g = new LinkedList<>();
 				g.add(pairToAdd);
 				currentGroups.add(g);
 			}
 		}
 
 		return currentGroups;
+	}
+	
+	private LinkedList<LinkedList<Edge>> splitRoutes(Edge temp, LinkedList<Edge> route){
+		LinkedList<LinkedList<Edge>> routes = new LinkedList<>();
+
+		// route for including edge
+		LinkedList<Edge> route1 = new LinkedList<>();
+		for (Edge z : route) {
+			route1.add(z);
+		}
+		route1.add(temp);
+
+		// route for removing edge
+		LinkedList<Edge> route2 = new LinkedList<>();
+		for (Edge z : route) {
+			route2.add(z);
+		}
+
+		routes.add(route1);
+		routes.add(route2);
+		
+		return routes;
 	}
 
 	private LinkedList<Location> makeListLocations(Job j, Location startPosition) {
