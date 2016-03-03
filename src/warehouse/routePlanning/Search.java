@@ -25,22 +25,6 @@ public class Search {
 		map = m.getMap();
 		available = m.getAvailable();
 	}
-
-	/**
-	 * returns the route to take between two locations
-	 * @param start the start location
-	 * @param goal the goal location
-	 * @return the optimal route between two locations
-	 */
-	public Optional<Route> getRoute(Location start, Location goal) {
-		Optional<LinkedList<Location>> r = BasicAStar(start, goal);
-		if (r.isPresent()) {
-			//TODO actual code to provide a route
-			return Optional.of(new Route(new LinkedList<Action>(), start, goal));
-		}else{
-			return Optional.empty();
-		}
-	}
 	
 	/**
 	 * Returns the result of search method for testing
@@ -48,7 +32,7 @@ public class Search {
 	 * @param goal the goal location
 	 * @return a list of locations which form the optimal route to take
 	 */
-	public Optional<LinkedList<Location>> testRoute(Location start, Location goal) {
+	public Optional<LinkedList<Location>> getRoute(Location start, Location goal) {
 		return BasicAStar(start, goal);
 	}
 
