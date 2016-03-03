@@ -14,4 +14,9 @@ public class Job {
         this.dropLocation = dropLocation;
         this.pickups = pickups;
     }
+    
+    public boolean isAssigned() {
+        return false;
+    }
+    
 }
