@@ -6,7 +6,9 @@ import java.util.LinkedList;
 import warehouse.job.AssignedJob;
 import warehouse.job.Job;
 import warehouse.util.EventDispatcher;
+import warehouse.util.Location;
 import warehouse.util.Robot;
+import warehouse.util.Subscriber;
 
 
 /**
@@ -27,6 +29,8 @@ public class JobSelectorSingle {
 	private Robot robot;
 	private boolean run;
 	private AssignedJob currentJob;
+	private boolean robotGotLost;
+	private Location robotStartLocation;
 	
 	/**
 	 * Create a job selector that chooses jobs for a single robot based on a list 
@@ -36,6 +40,8 @@ public class JobSelectorSingle {
 	 * @param jobs the list of available jobs
 	 */
 	public JobSelectorSingle(Robot robot, LinkedList<Job> jobs){
+		
+		EventDispatcher.subscribe2(this);
 		
 		this.robot = robot;
 		
@@ -47,17 +53,60 @@ public class JobSelectorSingle {
 		
 		JobWorth bestJob;
 		
+		//TODO Add localisation?
+		Location startLocation = this.robot.position;
+		
 		//Calculate the worth of each job and add them to the list
 		for(Job job : jobs){
-
-			jobworths.add(new JobWorth(job, this.robot));
 			
+			jobworths.add(new JobWorth(job, this.robot, startLocation));
+		}
+		
+		//get the best job
+		bestJob = Collections.max(jobworths);
+		
+		//get rid of the best job from the list of jobs
+		jobs.remove(bestJob.getJob());
+
+		//make a new assigned job
+		AssignedJob assigned = assign(this.robot, bestJob);
+		this.currentJob = assigned;
+		
+		//TODO send the assigned job to route execution?
+		dispatcher.onEvent(assigned);
+
+		//Clear the list as we have a new location to base it on
+		jobworths = new LinkedList<JobWorth>();
+		
+		//TODO multiple drop locations?
+		Location dropLocation = new Location(4, 7);
+		
+		//Calculate the worth of each job and add them to the list
+		for(Job job : jobs){
+					
+			jobworths.add(new JobWorth(job, this.robot, dropLocation));
 		}
 		
 		//continuously give the best job left to the robot until there are no more jobs
 		//or it is told to stop
 		while(run && (jobs.size() > 0)){
 
+			if(robotGotLost){
+			
+				//Clear the list as we have a new location to base it on
+				jobworths = new LinkedList<JobWorth>();
+				
+				startLocation = this.robotStartLocation;
+				
+				//Calculate the worth of each job and add them to the list
+				for(Job job : jobs){
+					
+					jobworths.add(new JobWorth(job, this.robot, startLocation));
+				}
+				
+				this.robotGotLost = false;
+			}
+			
 			//get the best job
 			bestJob = Collections.max(jobworths);
 			
@@ -65,21 +114,24 @@ public class JobSelectorSingle {
 			jobs.remove(bestJob.getJob());
 	
 			//make a new assigned job
-			AssignedJob assigned = assign(this.robot, bestJob);
+			assigned = assign(this.robot, bestJob);
 			this.currentJob = assigned;
 			
 			//TODO send the assigned job to route execution?
 			dispatcher.onEvent(assigned);
-			
-			//Clear the list so new best jobs can be found based on the robots new location
-			jobworths = new LinkedList<JobWorth>();
-			
-			//Calculate the worth of each job and add them to the list
-			for(Job job : jobs){
-				
-				jobworths.add(new JobWorth(job, this.robot));
-			}
 		}
+	}
+	
+	/**
+	 * Method to listen for robot getting lost, and localising to a new location
+	 * 
+	 * @param l the new location
+	 */
+	@Subscriber
+	private void onRobotLost(Location l){
+		
+		this.robotStartLocation = l;
+		this.robotGotLost = true;
 	}
 	
 	/**
