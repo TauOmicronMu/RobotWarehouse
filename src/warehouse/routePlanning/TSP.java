@@ -21,12 +21,35 @@ public class TSP {
 	public Route getShortestRoute(Job j, Location startingPosition) {
 		numberOfNodes = j.pickups.size() + 2;
 		double[][] adjacencyMatrix = new double[numberOfNodes][numberOfNodes];
+		adjacencyMatrix = initiateMatrix(adjacencyMatrix);
+        adjacencyMatrix = adjMatrix(adjacencyMatrix, j, startingPosition);
 		moves = new LinkedList<Action>();
 
+		// initialises array of the amount of edges left available to each node
+        int[] edgesLeft = new int[numberOfNodes];
+        for (int x = 0; x < edgesLeft.length; x++) {
+            edgesLeft[x] = numberOfNodes - 1;
+        }
+        // initialises array of the amount of edges connected to each node
+        int[] edgesConnected = new int[numberOfNodes];
+        for (int x = 0; x < edgesLeft.length; x++) {
+            edgesConnected[x] = 0;
+        }
+
+        //initialises list of groups
+        LinkedList<LinkedList<Edge>> currentGroups = new LinkedList<LinkedList<Edge>>();
+
+        // reset lowestWeight
+        lowestWeight = Double.POSITIVE_INFINITY;
+
+        // set up fresh route
+        LinkedList<Edge> route = new LinkedList<Edge>();
+
+        // starts the first call of the route finding algorithm
+        getRoute(adjacencyMatrix, route, edgesLeft, edgesConnected, 0, 1, currentGroups);
+        
 		return new Route(moves, startingPosition, j.dropLocation);
 	}
-
-	
 
     /**
      *
@@ -116,10 +139,10 @@ public class TSP {
      * @return adjacencyMatrix - The adjacency matrix which stores all of the
      * connections between my nodes
      */
-    private double[][] adjMatrix(double[][] adjacencyMatrix, List<Node> destinations, List<Node> listOfNodes) {
+    private double[][] adjMatrix(double[][] adjacencyMatrix, Job j, Location startingPosition) {
         for (int Node1 = 0; Node1 < destinations.size() - 1; Node1++) {
             for (int Node2 = Node1 + 1; Node2 < destinations.size(); Node2++) {
-                List<Node> foundRoute = dj.completeDijkstras(destinations.get(Node1), destinations.get(Node2), listOfNodes);
+                LinkedList<Location> foundRoute = dj.completeDijkstras(destinations.get(Node1), destinations.get(Node2), listOfNodes);
                 adjacencyMatrix[Node1][Node2] = dj.weight;
                 adjacencyMatrix[Node2][Node1] = dj.weight;
                 for (Node foundNode : foundRoute) {
@@ -787,5 +810,9 @@ public class TSP {
         }
 
         return currentGroups;
+    }
+    
+    private makeListLocations(){
+    	
     }
 }
