@@ -10,4 +10,13 @@ public class Robot {
         this.robotName = robotName;
         this.position = position;
     }
+
+    @Override
+    public String toString() {
+        return "Robot{" +
+                "robotName='" + robotName + '\'' +
+                ", position=" + position +
+                ", rotation=" + rotation +
+                '}';
+    }
 }
