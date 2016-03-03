@@ -1,5 +1,5 @@
 ## Interaction
-This file serves as a preliminary guide to how interaction should take place between component. It is written from my point of view as a system integrator and with my java experience in mind.
+This file serves as a preliminary guide to how interaction should take place between components. It is written from my (Sam's) point of view as a system integrator and with my java experience in mind.
 If you have any suggestions, please let me know and we can discuss changes to this document.
 
 ## Events
@@ -7,7 +7,7 @@ All interaction between components of the system should take place with events. 
 Event dispatching is the most maintainable and scalable way of handling interaction. If you are at all confused about how to dispatch and listen for events, please see the [README](README.md).
 
 ## Networking
-There are 3 different ways that we could go about this. Depending on the method chose, I'll submit a proposed plan.
+There are 3 different ways that we could go about this. Depending on the method chosen, I'll submit a proposed plan.
 
 ### Martin's code
 This is what I think is the current state of the networking system, from what Jakubas has said and from what I have seen in the git repo.
@@ -24,12 +24,12 @@ I would need to make some minor changes to the library's source that I copied in
 
 ## Robot interface
 The robot interface should listen for these events:
-    * DropoffReached - occurs when the robot reaches the dropoff location, sent by the route execution component. This will have an ItemPickup object and should launch the item interface.
+   * DropoffReached - occurs when the robot reaches the dropoff location, sent by the route execution component. This will have an ItemPickup object and should launch the item interface.
 
 And it should send these events:
-    * JobCancelled - Dispatched when the user chooses to cancel a job via the interface, the client should listen for this and alert the server
-    * WrongPlace - Dispatched when the user tells the robot (via the interface) that it is in the wrong place, the client should listen to this and alert the server
-    * JobCompleted - Dispatched when the robot interface detects that the job has been completed, the client should listen for this and alert the server
+   * JobCancelled - Dispatched when the user chooses to cancel a job via the interface, the client should listen for this and alert the server
+   * WrongPlace - Dispatched when the user tells the robot (via the interface) that it is in the wrong place, the client should listen to this and alert the server
+   * JobCompleted - Dispatched when the robot interface detects that the job has been completed, the client should listen for this and alert the server
     
 These events are based on the contents of Communication.java of the robot-interface branch. This file should be replaced by methods that listen for events and methods that dispatch the events.
     
