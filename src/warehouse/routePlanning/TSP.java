@@ -65,7 +65,6 @@ public class TSP {
 		// starts the first call of the route finding algorithm
 		getRoute(adjacencyMatrix, route, edgesLeft, edgesConnected, 0, 1, currentGroups);
 
-		System.out.println("Final lowest Weight: " + lowestWeight);
 		// return new Route(moves, startingPosition, j.dropLocation);
 		return bestRoute;
 	}
