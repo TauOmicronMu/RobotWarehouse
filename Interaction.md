@@ -7,7 +7,7 @@ All interaction between components of the system should take place with events. 
 Event dispatching is the most maintainable and scalable way of handling interaction. If you are at all confused about how to dispatch and listen for events, please see the [README](README.md).
 
 ## Networking
-There are 3 different ways that we could go about this. Depending on the method chose, I'll submit a proposed plan.
+There are 3 different ways that we could go about this. Depending on the method chosen, I'll submit a proposed plan.
 
 ### Martin's code
 This is what I think is the current state of the networking system, from what Jakubas has said and from what I have seen in the git repo.
