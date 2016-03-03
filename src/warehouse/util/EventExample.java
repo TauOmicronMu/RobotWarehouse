@@ -1,3 +1,5 @@
+package warehouse.util;
+
 /**
  * Created by samtebbs on 24/02/2016.
  */

@@ -1,8 +1,5 @@
-package warehouse;
+package warehouse.util;
 
-/**
- * Created by samtebbs on 22/02/2016.
- */
 public class Robot {
 
     public String robotName;

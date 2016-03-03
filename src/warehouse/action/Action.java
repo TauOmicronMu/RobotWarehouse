@@ -1,8 +1,8 @@
-package warehouse;
+package warehouse.action;
 
-/**
- * Created by samtebbs on 22/02/2016.
- */
+import warehouse.util.ItemPickup;
+import warehouse.util.Location;
+
 public abstract class Action {
 
     public static class MoveAction extends Action {
