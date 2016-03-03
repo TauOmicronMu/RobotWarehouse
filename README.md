@@ -40,3 +40,8 @@ If you do not have the dev branch locally (check with `git branch`), then do:
 git checkout -t origin/dev
 git pull origin dev
 ```
+
+To get the lates changes, make sure you are in your role's repo and do:
+```
+git merge dev
+```
