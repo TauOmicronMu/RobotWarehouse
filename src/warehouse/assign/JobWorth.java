@@ -2,6 +2,7 @@ package warehouse.assign;
 
 import warehouse.job.Job;
 import warehouse.util.ItemPickup;
+import warehouse.util.Location;
 import warehouse.util.Robot;
 import warehouse.util.Route;
 
@@ -33,11 +34,11 @@ public class JobWorth implements Comparable<JobWorth>{
 	 * @param job the given job
 	 */
 	
-	public JobWorth(Job job, Robot robot){
+	public JobWorth(Job job, Robot robot, Location startLocation){
 		
 		this.job = job;
 		
-		//this.route = new TSP.getShortestRoute(job , robot.position);
+		//this.route = new TSP.getShortestRoute(job , robot, startLocation);
 		
 		//Factor in the cancellation probability
 		double p = 1 - findCancellationProbability(job);
