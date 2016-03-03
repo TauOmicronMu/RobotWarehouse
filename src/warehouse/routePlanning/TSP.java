@@ -128,6 +128,7 @@ public class TSP {
 			lowerBound = lowerBound + secondWeight + bestWeight;
 		}
 		lowerBound = lowerBound / 2;
+		System.out.println(lowerBound);
 		return lowerBound;
 	}
 
@@ -151,6 +152,8 @@ public class TSP {
 				if (foundRoute.isPresent()) {
 					Route r = foundRoute.get();
 					adjacencyMatrix[Node1][Node2] = r.totalDistance;
+					Location l1 = allLocations.get(Node1);
+					Location l2 = allLocations.get(Node2);
 					adjacencyMatrix[Node2][Node1] = r.totalDistance;
 					
 					//adds the route to a matrix of routes
@@ -620,17 +623,16 @@ public class TSP {
 	 * @param split
 	 *            A number which states which half of the split is being passed
 	 *            down
-	 * @return complete - Boolean to mark whether the route is complete or not
+	 * @return Boolean to mark whether the route is complete or not
 	 */
 	private boolean checkComplete(int[][] allEdges, int split) {
 		// checks if this branch is complete
-		boolean complete = true;
 		for (int connected : allEdges[split]) {
 			if (connected != 2) {
-				complete = false;
+				return false;
 			}
 		}
-		return complete;
+		return true;
 	}
 
 	/**
@@ -686,8 +688,8 @@ public class TSP {
 			// finds which groups to add to
 			for (int i = 0; i < currentGroups.size(); i++) {
 				for (Edge p : currentGroups.get(i)) {
-					if (p.getStart() == pairToAdd.getStart() || p.getStart() == pairToAdd.getEnd()
-							|| p.getEnd() == pairToAdd.getStart() || p.getEnd() == pairToAdd.getEnd()) {
+					if (p.getStart().equals(pairToAdd.getStart()) || p.getStart().equals(pairToAdd.getEnd())
+							|| p.getEnd().equals(pairToAdd.getStart()) || p.getEnd().equals(pairToAdd.getEnd())) {
 						groupsAddedTo[i] = true;
 					}
 				}
@@ -722,6 +724,12 @@ public class TSP {
 		return currentGroups;
 	}
 	
+	/**
+	 * Splits the current route into two potential routes, one including and one excluding a certain edge
+	 * @param temp the edge in consideration
+	 * @param route the current list of edges
+	 * @return a list containing both versions of the new route
+	 */
 	private LinkedList<LinkedList<Edge>> splitRoutes(Edge temp, LinkedList<Edge> route){
 		LinkedList<LinkedList<Edge>> routes = new LinkedList<>();
 
@@ -744,6 +752,12 @@ public class TSP {
 		return routes;
 	}
 
+	/**
+	 * Makes the job into a list of locations to visit
+	 * @param j the job to convert
+	 * @param startPosition the start position of the robot
+	 * @return the list of all locations to visit
+	 */
 	private LinkedList<Location> makeListLocations(Job j, Location startPosition) {
 		LinkedList<Location> allLocations = new LinkedList<Location>();
 		allLocations.add(startPosition);

@@ -101,7 +101,7 @@ public class Search {
 						if (tempGScore < gScore.get(neighbour)) {
 							cameFrom.put(neighbour, current);
 							gScore.put(neighbour, tempGScore);
-							fScore.put(neighbour, (double) neighbour.manhattanDistance(goal));
+							fScore.put(neighbour, (double) neighbour.manhattanDistance(goal) + gScore.get(neighbour));
 						}
 					}
 				}
