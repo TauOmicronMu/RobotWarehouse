@@ -39,7 +39,7 @@ public class JobSelectorSingle {
 		
 		this.robot = robot;
 		
-		EventDispatcher dispatcher = new EventDispatcher();
+		EventDispatcher dispatcher = EventDispatcher.INSTANCE;
 		
 		this.run = true;
 		
