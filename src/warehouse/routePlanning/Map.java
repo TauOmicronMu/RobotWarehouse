@@ -9,6 +9,7 @@ import warehouse.util.Location;
 public class Map {
 	private HashMap<Location, Boolean> available;
 	private Location [][] map;
+	
 	public Map(){
 		GridMap providedMap = MapUtils.createRealWarehouse();
 		available = new HashMap<Location, Boolean>();
@@ -20,11 +21,14 @@ public class Map {
 				Location temp = new Location(x, (sizeY - 1) - y);
 				map[(sizeY - 1) - y][x] = temp;
 				if(providedMap.isObstructed(x, y)){
+					System.out.print("X");
 					available.put(temp, false);
 				}else{
+					System.out.print("-");
 					available.put(temp, true);
 				}
 			}
+			System.out.println();
 		}
 	}
 	

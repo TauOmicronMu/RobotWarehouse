@@ -8,9 +8,8 @@ import warehouse.util.*;
 import warehouse.job.Job;
 
 public class TSP {
-	private Search s = new Search();
+	private Search s;
 	private LinkedList<Action> moves;
-	private final Location dropOffLocation = new Location(4, 7);
 	private int numberOfLocations;
 	private LinkedList<Location> allLocations;
 	LinkedList<Edge> bestRoute = new LinkedList<Edge>();
@@ -18,8 +17,12 @@ public class TSP {
 	double lowestWeight;
 	// stores the route taken to travel between each node
 	private LinkedList<Location>[][] routeMatrix;
+	
+	public TSP(Search s){
+		this.s = s;
+	}
 
-	public Route getShortestRoute(Job j, Location startingPosition) {
+	public LinkedList<Edge> getShortestRoute(Job j, Location startingPosition) {
 		//builds full list of locations
 		allLocations = makeListLocations(j, startingPosition);
 		
@@ -28,9 +31,11 @@ public class TSP {
 		
 		//creates a matrix containing the best route between every location
 		routeMatrix = new LinkedList[numberOfLocations][numberOfLocations];
+		initRouteMatrix();
         
         //creates a matrix to contain the best distance from one location to another
 		double[][] adjacencyMatrix = new double[numberOfLocations][numberOfLocations];
+		adjacencyMatrix = initiateMatrix(adjacencyMatrix);
 		
 		//gives these matrices their initial values
 		adjacencyMatrix = setUpMatrices(adjacencyMatrix, allLocations);
@@ -60,8 +65,36 @@ public class TSP {
 		getRoute(adjacencyMatrix, route, edgesLeft, edgesConnected, 0, 1, currentGroups);
 		
 		System.out.println("Final lowest Weight: "+ lowestWeight);
-		return new Route(moves, startingPosition, j.dropLocation);
+//		return new Route(moves, startingPosition, j.dropLocation);
+		return bestRoute;
 	}
+
+	private void initRouteMatrix() {
+		for(int i = 0; i < routeMatrix.length; i++){
+			for(int j = 0; j < routeMatrix.length; j++){
+				
+				routeMatrix[i][j] = new LinkedList<Location>();
+			}
+		}
+	}
+	
+	/**
+     * Fills the adjacency matrix with values of infinity to represent no
+     * connection before values are added
+     *
+     * @param adjacencyMatrix The adjacency matrix which stores all of the
+     * connections between my nodes
+     * @return adjacencyMatrix - The adjacency matrix which stores all of the
+     * connections between my nodes
+     */
+    private double[][] initiateMatrix(double[][] adjacencyMatrix) {
+        for (double[] adjacencyMatrix1 : adjacencyMatrix) {
+            for (int j = 0; j < adjacencyMatrix.length; j++) {
+                adjacencyMatrix1[j] = Double.POSITIVE_INFINITY;
+            }
+        }
+        return adjacencyMatrix;
+    }
 
 	/**
 	 * Method which calculates the lower bound for a subset of possible routes
@@ -563,7 +596,6 @@ public class TSP {
 					connectedNode = currentNode + 1;
 				} else {
 					// REACHED END OF ARRAY
-					System.err.println("No Route Found: Reached end of array");
 				}
 			} else {
 				// increment connectedNode
@@ -718,7 +750,7 @@ public class TSP {
 		for (ItemPickup x : j.pickups) {
 			allLocations.add(x.location);
 		}
-		allLocations.add(dropOffLocation);
+		allLocations.add(j.dropLocation);
 		return allLocations;
 	}
 }
