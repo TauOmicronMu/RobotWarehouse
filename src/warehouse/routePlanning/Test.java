@@ -1,20 +1,18 @@
 package warehouse.routePlanning;
 
-import java.util.LinkedList;
 import java.util.Optional;
 
 import warehouse.Location;
+import warehouse.Route;
 
 public class Test {
 
 	public static void main(String[] args) {
 		Search s = new Search();
-		Optional<LinkedList<Location>> o = s.getRoute(new Location(0,0), new Location(11, 7));
+		Optional<Route> o = s.getRoute(new Location(0,0), new Location(4, 7));
 		if (o.isPresent()) {
-			LinkedList<Location> route = o.get();
-			for (Location r : route) {
-				System.out.println(r.x + ", " + r.y);
-			}
+			Route route = o.get();
+			System.out.println("Total Distance: " + route.totalDistance);
 		}else{
 			System.out.println("no route found");
 		}
