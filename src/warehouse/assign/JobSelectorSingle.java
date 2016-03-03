@@ -5,6 +5,7 @@ import java.util.LinkedList;
 
 import warehouse.job.AssignedJob;
 import warehouse.job.Job;
+import warehouse.util.EventDispatcher;
 import warehouse.util.Robot;
 
 
@@ -21,10 +22,11 @@ import warehouse.util.Robot;
  * @author Owen
  *
  */
-public class JobSelectorSingle{
+public class JobSelectorSingle {
 
 	private Robot robot;
 	private boolean run;
+	private AssignedJob currentJob;
 	
 	/**
 	 * Create a job selector that chooses jobs for a single robot based on a list 
@@ -33,9 +35,12 @@ public class JobSelectorSingle{
 	 * @param robot the robot
 	 * @param jobs the list of available jobs
 	 */
-	public JobSelectorSingle(Robot robot, ArrayList<Job> jobs){
+	public JobSelectorSingle(Robot robot, LinkedList<Job> jobs){
 		
 		this.robot = robot;
+		
+		EventDispatcher dispatcher = new EventDispatcher();
+		
 		this.run = true;
 		
 		LinkedList<JobWorth> jobworths = new LinkedList<JobWorth>();
@@ -51,22 +56,27 @@ public class JobSelectorSingle{
 		
 		//continuously give the best job left to the robot until there are no more jobs
 		//or it is told to stop
-		while(run && (jobworths.size() > 0)){
+		while(run && (jobs.size() > 0)){
 
+			//get the best job
 			bestJob = Collections.max(jobworths);
 			
-			jobworths.remove(bestJob);
+			//get rid of the best job from the list of jobs
 			jobs.remove(bestJob.getJob());
 	
+			//make a new assigned job
 			AssignedJob assigned = assign(this.robot, bestJob);
+			this.currentJob = assigned;
 			
-			//TODO Robot performs job
+			//TODO send the assigned job to route execution?
+			dispatcher.onEvent(assigned);
 			
 			//Clear the list so new best jobs can be found based on the robots new location
 			jobworths = new LinkedList<JobWorth>();
 			
 			//Calculate the worth of each job and add them to the list
 			for(Job job : jobs){
+				
 				jobworths.add(new JobWorth(job, this.robot));
 			}
 		}
@@ -90,5 +100,15 @@ public class JobSelectorSingle{
 	public void stopSelection(){
 		
 		this.run = false;
+	}
+	
+	/**
+	 * Method to get the current assigned job the selector has chosen
+	 * 
+	 * @return the current assigned job
+	 */
+	public AssignedJob getCurrentJob(){
+		
+		return this.currentJob;
 	}
 }
