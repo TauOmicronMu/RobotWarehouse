@@ -1,5 +1,5 @@
 ## Interaction
-This file serves as a preliminary guide to how interaction should take place between component. It is written from my point of view as a system integrator and with my java experience in mind.
+This file serves as a preliminary guide to how interaction should take place between components. It is written from my (Sam's) point of view as a system integrator and with my java experience in mind.
 If you have any suggestions, please let me know and we can discuss changes to this document.
 
 ## Events
