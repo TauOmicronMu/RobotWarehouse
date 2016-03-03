@@ -7,7 +7,10 @@ import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Set;
 
+import warehouse.Action;
 import warehouse.Location;
+import warehouse.Robot;
+import warehouse.Route;
 
 public class Search {
 	private HashMap<Location, Boolean> available;
@@ -21,21 +24,27 @@ public class Search {
 		map = m.getMap();
 		available = m.getAvailable();
 	}
-	
+
 	/**
 	 * Returns the result of search method for testing
-	 * @param start the start location
-	 * @param goal the goal location
+	 * 
+	 * @param start
+	 *            the start location
+	 * @param goal
+	 *            the goal location
 	 * @return a list of locations which form the optimal route to take
 	 */
-	public Optional<LinkedList<Location>> getRoute(Location start, Location goal) {
-		return BasicAStar(start, goal);
+	public Optional<Route> getRoute(Location start, Location goal) {
+		return toRoute(BasicAStar(start, goal));
 	}
 
 	/**
 	 * Gets the optimal route between two locations via basic A*
-	 * @param start the start location
-	 * @param goal the goal location
+	 * 
+	 * @param start
+	 *            the start location
+	 * @param goal
+	 *            the goal location
 	 * @return a list of locations which form the optimal route to take
 	 */
 	private Optional<LinkedList<Location>> BasicAStar(Location start, Location goal) {
@@ -178,16 +187,16 @@ public class Search {
 	 */
 	private LinkedList<Location> getNeighbours(Location node) {
 		LinkedList<Location> neighbours = new LinkedList<Location>();
-		if(inMap(node.y + 1, node.x)){
+		if (inMap(node.y + 1, node.x)) {
 			neighbours.add(map[node.y + 1][node.x]);
 		}
-		if(inMap(node.y -1, node.x)){
+		if (inMap(node.y - 1, node.x)) {
 			neighbours.add(map[node.y - 1][node.x]);
 		}
-		if(inMap(node.y, node.x +1)){
+		if (inMap(node.y, node.x + 1)) {
 			neighbours.add(map[node.y][node.x + 1]);
 		}
-		if(inMap(node.y, node.x -1)){
+		if (inMap(node.y, node.x - 1)) {
 			neighbours.add(map[node.y][node.x - 1]);
 		}
 		return neighbours;
@@ -206,8 +215,31 @@ public class Search {
 		// returns Manhattan distance
 		return (double) (Math.abs(goal.x - l.x) + Math.abs(goal.y - l.y));
 	}
-	
-	private boolean inMap(int y, int x){
+
+	private boolean inMap(int y, int x) {
 		return (y >= 0 && y < map.length && x >= 0 && x < map[y].length);
+	}
+
+	private Optional<Route> toRoute(Optional<LinkedList<Location>> o) {
+		if (o.isPresent()) {
+			LinkedList<Location> r = o.get();
+			LinkedList<Action> moves = new LinkedList<Action>();
+			for (int i = 1; i < r.size(); i++) {
+				if (r.get(i).x > r.get(i - 1).x) {
+					moves.add(new Action.MoveAction(true, 1, r.get(i)));
+				} else if (r.get(i).x < r.get(i - 1).x) {
+					moves.add(new Action.MoveAction(true, -1, r.get(i)));
+				} else if (r.get(i).y > r.get(i - 1).y) {
+					moves.add(new Action.MoveAction(false, 1, r.get(i)));
+				} else if (r.get(i).y < r.get(i - 1).y) {
+					moves.add(new Action.MoveAction(false, -1, r.get(i)));
+				}
+			}
+			Route toReturn = new Route(moves, r.getFirst(), r.getLast());
+			toReturn.totalDistance = moves.size();
+			return Optional.of(toReturn);
+		} else {
+			return Optional.empty();
+		}
 	}
 }
