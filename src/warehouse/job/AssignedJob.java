@@ -27,4 +27,11 @@ public class AssignedJob extends Job {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "AssignedJob{" +
+                "route=" + route +
+                ", robot=" + robot +
+                '}';
+    }
 }
