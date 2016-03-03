@@ -7,11 +7,7 @@ import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Set;
 
-import rp.robotics.mapping.GridMap;
-import rp.robotics.mapping.MapUtils;
-import warehouse.Action;
 import warehouse.Location;
-import warehouse.Route;
 
 public class Search {
 	private HashMap<Location, Boolean> available;
