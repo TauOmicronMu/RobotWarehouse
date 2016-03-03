@@ -1,18 +1,9 @@
 package warehouse.assign;
 
-
-
-<<<<<<< HEAD
-import java.util.ArrayList;
-import java.util.List;
-
-import warehouse.ItemPickup;
-import warehouse.Robot;
-import warehouse.Route;
-=======
-import warehouse.ItemPickup;
->>>>>>> 2ae639653eb167a13c2a051fa3c1fae26acb580d
 import warehouse.job.Job;
+import warehouse.util.ItemPickup;
+import warehouse.util.Robot;
+import warehouse.util.Route;
 
 /**
  * JOB SELECTION - (JobWorth class):

@@ -1,22 +1,12 @@
 package warehouse.assign;
 
-<<<<<<< HEAD
-<<<<<<< 19bea2916b5372f7dfb5db500f8b40704579b552
-
-
-import java.util.ArrayList;
-=======
->>>>>>> Commit before checkout
-=======
-
-
->>>>>>> 2ae639653eb167a13c2a051fa3c1fae26acb580d
 import java.util.Collections;
 import java.util.LinkedList;
 
-import warehouse.Robot;
 import warehouse.job.AssignedJob;
 import warehouse.job.Job;
+import warehouse.util.Robot;
+
 
 /**
  * 
@@ -53,7 +43,7 @@ public class JobSelectorSingle{
 		
 		//Calculate the worth of each job and make a new list
 		
-		for(int i = 0; i < jobs.size(); i++){
+		for(Job job : jobs){
 			jobworths.add(new JobWorth(job, this.robot));
 		}
 		
@@ -65,7 +55,7 @@ public class JobSelectorSingle{
 		while(run && (jobworths.size() > 0)){
 			
 		
-			assign(this.robot, jobworths.remove().getJob());
+			assign(this.robot, jobworths.remove());
 			
 		}
 	}
