@@ -1,5 +1,4 @@
 package warehouse.routePlanning;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -9,7 +8,6 @@ import java.util.Set;
 
 import warehouse.action.Action;
 import warehouse.util.*;;
-
 public class Search {
 	private HashMap<Location, Boolean> available;
 	private Location[][] map;
@@ -22,7 +20,6 @@ public class Search {
 		map = m.getMap();
 		available = m.getAvailable();
 	}
-
 	/**
 	 * Returns the result of search method for testing
 	 * 
@@ -38,16 +35,13 @@ public class Search {
 
 	/**
 	 * Gets the optimal route between two locations via basic A*
-<<<<<<< HEAD
 	 * 
 	 * @param start
 	 *            the start location
 	 * @param goal
 	 *            the goal location
-=======
 	 * @param start the start location
 	 * @param goal the goal location
->>>>>>> 8d87a9d8dbe544164db851d17a37c5b6ede91cb3
 	 * @return a list of locations which form the optimal route to take
 	 */
 	private Optional<LinkedList<Location>> BasicAStar(Location start, Location goal) {

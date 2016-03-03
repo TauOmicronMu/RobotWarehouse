@@ -41,10 +41,10 @@ public class EventDispatcher {
         // Look through the subscribed objects and check if they have a method that accepts the packet's class
         for (Object subscriber : subscribers.keySet()) {
             HashMap<Class, Method> subscriberMethods = subscribers.get(subscriber);
-            if (subscriberMethods.containsKey(obj)) {
+            if (subscriberMethods.containsKey(obj.getClass())) {
                 try {
                     // Invoke the method from the subscriber object with the obj as the argument
-                    subscriberMethods.get(obj.getClass()).invoke(Modifier.isStatic(mth.getModifiers()) ? null : subscriber, obj);
+                    subscriberMethods.get(obj.getClass()).invoke(subscriber, obj);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 } catch (InvocationTargetException e) {
@@ -53,32 +53,19 @@ public class EventDispatcher {
             }
         }
     }
-    
-    public static void onEvent(Object obj) {
-        INSTANCE.onEvent(obj);
-    }
-    
-    private static boolean isClass(Object obj) {
-        return obj.getClass() == Class.class;
-    }
 
     /**
-     * Subscribe to events with an object or a class.
+     * Subscribe to events with an object.
      * All method annotated with Subscriber will be added to the subscriber list.
-     * @param obj - Object of the class that has the subscriber methods, or the class itself
+     * @param obj - Object of the class that has the subscriber methods
      */
-    public void subscribe(Object classObj) {
-        // If classObj is an object of Class, then use that, else extract the class from the object.
-        Class cls = isClass(classObj) ? (Class) classObj : obj.getClass();
+    public void subscribe(Object obj) {
+        Class cls = obj.getClass();
         HashMap<Class, Method> map = new HashMap<>();
         subscribers.put(obj, map);
         // Filter class' methods for those that have one parameter and have the subscriber annotation
         List<Method> methods = Arrays.stream(cls.getMethods()).filter(mth -> mth.getParameters().length == 0 && mth.getAnnotationsByType(Subscriber.class).length > 0).collect(Collectors.toList());
         methods.forEach(mth -> map.put(mth.getParameters()[0].getType(), mth));
-    }
-    
-    public static void subscribe(Object obj) {
-        INSTANCE.subscribe(obj);
     }
 
 }
