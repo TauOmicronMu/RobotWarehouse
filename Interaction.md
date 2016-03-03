@@ -24,12 +24,12 @@ I would need to make some minor changes to the library's source that I copied in
 
 ## Robot interface
 The robot interface should listen for these events:
-    * DropoffReached - occurs when the robot reaches the dropoff location, sent by the route execution component. This will have an ItemPickup object and should launch the item interface.
+   * DropoffReached - occurs when the robot reaches the dropoff location, sent by the route execution component. This will have an ItemPickup object and should launch the item interface.
 
 And it should send these events:
-    * JobCancelled - Dispatched when the user chooses to cancel a job via the interface, the client should listen for this and alert the server
-    * WrongPlace - Dispatched when the user tells the robot (via the interface) that it is in the wrong place, the client should listen to this and alert the server
-    * JobCompleted - Dispatched when the robot interface detects that the job has been completed, the client should listen for this and alert the server
+   * JobCancelled - Dispatched when the user chooses to cancel a job via the interface, the client should listen for this and alert the server
+   * WrongPlace - Dispatched when the user tells the robot (via the interface) that it is in the wrong place, the client should listen to this and alert the server
+   * JobCompleted - Dispatched when the robot interface detects that the job has been completed, the client should listen for this and alert the server
     
 These events are based on the contents of Communication.java of the robot-interface branch. This file should be replaced by methods that listen for events and methods that dispatch the events.
     
