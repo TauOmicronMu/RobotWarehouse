@@ -9,7 +9,6 @@ import java.util.Set;
 
 import warehouse.Action;
 import warehouse.Location;
-import warehouse.Robot;
 import warehouse.Route;
 
 public class Search {
@@ -40,11 +39,16 @@ public class Search {
 
 	/**
 	 * Gets the optimal route between two locations via basic A*
+<<<<<<< HEAD
 	 * 
 	 * @param start
 	 *            the start location
 	 * @param goal
 	 *            the goal location
+=======
+	 * @param start the start location
+	 * @param goal the goal location
+>>>>>>> 8d87a9d8dbe544164db851d17a37c5b6ede91cb3
 	 * @return a list of locations which form the optimal route to take
 	 */
 	private Optional<LinkedList<Location>> BasicAStar(Location start, Location goal) {
