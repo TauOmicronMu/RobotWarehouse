@@ -1,11 +1,9 @@
 package warehouse.assign;
 
-
-
-import warehouse.ItemPickup;
-import warehouse.Robot;
-import warehouse.Route;
 import warehouse.job.Job;
+import warehouse.util.ItemPickup;
+import warehouse.util.Robot;
+import warehouse.util.Route;
 
 /**
  * JOB SELECTION - (JobWorth class):

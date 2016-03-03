@@ -1,17 +1,12 @@
 package warehouse.assign;
 
-<<<<<<< 19bea2916b5372f7dfb5db500f8b40704579b552
-
-
-import java.util.ArrayList;
-=======
->>>>>>> Commit before checkout
 import java.util.Collections;
 import java.util.LinkedList;
 
-import warehouse.Robot;
 import warehouse.job.AssignedJob;
 import warehouse.job.Job;
+import warehouse.util.Robot;
+
 
 /**
  * 
@@ -46,7 +41,8 @@ public class JobSelectorSingle{
 		LinkedList<JobWorth> jobworths = new LinkedList<JobWorth>();
 		
 		//Calculate the worth of each job and make a new list
-		for(int i = 0; i < jobs.size(); i++){
+		for(Job job : jobs){
+
 			jobworths.add(new JobWorth(job, this.robot));
 			
 		}
