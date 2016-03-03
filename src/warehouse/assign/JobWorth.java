@@ -45,7 +45,7 @@ public class JobWorth implements Comparable<JobWorth>{
 		this.rewardTime = p * rewardPerTimeStep(job);
 		this.rewardWeight = p * rewardPerWeight(job);
 		
-		this.metric = (rewardTime + rewardWeight) / 2;
+		this.metric = rewardTime; //TODO focus on timestep for now, deal with weight later
 	}
 	
 	/**

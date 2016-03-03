@@ -41,22 +41,33 @@ public class JobSelectorSingle{
 		
 		LinkedList<JobWorth> jobworths = new LinkedList<JobWorth>();
 		
-		//Calculate the worth of each job and make a new list
+		JobWorth bestJob;
 		
+		//Calculate the worth of each job and add them to the list
 		for(Job job : jobs){
 			jobworths.add(new JobWorth(job, this.robot));
 		}
 		
-		//Sort the list of job worths
-		Collections.sort(jobworths, Collections.reverseOrder());
-		
 		//continuously give the best job left to the robot until there are no more jobs
 		//or it is told to stop
 		while(run && (jobworths.size() > 0)){
+
+			bestJob = Collections.max(jobworths);
 			
-		
-			assign(this.robot, jobworths.remove());
+			jobworths.remove(bestJob);
+			jobs.remove(bestJob.getJob());
+	
+			AssignedJob assigned = assign(this.robot, bestJob);
 			
+			//TODO Robot performs job
+			
+			//Clear the list so new best jobs can be found based on the robots new location
+			jobworths = new LinkedList<JobWorth>();
+			
+			//Calculate the worth of each job and add them to the list
+			for(Job job : jobs){
+				jobworths.add(new JobWorth(job, this.robot));
+			}
 		}
 	}
 	
@@ -67,9 +78,9 @@ public class JobSelectorSingle{
 	 * @param job the job to be assigned
 	 * @return an AssignedJob object
 	 */
-	private void assign(Robot robot, JobWorth jobWorth){
+	private AssignedJob assign(Robot robot, JobWorth jobWorth){
 		
-		AssignedJob assigned = new AssignedJob(jobWorth.getJob(), jobWorth.getRoute(), robot);
+		return new AssignedJob(jobWorth.getJob(), jobWorth.getRoute(), robot);
 	}
 	
 	/**
