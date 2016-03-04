@@ -2,10 +2,13 @@ package warehouse.routePlanning;
 
 import java.util.LinkedList;
 import java.util.Optional;
-import warehouse.action.*;
+
+import warehouse.action.Action;
 import warehouse.action.Action.MoveAction;
-import warehouse.util.*;
 import warehouse.job.Job;
+import warehouse.util.ItemPickup;
+import warehouse.util.Location;
+import warehouse.util.Route;
 
 public class TSP {
 	private Search s;
@@ -426,7 +429,7 @@ public class TSP {
 					}
 				} else if (edgesLeftNew[i] == 0) {
 					if (currentConnectedEdges[i] != 2) {
-						//too many edges have been removed
+						// too many edges have been removed
 					}
 				}
 			}

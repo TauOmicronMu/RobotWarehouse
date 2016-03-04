@@ -1,4 +1,5 @@
 package warehouse.routePlanning;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -7,7 +8,9 @@ import java.util.Optional;
 import java.util.Set;
 
 import warehouse.action.Action;
-import warehouse.util.*;;
+import warehouse.util.Location;
+import warehouse.util.Route;;
+
 public class Search {
 	private HashMap<Location, Boolean> available;
 	private Location[][] map;
@@ -15,11 +18,11 @@ public class Search {
 	/**
 	 * Constructor which sets up the map and obstacles
 	 */
-	public Search() {
-		Map m = new Map();
+	public Search(Map m) {
 		map = m.getMap();
 		available = m.getAvailable();
 	}
+
 	/**
 	 * Returns the result of search method for testing
 	 * 
@@ -30,7 +33,14 @@ public class Search {
 	 * @return a list of locations which form the optimal route to take
 	 */
 	public Optional<Route> getRoute(Location start, Location goal) {
-		return toRoute(BasicAStar(start, goal));
+		if (inMap(start.y, start.x) && inMap(goal.y, goal.x)) {
+			start = map[start.y][start.x];
+			goal = map[goal.y][goal.x];
+			if (available.get(start) && available.get(goal)) {
+				return toRoute(BasicAStar(start, goal));
+			}
+		}
+		return Optional.empty();
 	}
 
 	/**
@@ -40,8 +50,10 @@ public class Search {
 	 *            the start location
 	 * @param goal
 	 *            the goal location
-	 * @param start the start location
-	 * @param goal the goal location
+	 * @param start
+	 *            the start location
+	 * @param goal
+	 *            the goal location
 	 * @return a list of locations which form the optimal route to take
 	 */
 	private Optional<LinkedList<Location>> BasicAStar(Location start, Location goal) {
