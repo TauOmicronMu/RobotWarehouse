@@ -9,8 +9,8 @@ import java.util.LinkedList;
 
 public class AssignedJob extends Job {
 
-    public Route route;
-    public Robot robot;
+    private Route route;
+    private Robot robot;
 
     public AssignedJob(Location dropLocation, LinkedList<ItemPickup> pickups, Route route, Robot robot) {
         super(dropLocation, pickups);
@@ -21,7 +21,7 @@ public class AssignedJob extends Job {
     public AssignedJob(Job job, Route route, Robot robot) {
         this(job.dropLocation, job.pickups, route, robot);
     }
-    
+
     @Override
     public boolean isAssigned() {
         return true;
@@ -34,4 +34,5 @@ public class AssignedJob extends Job {
                 ", robot=" + robot +
                 '}';
     }
+
 }

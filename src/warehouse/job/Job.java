@@ -7,12 +7,13 @@ import java.util.LinkedList;
 
 public class Job {
 
-    public Location dropLocation;
-    public LinkedList<ItemPickup> pickups;
+    private Location dropLocation;
+    private LinkedList<ItemPickup> pickups;
 
     public Job(Location dropLocation, LinkedList<ItemPickup> pickups) {
         this.dropLocation = dropLocation;
         this.pickups = pickups;
+
     }
     
     public boolean isAssigned() {
