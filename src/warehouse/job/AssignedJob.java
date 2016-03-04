@@ -1,9 +1,9 @@
 package warehouse.job;
 
-import warehouse.ItemPickup;
-import warehouse.Location;
-import warehouse.Robot;
-import warehouse.Route;
+import warehouse.util.ItemPickup;
+import warehouse.util.Location;
+import warehouse.util.Robot;
+import warehouse.util.Route;
 
 import java.util.LinkedList;
 
@@ -21,5 +21,17 @@ public class AssignedJob extends Job {
     public AssignedJob(Job job, Route route, Robot robot) {
         this(job.dropLocation, job.pickups, route, robot);
     }
+    
+    @Override
+    public boolean isAssigned() {
+        return true;
+    }
 
+    @Override
+    public String toString() {
+        return "AssignedJob{" +
+                "route=" + route +
+                ", robot=" + robot +
+                '}';
+    }
 }
