@@ -1,4 +1,4 @@
-package warehouse.routePlanning;
+package warehouse.routePlanning.JUnitTests;
 
 import static org.junit.Assert.assertEquals;
 
@@ -10,6 +10,9 @@ import org.junit.Test;
 
 import rp.robotics.mapping.GridMap;
 import rp.robotics.mapping.MapUtils;
+import warehouse.routePlanning.Map;
+import warehouse.routePlanning.Search;
+import warehouse.routePlanning.TSP;
 import warehouse.util.Location;
 import warehouse.util.Route;
 
