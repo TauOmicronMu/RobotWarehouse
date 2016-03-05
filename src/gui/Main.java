@@ -85,13 +85,21 @@ public class Main extends Application {
 			mapAndJobs.getChildren().addAll(map, unassignedJobs, assignedJobs);
 
 			// Create exit button and add handler to close window
-			Button exit = new Button("Exit");
+			Button exit = new Button("Exit Management Interface");
 			exit.setOnAction(e -> primaryStage.close());
+			
+			// Create button that displays info about robots when pressed. TODO: add proper handler
+			Button infoAboutRobots = new Button("Info about robots");
+			infoAboutRobots.setOnAction(e -> System.out.println("Robots are cool"));
 
 			// Create a new horizontal box for menu buttons and add Exit to it
 			HBox buttons = new HBox();
+			
+			buttons.getChildren().add(infoAboutRobots);
 			buttons.getChildren().add(exit);
-			buttons.setAlignment(Pos.BOTTOM_CENTER);
+			
+			buttons.setAlignment(Pos.BOTTOM_RIGHT);
+			buttons.setSpacing(50);
 
 			// Add mapAndJobx HBox and buttons HBox to the root VBox
 			root.getChildren().add(mapAndJobs);
@@ -105,6 +113,9 @@ public class Main extends Application {
 
 			// Set the scene to primaryStage
 			primaryStage.setScene(scene);
+			
+			// Hide toolbar
+			primaryStage.initStyle(StageStyle.TRANSPARENT);
 
 			// And show the primary stage
 			primaryStage.show();
