@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import warehouse.action.Action;
+import warehouse.util.Direction;
 import warehouse.util.Location;
 import warehouse.util.Route;;
 
@@ -32,12 +33,12 @@ public class Search {
 	 *            the goal location
 	 * @return a list of locations which form the optimal route to take
 	 */
-	public Optional<Route> getRoute(Location start, Location goal) {
+	public Optional<Route> getRoute(Location start, Location goal, Direction facing) {
 		if (inMap(start.y, start.x) && inMap(goal.y, goal.x)) {
 			start = map[start.y][start.x];
 			goal = map[goal.y][goal.x];
 			if (available.get(start) && available.get(goal)) {
-				return toRoute(BasicAStar(start, goal));
+				return BasicAStar(start, goal, facing);
 			}
 		}
 		return Optional.empty();
@@ -56,42 +57,44 @@ public class Search {
 	 *            the goal location
 	 * @return a list of locations which form the optimal route to take
 	 */
-	private Optional<LinkedList<Location>> BasicAStar(Location start, Location goal) {
-		// The set of nodes already evaluated.
-		Set<Location> closedSet = new HashSet<Location>();
+	private Optional<Route> BasicAStar(Location start, Location goal, Direction facing) {
+		State startState = new State(start, facing);
 
-		// The set of nodes to be explored
-		Set<Location> openSet = new HashSet<Location>();
+		// The set of states already evaluated.
+		Set<State> closedSet = new HashSet<State>();
 
-		// The map which links each location to the most efficient previous
+		// The set of states to be explored
+		Set<State> openSet = new HashSet<State>();
+
+		// The map which links each state to the most efficient previous
+		// state
+		HashMap<State, State> cameFrom = new HashMap<State, State>();
+
+		// The map which links each state with their distance from the start
 		// location
-		HashMap<Location, Location> cameFrom = new HashMap<Location, Location>();
+		HashMap<State, Double> gScore = new HashMap<State, Double>();
 
-		// The map which links each location with their distance from the start
-		// location
-		HashMap<Location, Double> gScore = new HashMap<Location, Double>();
-
-		// The map which links each location with a heuristic distance to the
+		// The map which links each state with a heuristic distance to the
 		// goal location
-		HashMap<Location, Double> fScore = new HashMap<Location, Double>();
+		HashMap<State, Double> fScore = new HashMap<State, Double>();
 
 		// Initialise the heuristic maps
 		gScore = initHScore(gScore);
 		fScore = initHScore(fScore);
 
 		// adds start and set the distance from the start for the start to be 0
-		openSet.add(start);
-		gScore.put(start, 0.0);
-		fScore.put(start, (double) start.manhattanDistance(goal));
+		openSet.add(startState);
+		gScore.put(startState, 0.0);
+		fScore.put(startState, (double) start.manhattanDistance(goal));
 
 		// Main loop
 		while (!openSet.isEmpty()) {
 			// get the next best node to expand
-			Location current = getLowest(openSet, fScore);
+			State current = getLowest(openSet, fScore);
 			// if the best node is the goal then finished
-			if (current.x == goal.x && current.y == goal.y) {
+			if (current.getLocation().x == goal.x && current.getLocation().y == goal.y) {
 				// return the optimal route
-				return Optional.of(getPath(cameFrom, current));
+				return Optional.of(getPath(cameFrom, current, startState, goal));
 			}
 			// else continue
 			// remove current form the openSet and add to closedSet
@@ -99,7 +102,7 @@ public class Search {
 			closedSet.add(current);
 
 			// for each neighbour of current
-			for (Location neighbour : getNeighbours(current)) {
+			for (State neighbour : getNeighbours(current)) {
 				// if the neighbour is not an obstacle
 				if (available.get(neighbour)) {
 					// if the neighbour has not already been explored
@@ -113,7 +116,7 @@ public class Search {
 						if (tempGScore < gScore.get(neighbour)) {
 							cameFrom.put(neighbour, current);
 							gScore.put(neighbour, tempGScore);
-							fScore.put(neighbour, (double) neighbour.manhattanDistance(goal) + gScore.get(neighbour));
+							fScore.put(neighbour, (double) neighbour.getLocation().manhattanDistance(goal) + gScore.get(neighbour));
 						}
 					}
 				}
@@ -130,11 +133,15 @@ public class Search {
 	 *            the map which holds the heuristic distances
 	 * @return map with initialised values
 	 */
-	private HashMap<Location, Double> initHScore(HashMap<Location, Double> hScore) {
+	private HashMap<State, Double> initHScore(HashMap<State, Double> hScore) {
 		for (Location[] x : map) {
 			for (Location y : x) {
-				hScore.put(y, Double.POSITIVE_INFINITY);
+				hScore.put(new State(y, Direction.NORTH), Double.POSITIVE_INFINITY);
+				hScore.put(new State(y, Direction.EAST), Double.POSITIVE_INFINITY);
+				hScore.put(new State(y, Direction.SOUTH), Double.POSITIVE_INFINITY);
+				hScore.put(new State(y, Direction.WEST), Double.POSITIVE_INFINITY);
 			}
+
 		}
 		return hScore;
 	}
@@ -148,12 +155,12 @@ public class Search {
 	 *            the map between locations and their estimated cost to the goal
 	 * @return the location with the lowest estimated cost to the goal
 	 */
-	private Location getLowest(Set<Location> openSet, HashMap<Location, Double> fScore) {
-		Iterator<Location> it = openSet.iterator();
+	private State getLowest(Set<State> openSet, HashMap<State, Double> fScore) {
+		Iterator<State> it = openSet.iterator();
 		Double lowest = Double.POSITIVE_INFINITY;
-		Location best = null;
+		State best = null;
 		while (it.hasNext()) {
-			Location x = it.next();
+			State x = it.next();
 			Double f = fScore.get(x);
 			if (fScore.get(x) < lowest) {
 				best = x;
@@ -172,19 +179,21 @@ public class Search {
 	 *            the current location (goal)
 	 * @return the list of locations visited on optimal path
 	 */
-	private LinkedList<Location> getPath(HashMap<Location, Location> cameFrom, Location current) {
+	private Route getPath(HashMap<State, State> cameFrom, State current, State startState, Location goal) {
 		// The list of moves to make to reach goal
-		LinkedList<Location> path = new LinkedList<Location>();
-		// add the current location (goal in this case)
-		path.addFirst(current);
-		// while not at the start node
-		while (cameFrom.containsKey(current)) {
-			// add the location which came before it
-			current = cameFrom.get(current);
-			// add the current location
-			path.addFirst(current);
+		LinkedList<Action> path = new LinkedList<Action>();
+		if(cameFrom.get(current).getFacing().equals(current.getFacing())){
+			if(cameFrom.get(current).getLocation().x == cameFrom.get(current).getLocation().x && cameFrom.get(current).getLocation().y == cameFrom.get(current).getLocation().y){
+				//add stay still action
+			}else{
+				//Add forward action
+			}
+		}else if(cameFrom.get(current).getFacing().turnLeft().equals(current.getFacing())){
+			//add turn left action
+		}else{
+			//add turn right action
 		}
-		return path;
+		return new Route(path, startState.getLocation(), goal);
 	}
 
 	/**
@@ -194,47 +203,49 @@ public class Search {
 	 *            the location to find the neighbours for
 	 * @return the array of neighbours
 	 */
-	private LinkedList<Location> getNeighbours(Location node) {
-		LinkedList<Location> neighbours = new LinkedList<Location>();
-		if (inMap(node.y + 1, node.x)) {
-			neighbours.add(map[node.y + 1][node.x]);
+	private LinkedList<State> getNeighbours(State currentState) {
+		LinkedList<State> neighbours = new LinkedList<State>();
+
+		Location currentLocation = currentState.getLocation();
+		Direction currentDirection = currentState.getFacing();
+
+		// check for direction of current facing and adds that type of movement
+		// to the neighbours available
+		switch (currentDirection) {
+		case NORTH:
+			if (inMap(currentLocation.y + 1, currentLocation.x)) {
+				neighbours.add(new State(map[currentLocation.y + 1][currentLocation.x], currentDirection));
+			}
+			break;
+			
+		case EAST:
+			if (inMap(currentLocation.y, currentLocation.x + 1)) {
+				neighbours.add(new State(map[currentLocation.y][currentLocation.x + 1], currentDirection));
+			}
+			break;
+			
+		case SOUTH:
+			if (inMap(currentLocation.y - 1, currentLocation.x)) {
+				neighbours.add(new State(map[currentLocation.y - 1][currentLocation.x], currentDirection));
+			}
+			break;
+			
+		case WEST:
+			if (inMap(currentLocation.y, currentLocation.x - 1)) {
+				neighbours.add(new State(map[currentLocation.y][currentLocation.x - 1], currentDirection));
+			}
+			break;
 		}
-		if (inMap(node.y - 1, node.x)) {
-			neighbours.add(map[node.y - 1][node.x]);
-		}
-		if (inMap(node.y, node.x + 1)) {
-			neighbours.add(map[node.y][node.x + 1]);
-		}
-		if (inMap(node.y, node.x - 1)) {
-			neighbours.add(map[node.y][node.x - 1]);
-		}
+		
+		//add neighbours which are always available
+		neighbours.add(new State(currentLocation, currentDirection.turnLeft()));
+		neighbours.add(new State(currentLocation, currentDirection.turnRight()));
+		neighbours.add(currentState);
+		
 		return neighbours;
 	}
 
 	private boolean inMap(int y, int x) {
 		return (y >= 0 && y < map.length && x >= 0 && x < map[y].length);
-	}
-
-	private Optional<Route> toRoute(Optional<LinkedList<Location>> o) {
-		if (o.isPresent()) {
-			LinkedList<Location> r = o.get();
-			LinkedList<Action> moves = new LinkedList<Action>();
-			for (int i = 1; i < r.size(); i++) {
-				if (r.get(i).x > r.get(i - 1).x) {
-					moves.add(new Action.MoveAction(true, 1, r.get(i)));
-				} else if (r.get(i).x < r.get(i - 1).x) {
-					moves.add(new Action.MoveAction(true, -1, r.get(i)));
-				} else if (r.get(i).y > r.get(i - 1).y) {
-					moves.add(new Action.MoveAction(false, 1, r.get(i)));
-				} else if (r.get(i).y < r.get(i - 1).y) {
-					moves.add(new Action.MoveAction(false, -1, r.get(i)));
-				}
-			}
-			Route toReturn = new Route(moves, r.getFirst(), r.getLast());
-			toReturn.totalDistance = moves.size();
-			return Optional.of(toReturn);
-		} else {
-			return Optional.empty();
-		}
 	}
 }
