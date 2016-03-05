@@ -21,5 +21,17 @@ public class AssignedJob extends Job {
     public AssignedJob(Job job, Route route, Robot robot) {
         this(job.dropLocation, job.pickups, route, robot);
     }
+    
+    @Override
+    public boolean isAssigned() {
+        return true;
+    }
 
+    @Override
+    public String toString() {
+        return "AssignedJob{" +
+                "route=" + route +
+                ", robot=" + robot +
+                '}';
+    }
 }

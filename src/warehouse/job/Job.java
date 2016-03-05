@@ -14,4 +14,16 @@ public class Job {
         this.dropLocation = dropLocation;
         this.pickups = pickups;
     }
+    
+    public boolean isAssigned() {
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return "Job{" +
+                "dropLocation=" + dropLocation +
+                ", pickups=" + pickups +
+                '}';
+    }
 }
