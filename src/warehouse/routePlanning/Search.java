@@ -1,5 +1,6 @@
 package warehouse.routePlanning;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -18,6 +19,7 @@ import warehouse.util.Route;;
 public class Search {
 	private HashMap<Location, Boolean> available;
 	private Location[][] map;
+	ArrayList<State> states;
 
 	/**
 	 * Constructor which sets up the map and obstacles
@@ -25,6 +27,31 @@ public class Search {
 	public Search(Map m) {
 		map = m.getMap();
 		available = m.getAvailable();
+		states = generateStates();
+		
+	}
+
+	private ArrayList<State> generateStates() {
+		ArrayList<State> allStates = new ArrayList<State>();
+		for (Location[] x : map) {
+			for (Location y : x) {
+				allStates.add(new State(y, Direction.NORTH));
+				allStates.add(new State(y, Direction.EAST));
+				allStates.add(new State(y, Direction.SOUTH));
+				allStates.add(new State(y, Direction.WEST));
+			}
+
+		}
+		return allStates;
+	}
+	
+	private Optional<State> getState(Location location, Direction facing){
+		for(State s: states){
+			if(s.getLocation().equals(location) && s.getFacing().equals(facing)){
+				return Optional.of(s);
+			}
+		}
+		return Optional.empty();
 	}
 
 	/**
@@ -61,7 +88,7 @@ public class Search {
 	 * @return a list of locations which form the optimal route to take
 	 */
 	private Optional<Route> BasicAStar(Location start, Location goal, Direction facing) {
-		State startState = new State(start, facing);
+		State startState = getState(start, facing).get();
 
 		// The set of states already evaluated.
 		Set<State> closedSet = new HashSet<State>();
@@ -94,6 +121,7 @@ public class Search {
 		while (!openSet.isEmpty()) {
 			// get the next best node to expand
 			State current = getLowest(openSet, fScore);
+			System.out.println("current: " + current.getLocation().x +", " + current.getLocation().y);
 			// if the best node is the goal then finished
 			if (current.getLocation().x == goal.x && current.getLocation().y == goal.y) {
 				// return the optimal route
@@ -145,10 +173,10 @@ public class Search {
 	private HashMap<State, Double> initHScore(HashMap<State, Double> hScore) {
 		for (Location[] x : map) {
 			for (Location y : x) {
-				hScore.put(new State(y, Direction.NORTH), Double.POSITIVE_INFINITY);
-				hScore.put(new State(y, Direction.EAST), Double.POSITIVE_INFINITY);
-				hScore.put(new State(y, Direction.SOUTH), Double.POSITIVE_INFINITY);
-				hScore.put(new State(y, Direction.WEST), Double.POSITIVE_INFINITY);
+				hScore.put(getState(y, Direction.NORTH).get(), Double.POSITIVE_INFINITY);
+				hScore.put(getState(y, Direction.EAST).get(), Double.POSITIVE_INFINITY);
+				hScore.put(getState(y, Direction.SOUTH).get(), Double.POSITIVE_INFINITY);
+				hScore.put(getState(y, Direction.WEST).get(), Double.POSITIVE_INFINITY);
 			}
 
 		}
@@ -192,6 +220,7 @@ public class Search {
 		// The list of moves to make to reach goal
 		LinkedList<Action> path = new LinkedList<Action>();
 
+		while(cameFrom.containsKey(current)){
 		// Can't get the previous location to the start state
 		if (!current.equals(startState)) {
 			// Gets the previous location and facing
@@ -201,17 +230,25 @@ public class Search {
 			// checks the type of action to add to the route
 			if (previousFacing.equals(current.getFacing())) {
 				if (previousLocation.x == current.getLocation().x && previousLocation.y == current.getLocation().y) {
-					path.add(new IdleAction(1));
+					path.addFirst(new IdleAction(1));
+					System.out.println("Adding idle action");
 				} else {
-					path.add(new MoveAction(1, previousLocation));
+					path.addFirst(new MoveAction(1, previousLocation));
+					System.out.println("Adding move action");
 				}
 			} else if (previousFacing.turnLeft().equals(current.getFacing())) {
-				path.add(new TurnAction(-90));
+				path.addFirst(new TurnAction(-90));
+				System.out.println("Adding turn left action");
 			} else {
-				path.add(new TurnAction(90));
+				path.addFirst(new TurnAction(90));
+				System.out.println("Adding turn right action");
 			}
 		}
-		return new Route(path, startState.getLocation(), goal);
+		current = cameFrom.get(current);
+		}
+		Route finalRoute = new Route(path, startState.getLocation(), goal);
+		finalRoute.totalDistance = path.size();
+		return finalRoute;
 	}
 
 	/**
@@ -232,32 +269,32 @@ public class Search {
 		switch (currentDirection) {
 		case NORTH:
 			if (inMap(currentLocation.y + 1, currentLocation.x)) {
-				neighbours.add(new State(map[currentLocation.y + 1][currentLocation.x], currentDirection));
+				neighbours.add(getState(map[currentLocation.y + 1][currentLocation.x], currentDirection).get());
 			}
 			break;
 
 		case EAST:
 			if (inMap(currentLocation.y, currentLocation.x + 1)) {
-				neighbours.add(new State(map[currentLocation.y][currentLocation.x + 1], currentDirection));
+				neighbours.add(getState(map[currentLocation.y][currentLocation.x + 1], currentDirection).get());
 			}
 			break;
 
 		case SOUTH:
 			if (inMap(currentLocation.y - 1, currentLocation.x)) {
-				neighbours.add(new State(map[currentLocation.y - 1][currentLocation.x], currentDirection));
+				neighbours.add(getState(map[currentLocation.y - 1][currentLocation.x], currentDirection).get());
 			}
 			break;
 
 		case WEST:
 			if (inMap(currentLocation.y, currentLocation.x - 1)) {
-				neighbours.add(new State(map[currentLocation.y][currentLocation.x - 1], currentDirection));
+				neighbours.add(getState(map[currentLocation.y][currentLocation.x - 1], currentDirection).get());
 			}
 			break;
 		}
 
 		// add neighbours which are always available
-		neighbours.add(new State(currentLocation, currentDirection.turnLeft()));
-		neighbours.add(new State(currentLocation, currentDirection.turnRight()));
+		neighbours.add(getState(currentLocation, currentDirection.turnLeft()).get());
+		neighbours.add(getState(currentLocation, currentDirection.turnRight()).get());
 		neighbours.add(currentState);
 
 		return neighbours;
