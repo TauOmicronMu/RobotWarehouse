@@ -8,6 +8,9 @@ import java.util.Optional;
 import java.util.Set;
 
 import warehouse.action.Action;
+import warehouse.action.IdleAction;
+import warehouse.action.MoveAction;
+import warehouse.action.TurnAction;
 import warehouse.util.Direction;
 import warehouse.util.Location;
 import warehouse.util.Route;;
@@ -113,10 +116,16 @@ public class Search {
 						openSet.add(neighbour);
 						// if tempGScore is smaller than previously, record it
 						// as best route until now
+
+						// TODO FIX NULL_POINTER EXCEPTION
+						// caused by creating new states for each neighbour and
+						// each member of gScore (might need to store a list of
+						// all states)
 						if (tempGScore < gScore.get(neighbour)) {
 							cameFrom.put(neighbour, current);
 							gScore.put(neighbour, tempGScore);
-							fScore.put(neighbour, (double) neighbour.getLocation().manhattanDistance(goal) + gScore.get(neighbour));
+							fScore.put(neighbour,
+									(double) neighbour.getLocation().manhattanDistance(goal) + gScore.get(neighbour));
 						}
 					}
 				}
@@ -182,16 +191,25 @@ public class Search {
 	private Route getPath(HashMap<State, State> cameFrom, State current, State startState, Location goal) {
 		// The list of moves to make to reach goal
 		LinkedList<Action> path = new LinkedList<Action>();
-		if(cameFrom.get(current).getFacing().equals(current.getFacing())){
-			if(cameFrom.get(current).getLocation().x == cameFrom.get(current).getLocation().x && cameFrom.get(current).getLocation().y == cameFrom.get(current).getLocation().y){
-				//add stay still action
-			}else{
-				//Add forward action
+
+		// Can't get the previous location to the start state
+		if (!current.equals(startState)) {
+			// Gets the previous location and facing
+			Location previousLocation = cameFrom.get(current).getLocation();
+			Direction previousFacing = cameFrom.get(current).getFacing();
+
+			// checks the type of action to add to the route
+			if (previousFacing.equals(current.getFacing())) {
+				if (previousLocation.x == current.getLocation().x && previousLocation.y == current.getLocation().y) {
+					path.add(new IdleAction(1));
+				} else {
+					path.add(new MoveAction(1, previousLocation));
+				}
+			} else if (previousFacing.turnLeft().equals(current.getFacing())) {
+				path.add(new TurnAction(-90));
+			} else {
+				path.add(new TurnAction(90));
 			}
-		}else if(cameFrom.get(current).getFacing().turnLeft().equals(current.getFacing())){
-			//add turn left action
-		}else{
-			//add turn right action
 		}
 		return new Route(path, startState.getLocation(), goal);
 	}
@@ -217,31 +235,31 @@ public class Search {
 				neighbours.add(new State(map[currentLocation.y + 1][currentLocation.x], currentDirection));
 			}
 			break;
-			
+
 		case EAST:
 			if (inMap(currentLocation.y, currentLocation.x + 1)) {
 				neighbours.add(new State(map[currentLocation.y][currentLocation.x + 1], currentDirection));
 			}
 			break;
-			
+
 		case SOUTH:
 			if (inMap(currentLocation.y - 1, currentLocation.x)) {
 				neighbours.add(new State(map[currentLocation.y - 1][currentLocation.x], currentDirection));
 			}
 			break;
-			
+
 		case WEST:
 			if (inMap(currentLocation.y, currentLocation.x - 1)) {
 				neighbours.add(new State(map[currentLocation.y][currentLocation.x - 1], currentDirection));
 			}
 			break;
 		}
-		
-		//add neighbours which are always available
+
+		// add neighbours which are always available
 		neighbours.add(new State(currentLocation, currentDirection.turnLeft()));
 		neighbours.add(new State(currentLocation, currentDirection.turnRight()));
 		neighbours.add(currentState);
-		
+
 		return neighbours;
 	}
 

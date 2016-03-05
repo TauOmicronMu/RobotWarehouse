@@ -6,10 +6,10 @@ import warehouse.util.Location;
 public class State {
 	private Location location;
 	private Direction facing;
-	
-	public State(Location location, Direction facing){
+
+	public State(Location location, Direction facing) {
 		this.location = location;
-		this.facing= facing;
+		this.facing = facing;
 	}
 
 	public Location getLocation() {

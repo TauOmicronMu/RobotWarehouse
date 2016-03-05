@@ -152,8 +152,9 @@ public class TSP {
 	private double[][] setUpMatrices(double[][] adjacencyMatrix, LinkedList<Location> allLocations) {
 		for (int Node1 = 0; Node1 < allLocations.size() - 1; Node1++) {
 			for (int Node2 = Node1 + 1; Node2 < allLocations.size(); Node2++) {
-				//THIS NEEDS TO BE CHANGED DIRECTION NEEDS TO BE KEPT TRACK OF
-				Optional<Route> foundRoute = s.getRoute(allLocations.get(Node1), allLocations.get(Node2), Direction.NORTH);
+				// THIS NEEDS TO BE CHANGED DIRECTION NEEDS TO BE KEPT TRACK OF
+				Optional<Route> foundRoute = s.getRoute(allLocations.get(Node1), allLocations.get(Node2),
+						Direction.NORTH);
 				if (foundRoute.isPresent()) {
 					Route r = foundRoute.get();
 					adjacencyMatrix[Node1][Node2] = r.totalDistance;

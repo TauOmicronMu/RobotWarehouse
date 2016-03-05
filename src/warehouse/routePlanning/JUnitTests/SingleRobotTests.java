@@ -45,7 +45,7 @@ public class SingleRobotTests {
 
 	@Test
 	public void testSimpleAStar() {
-		//Tests straight line movements and turning single corners
+		// Tests straight line movements and turning single corners
 		// first test
 		Optional<Route> o = s.getRoute(new Location(0, 0), new Location(0, 7), Direction.NORTH);
 		assertEquals(o.isPresent(), true);
@@ -79,7 +79,7 @@ public class SingleRobotTests {
 
 	@Test
 	public void testComplexAStar() {
-		//Tests more complex routes where optimisation is needed
+		// Tests more complex routes where optimisation is needed
 		// first test
 		Optional<Route> o = s.getRoute(new Location(0, 3), new Location(5, 5), Direction.NORTH);
 		assertEquals(o.isPresent(), true);
@@ -108,7 +108,7 @@ public class SingleRobotTests {
 
 	@Test
 	public void testInvalidAStar() {
-		//Tests various places where invalid coordinates may cause problems
+		// Tests various places where invalid coordinates may cause problems
 		// tests trying to get to location inside obstacle
 		Optional<Route> o = s.getRoute(new Location(0, 0), new Location(1, 1), Direction.NORTH);
 		assertEquals(o.isPresent(), false);
@@ -118,7 +118,7 @@ public class SingleRobotTests {
 		assertEquals(o.isPresent(), false);
 
 		// tests starting outside of map
-		o = s.getRoute(new Location(0, -2), new Location(0, 0),Direction.NORTH);
+		o = s.getRoute(new Location(0, -2), new Location(0, 0), Direction.NORTH);
 		assertEquals(o.isPresent(), false);
 
 		// tests starting outside of map by 1 space
@@ -145,9 +145,9 @@ public class SingleRobotTests {
 	public void testTSPLArge() {
 		// TODO
 	}
-	
+
 	@Test
-	public void testTSPInvalid(){
-		//TODo
+	public void testTSPInvalid() {
+		// TODo
 	}
 }

@@ -6,7 +6,7 @@ import java.util.Optional;
 import rp.robotics.mapping.GridMap;
 import rp.robotics.mapping.MapUtils;
 import warehouse.action.Action;
-import warehouse.action.Action.MoveAction;
+import warehouse.action.MoveAction;
 import warehouse.job.Job;
 import warehouse.util.*;
 
@@ -18,11 +18,11 @@ public class Test {
 		Map m = new Map(providedMap);
 		Search s = new Search(m);
 		TSP tsp = new TSP(s);
-		Optional<Route> o = s.getRoute(new Location(0, 1), new Location(5,4));
+		Optional<Route> o = s.getRoute(new Location(0, 1), new Location(5,4), Direction.NORTH);
 		if (o.isPresent()) {
 			Route route = o.get();
 			for (Action foundLocation: route.actions) {
-				Action.MoveAction location = (MoveAction) foundLocation;
+				MoveAction location = (MoveAction) foundLocation;
 				System.out.println(location.destination.x + ", " + location.destination.y);
 			}
 			System.out.println("Total Distance: " + route.totalDistance);
@@ -37,8 +37,8 @@ public class Test {
 		LinkedList<Edge> chosenRoute = tsp.getShortestRoute(new Job (new Location(4, 7), pickups), new Location (0, 1));
 		double distance = 0;
 		for(Edge e: chosenRoute){
-			distance += s.getRoute(e.getStart(), e.getEnd()).get().totalDistance;
-			System.out.println("(" + e.getStart().x +", " + e.getStart().y + ") -->" + " (" + e.getEnd().x +", " + e.getEnd().y +"): " + s.getRoute(e.getStart(), e.getEnd()).get().totalDistance);
+			distance += s.getRoute(e.getStart(), e.getEnd(), Direction.NORTH).get().totalDistance;
+			System.out.println("(" + e.getStart().x +", " + e.getStart().y + ") -->" + " (" + e.getEnd().x +", " + e.getEnd().y +"): " + s.getRoute(e.getStart(), e.getEnd(), Direction.NORTH).get().totalDistance);
 		}
 		System.out.println("Total Distance: " + distance);
 	}

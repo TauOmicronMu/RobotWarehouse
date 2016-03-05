@@ -14,6 +14,7 @@ import warehouse.routePlanning.TSP;
 public class MultipleRobotTests {
 	private static Search s;
 	private static TSP tsp;
+
 	@BeforeClass
 	public static void setUpClass() throws Exception {
 		GridMap providedMap = MapUtils.createRealWarehouse();
@@ -21,28 +22,30 @@ public class MultipleRobotTests {
 		s = new Search(warehouseMap);
 		tsp = new TSP(s);
 	}
-	
+
 	@Test
 	public void testSimpleAStar() {
-		//Routes have very little interaction in these tests (checking multi robot systems work for single robot problems)
-		//TODO
+		// Routes have very little interaction in these tests (checking multi
+		// robot systems work for single robot problems)
+		// TODO
 	}
-	
+
 	@Test
 	public void testComplexAStar() {
-		//Routes should have to deal with interaction (avoid crashes)
-		//TODO
+		// Routes should have to deal with interaction (avoid crashes)
+		// TODO
 	}
-	
+
 	@Test
-	public void testSimpleTSP(){
-		//Routes have very little interaction in these tests (checking multi robot systems work for single robot problems)
-		//TODO
+	public void testSimpleTSP() {
+		// Routes have very little interaction in these tests (checking multi
+		// robot systems work for single robot problems)
+		// TODO
 	}
-	
+
 	@Test
-	public void testComplexTSP(){
-		//Routes should have to deal with interaction (avoid crashes)
-		//TODO
+	public void testComplexTSP() {
+		// Routes should have to deal with interaction (avoid crashes)
+		// TODO
 	}
 }
