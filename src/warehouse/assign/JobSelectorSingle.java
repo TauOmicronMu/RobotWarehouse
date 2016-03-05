@@ -132,6 +132,8 @@ public class JobSelectorSingle extends Thread{
 				e = new JobAssignedEvent(assigned, this.robot);
 				dispatcher.onEvent(e);
 				
+				this.jobComplete = false;
+				
 			}
 			
 			try {
