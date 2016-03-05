@@ -18,5 +18,12 @@ public class Job {
     public boolean isAssigned() {
         return false;
     }
-    
+
+    @Override
+    public String toString() {
+        return "Job{" +
+                "dropLocation=" + dropLocation +
+                ", pickups=" + pickups +
+                '}';
+    }
 }
