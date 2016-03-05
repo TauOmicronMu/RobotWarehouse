@@ -24,13 +24,14 @@ import warehouse.util.Subscriber;
  * @author Owen
  *
  */
-public class JobSelectorSingle {
+public class JobSelectorSingle extends Thread{
 
 	private Robot robot;
 	private boolean run;
 	private AssignedJob currentJob;
 	private boolean robotGotLost;
-	private Location robotStartLocation;
+	private boolean jobComplete;
+	private LinkedList<Job> jobs;
 	
 	/**
 	 * Create a job selector that chooses jobs for a single robot based on a list 
@@ -41,13 +42,19 @@ public class JobSelectorSingle {
 	 */
 	public JobSelectorSingle(Robot robot, LinkedList<Job> jobs){
 		
+		this.robot = robot;
+		this.jobs = jobs;
+	}
+	
+	@Override
+	public void run(){
+		
 		EventDispatcher.subscribe2(this);
 		
-		this.robot = robot;
-		
-		EventDispatcher dispatcher = EventDispatcher.INSTANCE;
-		
 		this.run = true;
+		
+		//Sign up to the event dispatcher
+		EventDispatcher dispatcher = EventDispatcher.INSTANCE;
 		
 		LinkedList<JobWorth> jobworths = new LinkedList<JobWorth>();
 		
@@ -57,7 +64,7 @@ public class JobSelectorSingle {
 		Location startLocation = this.robot.position;
 		
 		//Calculate the worth of each job and add them to the list
-		for(Job job : jobs){
+		for(Job job : this.jobs){
 			
 			jobworths.add(new JobWorth(job, this.robot, startLocation));
 		}
@@ -66,14 +73,15 @@ public class JobSelectorSingle {
 		bestJob = Collections.max(jobworths);
 		
 		//get rid of the best job from the list of jobs
-		jobs.remove(bestJob.getJob());
+		this.jobs.remove(bestJob.getJob());
 
 		//make a new assigned job
 		AssignedJob assigned = assign(this.robot, bestJob);
 		this.currentJob = assigned;
 		
 		//TODO send the assigned job to route execution?
-		dispatcher.onEvent(assigned);
+		JobAssignedEvent e = new JobAssignedEvent(assigned, this.robot);
+		dispatcher.onEvent(e);
 
 		//Clear the list as we have a new location to base it on
 		jobworths = new LinkedList<JobWorth>();
@@ -82,43 +90,59 @@ public class JobSelectorSingle {
 		Location dropLocation = new Location(4, 7);
 		
 		//Calculate the worth of each job and add them to the list
-		for(Job job : jobs){
+		for(Job job : this.jobs){
 					
 			jobworths.add(new JobWorth(job, this.robot, dropLocation));
 		}
 		
 		//continuously give the best job left to the robot until there are no more jobs
 		//or it is told to stop
-		while(run && (jobs.size() > 0)){
-
-			if(robotGotLost){
+		while(run && (this.jobs.size() > 0)){
 			
-				//Clear the list as we have a new location to base it on
-				jobworths = new LinkedList<JobWorth>();
+			if(this.jobComplete){
 				
-				startLocation = this.robotStartLocation;
+				//If the robot is not going to start its next job from the drop location as it got lost
+				if(robotGotLost){
+			
+					//Clear the list as we have a new location to base it on
+					jobworths = new LinkedList<JobWorth>();
 				
-				//Calculate the worth of each job and add them to the list
-				for(Job job : jobs){
+					startLocation = this.robot.position;
+				
+					//Calculate the worth of each job and add them to the list
+					for(Job job : this.jobs){
 					
-					jobworths.add(new JobWorth(job, this.robot, startLocation));
-				}
+						jobworths.add(new JobWorth(job, this.robot, startLocation));
+					}
 				
-				this.robotGotLost = false;
+					this.robotGotLost = false;
+				}
+			
+				//get the best job
+				bestJob = Collections.max(jobworths);
+			
+				//get rid of the best job from the list of jobs
+				this.jobs.remove(bestJob.getJob());
+	
+				//make a new assigned job
+				assigned = assign(this.robot, bestJob);
+				this.currentJob = assigned;
+			
+				//TODO send the assigned job to route execution?
+				e = new JobAssignedEvent(assigned, this.robot);
+				dispatcher.onEvent(e);
+				
 			}
 			
-			//get the best job
-			bestJob = Collections.max(jobworths);
-			
-			//get rid of the best job from the list of jobs
-			jobs.remove(bestJob.getJob());
-	
-			//make a new assigned job
-			assigned = assign(this.robot, bestJob);
-			this.currentJob = assigned;
-			
-			//TODO send the assigned job to route execution?
-			dispatcher.onEvent(assigned);
+			try {
+				
+				Thread.sleep(100);
+				
+			} catch (InterruptedException e1) {
+				
+				//Sleep was interrupted for some reason
+				e1.printStackTrace();
+			}
 		}
 	}
 	
@@ -130,8 +154,19 @@ public class JobSelectorSingle {
 	@Subscriber
 	private void onRobotLost(Location l){
 		
-		this.robotStartLocation = l;
 		this.robotGotLost = true;
+	}
+	
+	/**
+	 * Method to listen for robot having finished last job
+	 * 
+	 * @param e the job finished event
+	 */
+	@Subscriber
+	private void onJobComplete(JobCompleteEvent e){
+		
+		this.jobComplete = true;
+		e.getLocation();
 	}
 	
 	/**
