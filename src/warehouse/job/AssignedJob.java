@@ -9,8 +9,8 @@ import java.util.LinkedList;
 
 public class AssignedJob extends Job {
 
-    private Route route;
-    private Robot robot;
+    public Route route;
+    public Robot robot;
 
     public AssignedJob(Location dropLocation, LinkedList<ItemPickup> pickups, Route route, Robot robot) {
         super(dropLocation, pickups);
