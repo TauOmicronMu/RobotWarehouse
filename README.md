@@ -43,5 +43,5 @@ git pull origin dev
 
 To get the lates changes, make sure you are in your role's repo and do:
 ```
-git merge origin/dev
+git merge dev
 ```
