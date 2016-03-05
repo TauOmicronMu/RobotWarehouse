@@ -31,7 +31,9 @@ public class SingleRobotTests {
 
 	@Test
 	public void testMapCreation() {
-		// tests creation of a map and checks it works as intended
+		// Tests creation of a map and checks it works as intended
+		// This test should pass at the moment
+
 		GridMap providedMap = MapUtils.createRealWarehouse();
 		Map testMap = new Map(providedMap);
 		HashMap<Location, Boolean> available = testMap.getAvailable();
@@ -46,6 +48,8 @@ public class SingleRobotTests {
 	@Test
 	public void testSimpleAStar() {
 		// Tests straight line movements and turning single corners
+		// These tests should all pass at the moment
+
 		// first test
 		Optional<Route> o = s.getRoute(new Location(0, 0), new Location(0, 7), Direction.NORTH);
 		assertEquals(o.isPresent(), true);
@@ -80,6 +84,8 @@ public class SingleRobotTests {
 	@Test
 	public void testComplexAStar() {
 		// Tests more complex routes where optimisation is needed
+		// These tests should all pass at the moment
+
 		// first test
 		Optional<Route> o = s.getRoute(new Location(0, 3), new Location(5, 5), Direction.NORTH);
 		assertEquals(o.isPresent(), true);
@@ -109,6 +115,8 @@ public class SingleRobotTests {
 	@Test
 	public void testInvalidAStar() {
 		// Tests various places where invalid coordinates may cause problems
+		// These tests should all pass at the moment
+
 		// tests trying to get to location inside obstacle
 		Optional<Route> o = s.getRoute(new Location(0, 0), new Location(1, 1), Direction.NORTH);
 		assertEquals(o.isPresent(), false);
@@ -133,21 +141,33 @@ public class SingleRobotTests {
 
 	@Test
 	public void testTSPSimple() {
+		// Tests simple TSP problems with few obstacles to deal with
+		// These tests should all pass at the moment
+		
 		// TODO
 	}
 
 	@Test
 	public void testTSPComplex() {
+		// Tests more complex TSP problems with many obstacles to deal with
+		// These tests should all pass at the moment
+		
 		// TODO
 	}
 
 	@Test
 	public void testTSPLArge() {
+		// Tests TSP problems with large amounts of locations to visit
+		// These tests should all pass at the moment
+		
 		// TODO
 	}
 
 	@Test
 	public void testTSPInvalid() {
-		// TODo
+		// Tests various places where invalid coordinates may cause problems
+		// These tests should all pass at the moment
+		
+		// TODO
 	}
 }
