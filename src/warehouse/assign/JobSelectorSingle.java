@@ -32,6 +32,7 @@ public class JobSelectorSingle extends Thread{
 	private boolean robotGotLost;
 	private boolean jobComplete;
 	private LinkedList<Job> jobs;
+	private Location robotStartLocation;
 	
 	/**
 	 * Create a job selector that chooses jobs for a single robot based on a list 
@@ -55,7 +56,6 @@ public class JobSelectorSingle extends Thread{
 		
 		//Sign up to the event dispatcher
 		EventDispatcher dispatcher = EventDispatcher.INSTANCE;
-		
 		LinkedList<JobWorth> jobworths = new LinkedList<JobWorth>();
 		
 		JobWorth bestJob;
@@ -154,6 +154,7 @@ public class JobSelectorSingle extends Thread{
 	@Subscriber
 	private void onRobotLost(Location l){
 		
+		this.robotStartLocation = l;
 		this.robotGotLost = true;
 	}
 	

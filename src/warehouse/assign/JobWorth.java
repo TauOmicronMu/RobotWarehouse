@@ -21,7 +21,6 @@ import warehouse.util.Route;
 public class JobWorth implements Comparable<JobWorth>{
 
 	private Job job;
-	
 	private double rewardTime;
 	private double rewardWeight;
 	private double metric;
