@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import warehouse.action.Action;
-import warehouse.action.TurnAction;
 import warehouse.util.Direction;
 import warehouse.util.Location;
 import warehouse.util.Route;;
@@ -105,7 +104,7 @@ public class Search {
 			// for each neighbour of current
 			for (State neighbour : getNeighbours(current)) {
 				// if the neighbour is not an obstacle
-				if (available.get(neighbour)) {
+				if (available.get(neighbour.getLocation())) {
 					// if the neighbour has not already been explored
 					if (!closedSet.contains(neighbour)) {
 						// get current gScore value

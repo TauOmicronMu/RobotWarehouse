@@ -4,8 +4,9 @@ import java.util.LinkedList;
 import java.util.Optional;
 
 import warehouse.action.Action;
-import warehouse.action.Action.MoveAction;
+import warehouse.action.MoveAction;
 import warehouse.job.Job;
+import warehouse.util.Direction;
 import warehouse.util.ItemPickup;
 import warehouse.util.Location;
 import warehouse.util.Route;
@@ -151,7 +152,8 @@ public class TSP {
 	private double[][] setUpMatrices(double[][] adjacencyMatrix, LinkedList<Location> allLocations) {
 		for (int Node1 = 0; Node1 < allLocations.size() - 1; Node1++) {
 			for (int Node2 = Node1 + 1; Node2 < allLocations.size(); Node2++) {
-				Optional<Route> foundRoute = s.getRoute(allLocations.get(Node1), allLocations.get(Node2));
+				//THIS NEEDS TO BE CHANGED DIRECTION NEEDS TO BE KEPT TRACK OF
+				Optional<Route> foundRoute = s.getRoute(allLocations.get(Node1), allLocations.get(Node2), Direction.NORTH);
 				if (foundRoute.isPresent()) {
 					Route r = foundRoute.get();
 					adjacencyMatrix[Node1][Node2] = r.totalDistance;
@@ -159,7 +161,7 @@ public class TSP {
 
 					// adds the route to a matrix of routes
 					for (Action foundLocation : r.actions) {
-						Action.MoveAction location = (MoveAction) foundLocation;
+						MoveAction location = (MoveAction) foundLocation;
 						routeMatrix[Node1][Node2].add(location.destination);
 					}
 
