@@ -56,24 +56,20 @@ public class JobSelectorSingle extends Thread{
 		
 		//Sign up to the event dispatcher
 		EventDispatcher dispatcher = EventDispatcher.INSTANCE;
-		LinkedList<JobWorth> jobworths = new LinkedList<JobWorth>();
 		
 		JobWorth bestJob;
 		
 		//TODO Add localisation?
 		Location startLocation = this.robot.position;
 		
-		//Calculate the worth of each job and add them to the list
-		for(Job job : this.jobs){
-			
-			jobworths.add(new JobWorth(job, this.robot, startLocation));
-		}
+		//Get the list of job worths
+		LinkedList<JobWorth> jobworths = convertList(startLocation);
 		
 		//get the best job
-		bestJob = Collections.max(jobworths);
+		bestJob = selectBestJob(jobworths);
 		
 		//get rid of the best job from the list of jobs
-		this.jobs.remove(bestJob.getJob());
+		this.jobs.remove(bestJob);
 
 		//make a new assigned job
 		AssignedJob assigned = assign(this.robot, bestJob);
@@ -83,17 +79,11 @@ public class JobSelectorSingle extends Thread{
 		JobAssignedEvent e = new JobAssignedEvent(assigned, this.robot);
 		dispatcher.onEvent(e);
 
-		//Clear the list as we have a new location to base it on
-		jobworths = new LinkedList<JobWorth>();
-		
 		//TODO multiple drop locations?
 		Location dropLocation = new Location(4, 7);
 		
-		//Calculate the worth of each job and add them to the list
-		for(Job job : this.jobs){
-					
-			jobworths.add(new JobWorth(job, this.robot, dropLocation));
-		}
+		//Clear the list and calculate job worths again based on the new location
+		jobworths = convertList(dropLocation);
 		
 		//continuously give the best job left to the robot until there are no more jobs
 		//or it is told to stop
@@ -104,25 +94,19 @@ public class JobSelectorSingle extends Thread{
 				//If the robot is not going to start its next job from the drop location as it got lost
 				if(robotGotLost){
 			
-					//Clear the list as we have a new location to base it on
-					jobworths = new LinkedList<JobWorth>();
-				
+					//Clear the list and calculate job worths again based on the new location
 					startLocation = this.robot.position;
 				
-					//Calculate the worth of each job and add them to the list
-					for(Job job : this.jobs){
-					
-						jobworths.add(new JobWorth(job, this.robot, startLocation));
-					}
+					jobworths = convertList(startLocation);
 				
 					this.robotGotLost = false;
 				}
 			
 				//get the best job
-				bestJob = Collections.max(jobworths);
+				bestJob = selectBestJob(jobworths);
 			
 				//get rid of the best job from the list of jobs
-				this.jobs.remove(bestJob.getJob());
+				this.jobs.remove(bestJob);
 	
 				//make a new assigned job
 				assigned = assign(this.robot, bestJob);
@@ -146,6 +130,37 @@ public class JobSelectorSingle extends Thread{
 				e1.printStackTrace();
 			}
 		}
+	}
+	
+	/**
+	 * Convert the list of jobs into a list of jobworth objects
+	 * based on the location given
+	 * 
+	 * @param the location the worth is based on
+	 * @return the converted list
+	 */
+	public LinkedList<JobWorth> convertList(Location startLocation){
+		
+		LinkedList<JobWorth> jobworths = new LinkedList<JobWorth>();
+		
+		//Calculate the worth of each job and add them to the list
+		for(Job job : this.jobs){
+					
+			jobworths.add(new JobWorth(job, this.robot, startLocation));
+		}
+		
+		return jobworths;
+	} 
+	
+	/**
+	 * Get the best job worth based on a list of job worths
+	 * 
+	 * @param jobworths the list of job worths
+	 * @return the best job worth
+	 */
+	public JobWorth selectBestJob(LinkedList<JobWorth> jobworths){
+		
+		return Collections.max(jobworths);
 	}
 	
 	/**
