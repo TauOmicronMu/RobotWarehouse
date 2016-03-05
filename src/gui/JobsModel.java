@@ -16,6 +16,7 @@ public class JobsModel extends Observable {
 	public JobsModel(List<Job> unassigned, List<AssignedJob> assigned) {
 		this.unassigned = unassigned;
 		this.assigned = assigned;
+		assert(assigned.size() < 0);
 	}
 	
 	public List<Job> getUnassignedList(){
@@ -45,12 +46,16 @@ public class JobsModel extends Observable {
 		
 	}
 	
-	public void cancel (Job job){
-		addToUnassigned(job);
+	public void cancel (AssignedJob job){
+		addToUnassigned(unassign(job));
 		assigned.remove(job);
 		Communication.jobCancelled(job);
 		setChanged();
 		notifyObservers();
+	}
+	
+	private Job unassign(AssignedJob job){
+		return new Job(job.dropLocation, job.pickups);
 	}
 
 //	public void addToAssigned(AssignedJob job) {

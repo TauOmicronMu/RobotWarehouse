@@ -14,15 +14,16 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 public class UnassignedJobsVBox extends VBox implements Observer {
-	private ListView<String> jobList;
-	private ObservableList<String> items;
-	private JobsModel model;
+	public ListView<String> jobList;
+	public ObservableList<String> items;
+	public JobsModel model;
 	
 
 	public UnassignedJobsVBox(String title, JobsModel model) {
 		super();
 		
 		this.model = model;
+		model.addObserver(this);
 
 		setSpacing(10);
 
@@ -33,7 +34,7 @@ public class UnassignedJobsVBox extends VBox implements Observer {
 		// Create the job list - for now, it's entries are hard coded TODO:
 		// replace this
 		jobList = new ListView<String>();
-		jobList.setItems(items);
+		setItems();
 
 		// Add title, list to jobs VBox
 		getChildren().addAll(jobsTitle, jobList);
@@ -64,6 +65,7 @@ public class UnassignedJobsVBox extends VBox implements Observer {
 
 	public void setItems() {
 		items = readyToBeDisplayed(model.getUnassignedList());
+		jobList.setItems(items);
 		
 	}
 

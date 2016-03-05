@@ -71,7 +71,6 @@ public class Main extends Application {
 			AssignedJob job4 = new AssignedJob(new Location(3,5), pickups, route, robot);
 			assigned.add(job4);
 			
-			
 			// Create model for Unassigned and Assigned Jobs
 			JobsModel model = new JobsModel(unassigned, assigned);
 
@@ -101,10 +100,8 @@ public class Main extends Application {
 			// Create a new scene (window) and add CSS styling to it
 			Scene scene = new Scene(root, 1000, 600);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-
-			// Set it's outer toolbar (the default one with Title, Exit,
-			// Minimize etc. buttons as transparent) - Looks better
-			primaryStage.initStyle(StageStyle.TRANSPARENT);
+			
+			primaryStage.setTitle("Management interface");
 
 			// Set the scene to primaryStage
 			primaryStage.setScene(scene);
