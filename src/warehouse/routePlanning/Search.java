@@ -121,7 +121,6 @@ public class Search {
 		while (!openSet.isEmpty()) {
 			// get the next best node to expand
 			State current = getLowest(openSet, fScore);
-			System.out.println("current: " + current.getLocation().x +", " + current.getLocation().y);
 			// if the best node is the goal then finished
 			if (current.getLocation().x == goal.x && current.getLocation().y == goal.y) {
 				// return the optimal route
@@ -144,11 +143,6 @@ public class Search {
 						openSet.add(neighbour);
 						// if tempGScore is smaller than previously, record it
 						// as best route until now
-
-						// TODO FIX NULL_POINTER EXCEPTION
-						// caused by creating new states for each neighbour and
-						// each member of gScore (might need to store a list of
-						// all states)
 						if (tempGScore < gScore.get(neighbour)) {
 							cameFrom.put(neighbour, current);
 							gScore.put(neighbour, tempGScore);
@@ -231,17 +225,13 @@ public class Search {
 			if (previousFacing.equals(current.getFacing())) {
 				if (previousLocation.x == current.getLocation().x && previousLocation.y == current.getLocation().y) {
 					path.addFirst(new IdleAction(1));
-					System.out.println("Adding idle action");
 				} else {
 					path.addFirst(new MoveAction(1, previousLocation));
-					System.out.println("Adding move action");
 				}
 			} else if (previousFacing.turnLeft().equals(current.getFacing())) {
 				path.addFirst(new TurnAction(-90));
-				System.out.println("Adding turn left action");
 			} else {
 				path.addFirst(new TurnAction(90));
-				System.out.println("Adding turn right action");
 			}
 		}
 		current = cameFrom.get(current);
