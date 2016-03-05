@@ -7,12 +7,10 @@ import warehouse.util.Location;
  */
 public class MoveAction extends Action {
 
-    public boolean moveInX;
     public int distance;
     public Location destination;
 
-    public MoveAction(boolean moveInX, int distance, Location destination) {
-        this.moveInX = moveInX;
+    public MoveAction(int distance, Location destination) {
         this.distance = distance;
         this.destination = destination;
     }
