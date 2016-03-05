@@ -41,6 +41,9 @@ public class JobWorth implements Comparable<JobWorth>{
 		//TSP tsp = new TSP();
 		//this.route = tsp.getShortestRoute(job , robot, startLocation);
 		
+		this.route = new Route(null, startLocation, startLocation);
+		this.route.totalDistance = 10;
+		
 		//Factor in the cancellation probability
 		double p = 1 - findCancellationProbability(job);
 		
