@@ -1,5 +1,7 @@
 package localisation;
 
+import java.util.Random;
+
 import javax.swing.JFrame;
 
 import lejos.util.Delay;
@@ -9,7 +11,6 @@ import rp.robotics.localisation.ActionModel;
 import rp.robotics.localisation.GridPositionDistribution;
 import rp.robotics.localisation.SensorModel;
 import rp.robotics.mapping.GridMap;
-import rp.robotics.navigation.GridPilot;
 import rp.robotics.navigation.GridPose;
 import rp.robotics.navigation.Heading;
 import rp.robotics.simulation.MapBasedSimulation;
@@ -20,6 +21,7 @@ import rp.robotics.visualisation.GridPositionDistributionVisualisation;
 import rp.robotics.visualisation.KillMeNow;
 import rp.robotics.visualisation.MapVisualisationComponent;
 import rp.systems.StoppableRunnable;
+import warehouse.Location;
 
 public class LocalistaionMain implements StoppableRunnable {
 
@@ -34,20 +36,21 @@ public class LocalistaionMain implements StoppableRunnable {
 	private GridPositionDistributionVisualisation m_mapVis;
 
 	// The pilot object used to move the robot around on the grid.
-	private final GridPilot m_pilot;
+	private final GridPilotModified m_pilot;
 
 	// The range scanning sensor
 	private LocalisedRangeScanner m_ranger;
 
 	private boolean m_running = true;
 
+	// distances to the every object in the map
 	private Distances dist;
 
 	public LocalistaionMain(MovableRobot _robot, GridMap _gridMap, GridPose _start, LocalisedRangeScanner _ranger,
 			Distances dist) {
 
 		m_map = _gridMap;
-		m_pilot = new GridPilot(_robot.getPilot(), _gridMap, _start);
+		m_pilot = new GridPilotModified(_robot.getPilot(), _gridMap, _start);
 		m_ranger = _ranger;
 		m_distribution = new GridPositionDistribution(m_map);
 		this.dist = dist;
@@ -93,7 +96,7 @@ public class LocalistaionMain implements StoppableRunnable {
 
 		// How long to sleep between updates, just for clarity on the
 		// visualisation!
-		long delay = 1000;
+		long delay = 100;
 
 		Heading heading = m_pilot.getGridPose().getHeading();
 
@@ -141,7 +144,7 @@ public class LocalistaionMain implements StoppableRunnable {
 		}
 
 		// A delay so we can see what's going on
-		Delay.msDelay(1000);
+		Delay.msDelay(100);
 	}
 
 	/**
@@ -153,49 +156,55 @@ public class LocalistaionMain implements StoppableRunnable {
 		// These models don't actually do anything...
 		ActionModel actionModel = new ActionModelModified();
 		SensorModel sensorModel = new SensorModelModified(dist);
+		Random random = new Random();
 
-		int horizontal = 4;
-		int vertical = 5;
+		m_pilot.rotateNegative();
+		sense(sensorModel);
 
-		int moves;
+		m_pilot.rotateNegative();
+		sense(sensorModel);
 
-		//
+		m_pilot.rotateNegative();
+		sense(sensorModel);
+
+		m_pilot.rotateNegative();
+		sense(sensorModel);
 
 		while (m_running) {
 
-			
-			moves = vertical;
-			for (int i = 0; i < moves; i++) {
-				move(actionModel, sensorModel);
+			if (!knownCoordinates()) {
+				if (m_ranger.getRange() >= 0.4f)
+					move(actionModel, sensorModel);
+				else {
+					int temp = random.nextInt(2);
+					switch (temp) {
+					case 0:
+						m_pilot.rotateNegative();
+						sense(sensorModel);
+						break;
+					case 1:
+						m_pilot.rotatePositive();
+						sense(sensorModel);
+						break;
+					}
+				}
 			}
-
-			// Note we don't update after rotations, but you probably should as
-			// at least the sensor readings will change
-			m_pilot.rotateNegative();
-
-			moves = horizontal;
-			for (int i = 0; i < moves; i++) {
-				move(actionModel, sensorModel);
-			}
-
-			m_pilot.rotateNegative();
-
-			moves = vertical + 1;
-			for (int i = 0; i < moves; i++) {
-				move(actionModel, sensorModel);
-			}
-
-			m_pilot.rotateNegative();
-
-			moves = horizontal;
-			for (int i = 0; i < moves; i++) {
-				move(actionModel, sensorModel);
-			}
-
-			m_pilot.rotateNegative();
 
 		}
 
+	}
+
+	private boolean knownCoordinates() {
+		for (int x = 0; x < m_map.getXSize(); x++) {
+			for (int y = 0; y < m_map.getYSize(); y++) {
+				if (m_distribution.getProbability(x, y) >= 0.7f) {
+					System.out.println("x: " + x + " // y: " + y);
+					m_running = false;
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	/**

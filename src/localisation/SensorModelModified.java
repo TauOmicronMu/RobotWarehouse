@@ -9,6 +9,8 @@ public class SensorModelModified implements SensorModel {
 
 	private RangeReadings readings;
 	private Distances dist;
+	
+	private double constant = 2;
 
 	public SensorModelModified(Distances dist) {
 		this.dist = dist;
@@ -53,12 +55,12 @@ public class SensorModelModified implements SensorModel {
 				for (int x = 0; x < to.getGridWidth() ; x++) {
 					if ((!to.isObstructed(x, y))) {
 						if (read > dist.getPlusY(x, y)) {
-							if(read > dist.getPlusY(x, y)/1.2)
+							if(read > dist.getPlusY(x, y)*constant)
 							to.setProbability(x, y, 0f);
 						}
 						else 
 						{
-							if(read < dist.getPlusY(x, y)/1.2)
+							if(read < dist.getPlusY(x, y)/constant)
 							{
 								to.setProbability(x, y, 0f);
 							}
@@ -79,12 +81,12 @@ public class SensorModelModified implements SensorModel {
 				for (int x = 0; x < to.getGridWidth(); x++) {
 					if ((!to.isObstructed(x, y))) {
 						if (read > dist.getPlusX(x, y)) {
-							if(read > dist.getPlusX(x, y)/1.2)
+							if(read > dist.getPlusX(x, y)*constant)
 							to.setProbability(x, y, 0f);
 						}
 						else 
 						{
-							if(read < dist.getPlusX(x, y)/1.2)
+							if(read < dist.getPlusX(x, y)/constant)
 							{
 								to.setProbability(x, y, 0f);
 							}
@@ -105,12 +107,12 @@ public class SensorModelModified implements SensorModel {
 				for (int x = 0; x < to.getGridWidth() ; x++) {
 					if ((!to.isObstructed(x, y))) {
 						if (read > dist.getMinusX(x, y)) {
-							if(read > dist.getMinusX(x, y)/1.2)
+							if(read > dist.getMinusX(x, y)*constant)
 							to.setProbability(x, y, 0f);
 						}
 						else 
 						{
-							if(read < dist.getMinusX(x, y)/1.2)
+							if(read < dist.getMinusX(x, y)/constant)
 							{
 								to.setProbability(x, y, 0f);
 							}
@@ -131,12 +133,12 @@ public class SensorModelModified implements SensorModel {
 				for (int x = 0; x < to.getGridWidth() ; x++) {
 					if ((!to.isObstructed(x, y))) {
 						if (read > dist.getMinusY(x, y)) {
-							if(read > dist.getMinusY(x, y)/1.2)
+							if(read > dist.getMinusY(x, y)*constant)
 							to.setProbability(x, y, 0f);
 						}
 						else 
 						{
-							if(read < dist.getMinusY(x, y)/1.2)
+							if(read < dist.getMinusY(x, y)/constant)
 							{
 								to.setProbability(x, y, 0f);
 							}
