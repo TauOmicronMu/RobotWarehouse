@@ -1,6 +1,7 @@
 package warehouse.assign.tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.LinkedList;
 
@@ -24,12 +25,12 @@ public class JobSelectorSingleTest {
 	private Robot testRobot;
 	private Location testLocation;
 	private LinkedList<JobWorth> jobworths;
-	private JobWorth testJobWorth3;
+	private JobWorth testJobWorth1;
 	
 	@Before
 	public void setUp(){
 		
-		//TODO make 3 jobs, with the 3rd being the best
+		//TODO make 3 jobs, with the 1st being the best
 		
 		//JOB 1
 		LinkedList<ItemPickup> pickups = new LinkedList<ItemPickup>();
@@ -64,7 +65,7 @@ public class JobSelectorSingleTest {
 		//JOB 3
 		LinkedList<ItemPickup> pickups3 = new LinkedList<ItemPickup>();
 		
-		ItemPickup testitem6 = new ItemPickup("testitem6", new Location(2, 1), 100);
+		ItemPickup testitem6 = new ItemPickup("testitem6", new Location(2, 1), 40);
 		testitem6.reward = 1; testitem6.weight = 1;
 		pickups3.add(testitem6);
 		
@@ -80,34 +81,37 @@ public class JobSelectorSingleTest {
 		
 		testSelector = new JobSelectorSingle(testRobot, jobs);
 		
-	}
-	
-	@Test
-	public void testConvertList() {
-		
-		JobWorth testJobWorth1 = new JobWorth(testJob1, testRobot, testLocation);
+		testJobWorth1 = new JobWorth(testJob1, testRobot, testLocation);
 		JobWorth testJobWorth2 = new JobWorth(testJob2, testRobot, testLocation);
-		testJobWorth3 = new JobWorth(testJob3, testRobot, testLocation);
+		JobWorth testJobWorth3 = new JobWorth(testJob3, testRobot, testLocation);
 		
 		jobworths = new LinkedList<JobWorth>();
 		
 		jobworths.add(testJobWorth1);
 		jobworths.add(testJobWorth2);
 		jobworths.add(testJobWorth3);
+	}
+	
+	@Test
+	public void testConvertList() {
 		
+		assertNotNull(testSelector.convertList(testLocation));
 		assertEquals(testSelector.convertList(testLocation), jobworths);
 	}
 
 	@Test
 	public void testSelectBestJob() {
 		
-		assertEquals(testSelector.selectBestJob(jobworths).getJob(), testJob3);
+		assertNotNull(testSelector.selectBestJob(jobworths));
+		assertEquals(testSelector.selectBestJob(jobworths), testJobWorth1);
+		assertEquals(testSelector.selectBestJob(jobworths).getJob(), testJob1);
 	}
 
 	@Test
 	public void testGetCurrentJob() {
 		
-		assertEquals(testSelector.getCurrentJob(), new AssignedJob(testJobWorth3.getJob(), testJobWorth3.getRoute(), testRobot));
+		assertNotNull(testSelector.getCurrentJob());
+		assertEquals(testSelector.getCurrentJob(), new AssignedJob(testJobWorth1.getJob(), testJobWorth1.getRoute(), testRobot));
 	}
 
 }

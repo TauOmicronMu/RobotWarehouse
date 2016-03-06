@@ -1,6 +1,6 @@
 package warehouse.assign.tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.LinkedList;
 
@@ -12,7 +12,6 @@ import warehouse.job.Job;
 import warehouse.util.ItemPickup;
 import warehouse.util.Location;
 import warehouse.util.Robot;
-import warehouse.util.Route;
 
 public class JobWorthTest {
 
@@ -55,7 +54,6 @@ public class JobWorthTest {
 	@Test
 	public void testGetRewardWeight() {
 		
-		//TODO work out actual reward per weight
 		assertEquals(testJobWorth.getRewardWeight(), 5.1, 0.001);
 	}
 }

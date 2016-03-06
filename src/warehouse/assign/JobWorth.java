@@ -41,9 +41,6 @@ public class JobWorth implements Comparable<JobWorth>{
 		//TSP tsp = new TSP();
 		//this.route = tsp.getShortestRoute(job , robot, startLocation);
 		
-		this.route = new Route(null, startLocation, startLocation);
-		this.route.totalDistance = 10;
-		
 		//Factor in the cancellation probability
 		double p = 1 - findCancellationProbability(job);
 		
@@ -195,5 +192,21 @@ public class JobWorth implements Comparable<JobWorth>{
 		}
 		
 		return 0;
+	}
+	
+	@Override
+	public boolean equals(Object o){
+		
+		if((o instanceof JobWorth) && (this.getMetric() == ((JobWorth)o).getMetric())){
+			
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode(){
+		
+		return (int)this.getMetric();
 	}
 }

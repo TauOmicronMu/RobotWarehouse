@@ -8,13 +8,16 @@ public class TestRunner {
 
 	public static void main(String[] args){
 		
-		Result result = JUnitCore.runClasses(TestJunit.class);
+		System.out.println("Running Job Selection Tests:");
+		
+		Result result = JUnitCore.runClasses(JobSelectionTests.class);
 		
 		for(Failure failure: result.getFailures()){
 			
+			System.out.print("Failure: ");
 			System.out.println(failure.toString());
 		}
 		
-		System.out.println(result.wasSuccessful());
+		System.out.println(result.wasSuccessful() ? "Tests Passed." : "Tests Failed.");
 	}
 }
