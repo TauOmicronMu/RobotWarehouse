@@ -127,8 +127,6 @@ public class TSP {
 		// creates local versions of current and connected node
 		int currentNode = currentBranch.getCurrentNode();
 		int connectedNode = currentBranch.getConnectedNode();
-		System.out.println("CurrentNode: " + currentNode);
-		System.out.println("ConnectedNode: " + connectedNode);
 
 		// creates two new branches
 		Branch[] branches = new Branch[2];
@@ -146,32 +144,24 @@ public class TSP {
 		// modifies accordingly
 		for (int x = 0; x < branches.length; x++) {
 
-			// TODO FIX ERRORS IN LARGE NETWORKS AND WHERE START DIRECTION
-			// MATTERS
-			System.out.println();
-			System.out.println("BRANCH: " + x);
+			// TODO TAKE INTO ACCOUNT PREVIOUS FACING
+//			System.out.println();
+//			System.out.println("BRANCH: " + x);
 
-			System.out.println("Adds needed connections");
+//			System.out.println("Adds needed connections");
 			// check to see if an edge must be added as it would not be possible
 			// for either node to have two edges without it
 			branches[x].addEssentialConnections(allLocations);
 
-			System.out.println("Checking for cycles");
+//			System.out.println("Checking for cycles");
 			// checks for cycles
 			// only if node was excluded: not sure why yet, check old code
 			branches[x].checkForCycles(allLocations);
 
-			System.out.println("Adds needed connections 2");
-			// check for essential connections again
-			branches[x].addEssentialConnections(allLocations);
-
-			System.out.println();
-			System.out.println("printing before calculating lower bounds");
-			branches[x].printAdjacencyMatrix();
 			// get lower bounds
 			branches[x].setLowerBound();
 
-			System.out.println("END OF BRANCH");
+//			System.out.println("END OF BRANCH");
 		}
 
 		// deals with the two different routes in order of lowest lower bound
@@ -213,7 +203,6 @@ public class TSP {
 				// branch is the new best route
 				lowestWeight = branches[better].getLowerBound();
 				bestRoute = branches[better].getRoute();
-				System.out.println("lowestWeight: " + lowestWeight);
 				// prune other route as this is now the shortest length and
 				// it had a larger lower bound
 			} else {

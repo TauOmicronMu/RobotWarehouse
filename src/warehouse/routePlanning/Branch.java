@@ -105,7 +105,7 @@ public class Branch {
 	private void setRoute(LinkedList<Edge> route) {
 		this.route = new LinkedList<Edge>();
 		for (Edge z : route) {
-			System.out.println("Adding: " +z.getStart().x +", " + z.getStart().y + " ---> " + z.getEnd().x +", " +z.getEnd().y +" to route");
+//			System.out.println("Adding: " +z.getStart().x +", " + z.getStart().y + " ---> " + z.getEnd().x +", " +z.getEnd().y +" to route");
 			this.route.add(z);
 		}
 	}
@@ -176,7 +176,7 @@ public class Branch {
 	}
 
 	public void addToRoute(Edge temp) {
-		System.out.println("Adding: " +temp.getStart().x +", " + temp.getStart().y + " ---> " + temp.getEnd().x +", " +temp.getEnd().y +" to route");
+//		System.out.println("Adding: " +temp.getStart().x +", " + temp.getStart().y + " ---> " + temp.getEnd().x +", " +temp.getEnd().y +" to route");
 		route.add(temp);
 	}
 
@@ -200,9 +200,6 @@ public class Branch {
 
 	public void addEssentialConnections(ArrayList<Location> allLocations) {
 		for (int i = 0; i < edgesLeft.length; i++) {
-			System.out.println("I: " + i);
-			System.out.println(edgesLeft[i]);
-			System.out.println(edgesConnected[i]);
 			if ((edgesLeft[i] == 2 && edgesConnected[i] == 0) || (edgesLeft[i] == 1 && edgesConnected[i] == 1)) {
 				// find any edges which need to be added to the route
 				for (int linkedNode = 0; linkedNode < adjacencyMatrix.length; linkedNode++) {
@@ -210,11 +207,8 @@ public class Branch {
 						addEdge(allLocations, i, linkedNode);
 					}
 				}
-				System.out.println("I: " + i);
-				System.out.println(edgesLeft[i]);
-				System.out.println(edgesConnected[i]);
 			} else if (edgesLeft[i] == 0 && edgesConnected[i] != 2) {
-				System.err.println("Too many edges have been removed: Error in addEssentialConnections");
+//				System.err.println("Too many edges have been removed: Error in addEssentialConnections");
 			}
 		}
 	}
@@ -281,7 +275,7 @@ public class Branch {
 		// removes edge from the adjacency matrix
 		setWeight(node1, node2, Double.POSITIVE_INFINITY);
 		decrementEdgesLeft(node1, node2);
-		printAdjacencyMatrix();
+//		printAdjacencyMatrix();
 	}
 
 	public void addEdge(ArrayList<Location> allLocations, int node1, int node2) {
@@ -293,7 +287,7 @@ public class Branch {
 		incrementConnected(node1, node2);
 		addToGroup(temp1);
 		trimFullyConnected(allLocations);
-		printAdjacencyMatrix();
+//		printAdjacencyMatrix();
 	}
 
 	public void setLowerBound() {
@@ -317,13 +311,8 @@ public class Branch {
 				}
 			}
 			lowerBound = lowerBound + secondWeight + bestWeight;
-			System.out.println("Cumulative lowerBound: " + lowerBound);
 		}
-		System.out.println("LowerBound: " + lowerBound/2);
-		if(lowerBound == Double.POSITIVE_INFINITY){
-			System.out.println("set to infinity");
-			System.exit(1);
-		}
+//		System.out.println("LowerBound: " + lowerBound/2);
 		this.lowerBound = lowerBound / 2;
 	}
 	
@@ -379,14 +368,14 @@ public class Branch {
 	
 	public boolean checkComplete() {
 		// checks if this branch is complete
-		System.out.println("Cheking complete");
+//		System.out.println("Checking complete");
 		for (int connected : edgesConnected) {
 			if (connected != 2) {
-				System.out.println("Not Complete");
+//				System.out.println("Not Complete");
 				return false;
 			}
 		}
-		System.out.println("Complete");
+//		System.out.println("Complete");
 		return true;
 	}
 
@@ -414,5 +403,6 @@ public class Branch {
 			}
 			System.out.println();
 		}
+		System.out.println();
 	}
 }
