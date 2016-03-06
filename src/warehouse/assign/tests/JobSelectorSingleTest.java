@@ -30,7 +30,7 @@ public class JobSelectorSingleTest {
 	@Before
 	public void setUp(){
 		
-		//TODO make 3 jobs, with the 1st being the best
+		//make 3 jobs, with the 1st being the best
 		
 		//JOB 1
 		LinkedList<ItemPickup> pickups = new LinkedList<ItemPickup>();
