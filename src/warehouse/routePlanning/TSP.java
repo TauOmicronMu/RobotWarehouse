@@ -21,9 +21,10 @@ public class TSP {
 	public TSP(Search s) {
 		this.s = s;
 	}
-	
+
 	/**
 	 * This will be the final method used
+	 * 
 	 * @param job
 	 * @param start
 	 * @param facing
@@ -33,11 +34,11 @@ public class TSP {
 		// TODO Auto-generated method stub
 		return Optional.empty();
 	}
-	
-	//Current method used
-	public LinkedList<Edge> getShortestRoute(Job j, Location startingPosition) {
+
+	// Current method used
+	public LinkedList<Edge> getShortestRoute(Job j, Location startLocation) {
 		// builds full list of locations
-		allLocations = makeListLocations(j, startingPosition);
+		allLocations = makeListLocations(j, startLocation);
 
 		// gets the number of locations to visit
 		numberOfLocations = allLocations.size();
@@ -48,7 +49,7 @@ public class TSP {
 		adjacencyMatrix = initiateMatrix(adjacencyMatrix);
 
 		// gives these matrices their initial values
-		adjacencyMatrix = setUpMatrices(adjacencyMatrix, allLocations);
+		adjacencyMatrix = setUpMatrices(adjacencyMatrix, allLocations, startLocation, j.dropLocation);
 
 		// initialises array of the amount of edges left available to each node
 		int[] edgesLeft = new int[numberOfLocations];
@@ -77,6 +78,13 @@ public class TSP {
 		getRoute(initial);
 
 		// return new Route(moves, startingPosition, j.dropLocation);
+		int pos = 0;
+		for(int i = 0; i < bestRoute.size(); i++){
+			if(bestRoute.get(i).getStart().equals(startLocation) && bestRoute.get(i).getEnd().equals(j.dropLocation)){
+				pos = i;
+			}
+		}
+		bestRoute.remove(pos);
 		return bestRoute;
 	}
 
@@ -99,20 +107,29 @@ public class TSP {
 		return adjacencyMatrix;
 	}
 
-	private double[][] setUpMatrices(double[][] adjacencyMatrix, ArrayList<Location> allLocations) {
+	private double[][] setUpMatrices(double[][] adjacencyMatrix, ArrayList<Location> allLocations, Location start,
+			Location end) {
 		for (int Node1 = 0; Node1 < allLocations.size() - 1; Node1++) {
 			for (int Node2 = Node1 + 1; Node2 < allLocations.size(); Node2++) {
 				// THIS NEEDS TO BE CHANGED DIRECTION NEEDS TO BE KEPT TRACK OF
 				// METHODS NEED TO BE CHANGED TO FIND BEST ROUTE GIVEN LOCATION
 				// ARRIVES IN PREVIOUS NODE
-				Optional<Route> foundRoute = s.getRoute(allLocations.get(Node1), allLocations.get(Node2),
-						Direction.NORTH);
-				if (foundRoute.isPresent()) {
-					Route r = foundRoute.get();
-					adjacencyMatrix[Node1][Node2] = r.totalDistance;
-					adjacencyMatrix[Node2][Node1] = r.totalDistance;
+				
+				//dummy edge to ensure end linked to start for removal later
+				if (allLocations.get(Node1).equals(start) && allLocations.get(Node2).equals(end)) {
+					adjacencyMatrix[Node1][Node2] = 0;
+					adjacencyMatrix[Node2][Node1] = 0;
 				} else {
-					System.err.println("Could not find a route in adjMatrix between: " + Node1 + " and " + Node2);
+					//normal creation
+					Optional<Route> foundRoute = s.getRoute(allLocations.get(Node1), allLocations.get(Node2),
+							Direction.NORTH);
+					if (foundRoute.isPresent()) {
+						Route r = foundRoute.get();
+						adjacencyMatrix[Node1][Node2] = r.totalDistance;
+						adjacencyMatrix[Node2][Node1] = r.totalDistance;
+					} else {
+						System.err.println("Could not find a route in adjMatrix between: " + Node1 + " and " + Node2);
+					}
 				}
 			}
 		}
@@ -145,15 +162,15 @@ public class TSP {
 		for (int x = 0; x < branches.length; x++) {
 
 			// TODO TAKE INTO ACCOUNT PREVIOUS FACING
-//			System.out.println();
-//			System.out.println("BRANCH: " + x);
+			// System.out.println();
+			// System.out.println("BRANCH: " + x);
 
-//			System.out.println("Adds needed connections");
+			// System.out.println("Adds needed connections");
 			// check to see if an edge must be added as it would not be possible
 			// for either node to have two edges without it
 			branches[x].addEssentialConnections(allLocations);
 
-//			System.out.println("Checking for cycles");
+			// System.out.println("Checking for cycles");
 			// checks for cycles
 			// only if node was excluded: not sure why yet, check old code
 			branches[x].checkForCycles(allLocations);
@@ -161,7 +178,7 @@ public class TSP {
 			// get lower bounds
 			branches[x].setLowerBound();
 
-//			System.out.println("END OF BRANCH");
+			// System.out.println("END OF BRANCH");
 		}
 
 		// deals with the two different routes in order of lowest lower bound
