@@ -12,7 +12,7 @@ public class AssignedJob extends Job {
     public Route route;
     public Robot robot;
 
-    public AssignedJob(Location dropLocation, LinkedList<ItemPickup> pickups, Route route, Robot robot) {
+    public AssignedJob(Location dropLocation, List<ItemPickup> pickups, Route route, Robot robot) {
         super(dropLocation, pickups);
         this.route = route;
         this.robot = robot;
