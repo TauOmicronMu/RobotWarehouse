@@ -27,12 +27,14 @@ public class MultipleRobotTests {
 	public void testSimpleAStar() {
 		// Routes have very little interaction in these tests (checking multi
 		// robot systems work for single robot problems)
+		// Multi Robot Systems have not yet been implemented
 		// TODO
 	}
 
 	@Test
 	public void testComplexAStar() {
 		// Routes should have to deal with interaction (avoid crashes)
+		// Multi Robot Systems have not yet been implemented
 		// TODO
 	}
 
@@ -40,12 +42,14 @@ public class MultipleRobotTests {
 	public void testSimpleTSP() {
 		// Routes have very little interaction in these tests (checking multi
 		// robot systems work for single robot problems)
+		// Multi Robot Systems have not yet been implemented
 		// TODO
 	}
 
 	@Test
 	public void testComplexTSP() {
 		// Routes should have to deal with interaction (avoid crashes)
+		// Multi Robot Systems have not yet been implemented
 		// TODO
 	}
 }
