@@ -5,7 +5,7 @@ import warehouse.util.Location;
 import warehouse.util.Robot;
 import warehouse.util.Route;
 
-import java.util.LinkedList;
+import java.util.List;
 
 public class AssignedJob extends Job {
 
