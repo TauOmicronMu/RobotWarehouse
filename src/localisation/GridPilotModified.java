@@ -7,7 +7,11 @@ import rp.robotics.navigation.IGridPilot;
 import rp.robotics.simulation.Drive;
 import rp.robotics.simulation.MovablePilot;
 import rp.robotics.simulation.Rotate;
-
+/**
+ * 
+ * @author jokLiu
+ *
+ */
 public class GridPilotModified implements GridPoseProvider, IGridPilot {
 
 	private final GridMap m_map;

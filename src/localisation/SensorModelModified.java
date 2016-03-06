@@ -5,6 +5,11 @@ import rp.robotics.localisation.GridPositionDistribution;
 import rp.robotics.localisation.SensorModel;
 import rp.robotics.navigation.Heading;
 
+/**
+ * 
+ * @author jokLiu
+ *
+ */
 public class SensorModelModified implements SensorModel {
 
 	private RangeReadings readings;

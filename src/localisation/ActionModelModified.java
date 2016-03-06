@@ -3,7 +3,11 @@ package localisation;
 import rp.robotics.localisation.ActionModel;
 import rp.robotics.localisation.GridPositionDistribution;
 import rp.robotics.navigation.Heading;
-
+/**
+ * 
+ * @author jokLiu
+ *
+ */
 public class ActionModelModified implements ActionModel {
 
 	private Heading _heading;

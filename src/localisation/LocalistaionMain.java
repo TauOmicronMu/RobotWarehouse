@@ -21,7 +21,11 @@ import rp.robotics.visualisation.GridPositionDistributionVisualisation;
 import rp.robotics.visualisation.KillMeNow;
 import rp.robotics.visualisation.MapVisualisationComponent;
 import rp.systems.StoppableRunnable;
-import warehouse.Location;
+/**
+ * 
+ * @author jokLiu
+ *
+ */
 
 public class LocalistaionMain implements StoppableRunnable {
 

@@ -3,6 +3,11 @@ package localisation;
 import rp.robotics.mapping.GridMap;
 import rp.robotics.navigation.Heading;
 
+/**
+ * 
+ * @author jokLiu
+ *
+ */
 public class Distances {
 	
 	//height and width of the map
