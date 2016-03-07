@@ -16,4 +16,9 @@ public class Route {
         this.start = start;
         this.end = end;
     }
+    
+    public void addAction(Action action) {
+        actions.add(action);
+    }
+    
 }
