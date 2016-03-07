@@ -2,6 +2,12 @@ package warehouse.assign;
 
 import warehouse.util.Location;
 
+/**
+ * Event to send to subscribers when a job is completed.
+ * 
+ * @author Owen
+ *
+ */
 public class JobCompleteEvent {
 
 	private Location currentLocation;

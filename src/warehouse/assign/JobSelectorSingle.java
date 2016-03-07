@@ -47,6 +47,9 @@ public class JobSelectorSingle extends Thread{
 		this.jobs = jobs;
 	}
 	
+	/**
+	 * Method to run when the thread starts - continuously picks jobs for the robot.
+	 */
 	@Override
 	public void run(){
 		
@@ -69,13 +72,13 @@ public class JobSelectorSingle extends Thread{
 		bestJob = selectBestJob(jobworths);
 		
 		//get rid of the best job from the list of jobs
-		this.jobs.remove(bestJob);
+		this.jobs.remove(bestJob.getJob());
 
 		//make a new assigned job
 		AssignedJob assigned = assign(this.robot, bestJob);
 		this.currentJob = assigned;
 		
-		//TODO send the assigned job to route execution?
+		//send the assigned job to subscribers
 		JobAssignedEvent e = new JobAssignedEvent(assigned, this.robot);
 		dispatcher.onEvent(e);
 
@@ -89,11 +92,14 @@ public class JobSelectorSingle extends Thread{
 		//or it is told to stop
 		while(run && (this.jobs.size() > 0)){
 			
+			//If the robot has completed a job and now has no assigned job, give it a new one
 			if(this.jobComplete){
 				
 				//If the robot is not going to start its next job from the drop location as it got lost
 				if(robotGotLost){
 			
+					//TODO wait for localisation event?
+					
 					//Clear the list and calculate job worths again based on the new location
 					startLocation = this.robot.position;
 				
@@ -112,7 +118,7 @@ public class JobSelectorSingle extends Thread{
 				assigned = assign(this.robot, bestJob);
 				this.currentJob = assigned;
 			
-				//TODO send the assigned job to route execution?
+				//send the assigned job to route execution?
 				e = new JobAssignedEvent(assigned, this.robot);
 				dispatcher.onEvent(e);
 				
@@ -141,6 +147,7 @@ public class JobSelectorSingle extends Thread{
 	 */
 	public LinkedList<JobWorth> convertList(Location startLocation){
 		
+		//make an empty list of jobworths
 		LinkedList<JobWorth> jobworths = new LinkedList<JobWorth>();
 		
 		//Calculate the worth of each job and add them to the list
@@ -171,6 +178,7 @@ public class JobSelectorSingle extends Thread{
 	@Subscriber
 	private void onRobotLost(Location l){
 		
+		//TODO integrate with localisation
 		this.robotStartLocation = l;
 		this.robotGotLost = true;
 	}
@@ -184,7 +192,7 @@ public class JobSelectorSingle extends Thread{
 	private void onJobComplete(JobCompleteEvent e){
 		
 		this.jobComplete = true;
-		e.getLocation();
+		this.robotStartLocation = e.getLocation();
 	}
 	
 	/**
