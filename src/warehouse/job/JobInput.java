@@ -16,10 +16,10 @@ public class JobInput {
     {
         
         try (BufferedReader reader = new BufferedReader(new FileReader("jobs.csv"))){
-        	String line;
+        	Scanner scanner = new Scanner(new File("filename.csv"));
         	String id;
-        	while ((line = reader.readLine()) != null) {
-        		Scanner scanner = new Scanner(new File("jobs.csv"));
+        	while(scanner.hasNextLine()) {
+        	    String line = scanner.nextLine();
                 scanner.useDelimiter(",");
                 List<ItemPickup> itemPickupList = new LinkedList<ItemPickup>();
        			if (scanner.hasNext()) {
