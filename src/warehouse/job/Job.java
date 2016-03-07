@@ -3,14 +3,14 @@ package warehouse.job;
 import warehouse.util.ItemPickup;
 import warehouse.util.Location;
 
-import java.util.LinkedList;
+import java.util.List;
 
 public class Job {
 
     public Location dropLocation;
-    public LinkedList<ItemPickup> pickups;
+    public List<ItemPickup> pickups;
 
-    public Job(Location dropLocation, LinkedList<ItemPickup> pickups) {
+    public Job(Location dropLocation, List<ItemPickup> pickups) {
         this.dropLocation = dropLocation;
         this.pickups = pickups;
 

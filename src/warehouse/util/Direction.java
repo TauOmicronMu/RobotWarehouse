@@ -14,8 +14,8 @@ public enum Direction {
     }
 
     public Direction turnLeft() {
-        int i = ordinal();
-        if (i <= 0) i = values().length - 1;
+        int i = ordinal() - 1;
+        if (i < 0) i = values().length - 1;
         return values()[i];
     }
 
