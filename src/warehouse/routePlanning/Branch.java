@@ -15,6 +15,16 @@ public class Branch {
 	private LinkedList<LinkedList<Edge>> currentGroups;
 	private double lowerBound;
 
+	/**
+	 * Constructor which creates a branch given the branch information
+	 * @param adjacencyMatrix the matrix which contains the distance for every edge
+	 * @param route the current route
+	 * @param edgesLeft the current amount of edges left for each node
+	 * @param edgesConnected the current amount of edges connected for each node
+	 * @param currentNode the current node being inspected
+	 * @param connectedNode the next node to be inspected
+	 * @param currentGroups the list of groups for this branch
+	 */
 	public Branch(double[][] adjacencyMatrix, LinkedList<Edge> route, int[] edgesLeft, int[] edgesConnected,
 			int currentNode, int connectedNode, LinkedList<LinkedList<Edge>> currentGroups) {
 		setAdjacencyMatrix(adjacencyMatrix);
@@ -27,6 +37,7 @@ public class Branch {
 	}
 
 	/**
+	 * Gets the adjacencyMatrix for the branch
 	 * @return the adjacencyMatrix
 	 */
 	public double[][] getAdjacencyMatrix() {
@@ -34,6 +45,7 @@ public class Branch {
 	}
 
 	/**
+	 * Gets the lowerBound for the branch
 	 * @return the lowerBound
 	 */
 	public double getLowerBound() {
@@ -41,6 +53,7 @@ public class Branch {
 	}
 
 	/**
+	 * Gets the route for the branch
 	 * @return the route
 	 */
 	public LinkedList<Edge> getRoute() {
@@ -48,6 +61,7 @@ public class Branch {
 	}
 
 	/**
+	 * Gets the edgesLeft for the branch
 	 * @return the edgesLeft
 	 */
 	public int[] getEdgesLeft() {
@@ -55,6 +69,7 @@ public class Branch {
 	}
 
 	/**
+	 * Gets the edgesConnected for the branch
 	 * @return the edgesConnected
 	 */
 	public int[] getEdgesConnected() {
@@ -62,6 +77,7 @@ public class Branch {
 	}
 
 	/**
+	 * Gets the currentNode for the branch
 	 * @return the currentNode
 	 */
 	public int getCurrentNode() {
@@ -69,6 +85,7 @@ public class Branch {
 	}
 
 	/**
+	 * Gets the connectedNode for the branch
 	 * @return the connectedNode
 	 */
 	public int getConnectedNode() {
@@ -76,16 +93,15 @@ public class Branch {
 	}
 
 	/**
+	 * Gets the groups for the branch
 	 * @return the currentGroups
 	 */
 	public LinkedList<LinkedList<Edge>> getCurrentGroups() {
 		return currentGroups;
 	}
 
-	// THE SET METHODS MUST NOT ACCESS THE SAME VARIABLE AS THIS WOULD CHANGE
-	// THE VALUES ON OTHER BRANCHES HIGHER UP IN RECURSIVE STRUCTURE
-
 	/**
+	 * Sets the adjacency matrix in this branch to be a new version of the adjacency matrix passed
 	 * @param adjacencyMatrix
 	 *            the adjacencyMatrix to set
 	 */
@@ -99,6 +115,7 @@ public class Branch {
 	}
 
 	/**
+	 * Sets the route in this branch to be a new version of the route passed
 	 * @param route
 	 *            the route to set
 	 */
@@ -111,6 +128,7 @@ public class Branch {
 	}
 
 	/**
+	 * Sets the edgesLeft in this branch to be a new version of the edgesLeft passed
 	 * @param edgesLeft
 	 *            the edgesLeft to set
 	 */
@@ -122,6 +140,7 @@ public class Branch {
 	}
 
 	/**
+	 * Sets the edgesConnected in this branch to be a new version of the edgesConnected passed
 	 * @param edgesConnected
 	 *            the edgesConnected to set
 	 */
@@ -133,6 +152,7 @@ public class Branch {
 	}
 
 	/**
+	 * Sets the currentNode in this branch to be the currentNode passed
 	 * @param currentNode
 	 *            the currentNode to set
 	 */
@@ -141,6 +161,7 @@ public class Branch {
 	}
 
 	/**
+	 * Sets the connectedNode in this branch to be the connectedNode passed
 	 * @param connectedNode
 	 *            the connectedNode to set
 	 */
