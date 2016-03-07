@@ -1,20 +1,29 @@
 package warehouse.job;
 
-import warehouse.ItemPickup;
-import warehouse.Location;
+import warehouse.util.ItemPickup;
+import warehouse.util.Location;
 
-import java.util.LinkedList;
+import java.util.List;
 
-/**
- * Created by samtebbs on 22/02/2016.
- */
 public class Job {
 
     public Location dropLocation;
-    public LinkedList<ItemPickup> pickups;
+    public List<ItemPickup> pickups;
 
-    public Job(Location dropLocation, LinkedList<ItemPickup> pickups) {
+    public Job(Location dropLocation, List<ItemPickup> pickups) {
         this.dropLocation = dropLocation;
         this.pickups = pickups;
+    }
+    
+    public boolean isAssigned() {
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return "Job{" +
+                "dropLocation=" + dropLocation +
+                ", pickups=" + pickups +
+                '}';
     }
 }
