@@ -18,7 +18,7 @@ public class Test {
 		GridMap providedMap = MapUtils.createRealWarehouse();
 		Map m = new Map(providedMap);
 		Search s = new Search(m);
-		TSP tsp = new TSP(s);
+		TSP tsp = new TSP();
 		Optional<Route> o = s.getRoute(new Location(0, 1), new Location(2, 2), Direction.NORTH);
 		if (o.isPresent()) {
 			Route route = o.get();

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Optional;
 
+import rp.robotics.mapping.GridMap;
+import rp.robotics.mapping.MapUtils;
 import warehouse.job.Job;
 import warehouse.util.Direction;
 import warehouse.util.ItemPickup;
@@ -18,24 +20,37 @@ public class TSP {
 	LinkedList<Location> finalRoute = new LinkedList<Location>();
 	double lowestWeight;
 
-	public TSP(Search s) {
-		this.s = s;
+	public TSP() {
+		GridMap providedMap = MapUtils.createRealWarehouse();
+		Map m = new Map(providedMap);
+		this.s = new Search(m);
 	}
 
 	/**
 	 * This will be the final method used
 	 * 
+	 * This method finds the optimal route to pick up all the items in a job
+	 * This is used by job-selection to assign the best job to the robot Route
+	 * includes the turning of the robot and the total weight it can carry
+	 * 
 	 * @param job
+	 *            the job to find the best route for
 	 * @param start
+	 *            the starting location
 	 * @param facing
-	 * @return
+	 *            the final facing of the robot
+	 * @return optional type which should contain the optimal route
 	 */
 	public Optional<Route> getShortestRoute(Job job, Location start, Direction facing) {
-		// TODO Auto-generated method stub
+		// TODO Include weight and direction of facing into TSP: must return to
+		// the drop off location iff weight gets too large and the start facing
+		// is based on the end facing of the previous route
+
 		return Optional.empty();
 	}
 
 	// Current method used
+	// Currently works but is not the final system
 	public LinkedList<Edge> getShortestRoute(Job j, Location startLocation) {
 		// builds full list of locations
 		allLocations = makeListLocations(j, startLocation);
@@ -79,116 +94,13 @@ public class TSP {
 
 		// return new Route(moves, startingPosition, j.dropLocation);
 		int pos = 0;
-		for(int i = 0; i < bestRoute.size(); i++){
-			if(bestRoute.get(i).getStart().equals(startLocation) && bestRoute.get(i).getEnd().equals(j.dropLocation)){
+		for (int i = 0; i < bestRoute.size(); i++) {
+			if (bestRoute.get(i).getStart().equals(startLocation) && bestRoute.get(i).getEnd().equals(j.dropLocation)) {
 				pos = i;
 			}
 		}
 		bestRoute.remove(pos);
 		return bestRoute;
-	}
-
-	/**
-	 * Fills the adjacency matrix with values of infinity to represent no
-	 * connection before values are added
-	 *
-	 * @param adjacencyMatrix
-	 *            The adjacency matrix which stores all of the connections
-	 *            between my nodes
-	 * @return adjacencyMatrix - The adjacency matrix which stores all of the
-	 *         connections between my nodes
-	 */
-	private double[][] initiateMatrix(double[][] adjacencyMatrix) {
-		for (double[] adjacencyMatrix1 : adjacencyMatrix) {
-			for (int j = 0; j < adjacencyMatrix.length; j++) {
-				adjacencyMatrix1[j] = Double.POSITIVE_INFINITY;
-			}
-		}
-		return adjacencyMatrix;
-	}
-
-	private double[][] setUpMatrices(double[][] adjacencyMatrix, ArrayList<Location> allLocations, Location start,
-			Location end) {
-		for (int Node1 = 0; Node1 < allLocations.size() - 1; Node1++) {
-			for (int Node2 = Node1 + 1; Node2 < allLocations.size(); Node2++) {
-				// THIS NEEDS TO BE CHANGED DIRECTION NEEDS TO BE KEPT TRACK OF
-				// METHODS NEED TO BE CHANGED TO FIND BEST ROUTE GIVEN LOCATION
-				// ARRIVES IN PREVIOUS NODE
-				
-				//dummy edge to ensure end linked to start for removal later
-				if (allLocations.get(Node1).equals(start) && allLocations.get(Node2).equals(end)) {
-					adjacencyMatrix[Node1][Node2] = 0;
-					adjacencyMatrix[Node2][Node1] = 0;
-				} else {
-					//normal creation
-					Optional<Route> foundRoute = s.getRoute(allLocations.get(Node1), allLocations.get(Node2),
-							Direction.NORTH);
-					if (foundRoute.isPresent()) {
-						Route r = foundRoute.get();
-						adjacencyMatrix[Node1][Node2] = r.totalDistance;
-						adjacencyMatrix[Node2][Node1] = r.totalDistance;
-					} else {
-						System.err.println("Could not find a route in adjMatrix between: " + Node1 + " and " + Node2);
-					}
-				}
-			}
-		}
-		return adjacencyMatrix;
-	}
-
-	/**
-	 * 
-	 * @param currentBranch
-	 */
-	private void getRoute(Branch currentBranch) {
-		// creates local versions of current and connected node
-		int currentNode = currentBranch.getCurrentNode();
-		int connectedNode = currentBranch.getConnectedNode();
-
-		// creates two new branches
-		Branch[] branches = new Branch[2];
-		for (int i = 0; i < 2; i++) {
-			branches[i] = new Branch(currentBranch.getAdjacencyMatrix(), currentBranch.getRoute(),
-					currentBranch.getEdgesLeft(), currentBranch.getEdgesConnected(), currentNode, connectedNode,
-					currentBranch.getCurrentGroups());
-		}
-
-		// one branch adds a node, the other removes it
-		branches[0].addEdge(allLocations, currentNode, connectedNode);
-		branches[1].removeEdge(currentNode, connectedNode);
-
-		// checks impact of adding or removing nodes on the adjacency matrix and
-		// modifies accordingly
-		for (int x = 0; x < branches.length; x++) {
-
-			// TODO TAKE INTO ACCOUNT PREVIOUS FACING
-			// System.out.println();
-			// System.out.println("BRANCH: " + x);
-
-			// System.out.println("Adds needed connections");
-			// check to see if an edge must be added as it would not be possible
-			// for either node to have two edges without it
-			branches[x].addEssentialConnections(allLocations);
-
-			// System.out.println("Checking for cycles");
-			// checks for cycles
-			// only if node was excluded: not sure why yet, check old code
-			branches[x].checkForCycles(allLocations);
-
-			// get lower bounds
-			branches[x].setLowerBound();
-
-			// System.out.println("END OF BRANCH");
-		}
-
-		// deals with the two different routes in order of lowest lower bound
-		// first
-		// checks which route has the lowest lower bound
-		if (branches[0].getLowerBound() > branches[1].getLowerBound()) {
-			pruneBranches(branches, 1, 0);
-		} else {
-			pruneBranches(branches, 0, 1);
-		}
 	}
 
 	/**
@@ -210,38 +122,164 @@ public class TSP {
 		return allLocations;
 	}
 
-	private void pruneBranches(Branch[] branches, int better, int worse) {
+	/**
+	 * Fills the adjacency matrix with values of infinity to represent no
+	 * connection before values are added
+	 *
+	 * @param adjacencyMatrix
+	 *            The adjacency matrix which stores all of the connections
+	 *            between my nodes
+	 * @return adjacencyMatrix - The adjacency matrix which stores all of the
+	 *         connections between my nodes
+	 */
+	private double[][] initiateMatrix(double[][] adjacencyMatrix) {
+		for (double[] adjacencyMatrix1 : adjacencyMatrix) {
+			for (int j = 0; j < adjacencyMatrix.length; j++) {
+				adjacencyMatrix1[j] = Double.POSITIVE_INFINITY;
+			}
+		}
+		return adjacencyMatrix;
+	}
+
+	/**
+	 * Places initial values into the adjacency matrix
+	 * 
+	 * @param adjacencyMatrix
+	 *            the matrix which contains the weight of each potential edge
+	 * @param allLocations
+	 *            the list of all locations in the graph
+	 * @param start
+	 *            the start location
+	 * @param end
+	 *            the end location
+	 * @return filled adjacencyMatrix
+	 */
+	private double[][] setUpMatrices(double[][] adjacencyMatrix, ArrayList<Location> allLocations, Location start,
+			Location end) {
+		for (int Node1 = 0; Node1 < allLocations.size() - 1; Node1++) {
+			for (int Node2 = Node1 + 1; Node2 < allLocations.size(); Node2++) {
+				// THIS NEEDS TO BE CHANGED DIRECTION NEEDS TO BE KEPT TRACK OF
+				// METHODS NEED TO BE CHANGED TO FIND BEST ROUTE GIVEN LOCATION
+				// ARRIVES IN PREVIOUS NODE
+
+				// dummy edge to ensure end linked to start for removal later
+				if (allLocations.get(Node1).equals(start) && allLocations.get(Node2).equals(end)) {
+					adjacencyMatrix[Node1][Node2] = 0;
+					adjacencyMatrix[Node2][Node1] = 0;
+				} else {
+					// normal creation
+					Optional<Route> foundRoute = s.getRoute(allLocations.get(Node1), allLocations.get(Node2),
+							Direction.NORTH);
+					if (foundRoute.isPresent()) {
+						Route r = foundRoute.get();
+						adjacencyMatrix[Node1][Node2] = r.totalDistance;
+						adjacencyMatrix[Node2][Node1] = r.totalDistance;
+					} else {
+						System.err.println("Could not find a route in adjMatrix between: " + Node1 + " and " + Node2);
+					}
+				}
+			}
+		}
+		return adjacencyMatrix;
+	}
+
+	/**
+	 * Recursive method which splits the potential route into two branches, one
+	 * including an edge, one removing
+	 * 
+	 * @param currentBranch
+	 *            the current branch of the route
+	 */
+	private void getRoute(Branch currentBranch) {
+		// creates local versions of current and connected node
+		int currentNode = currentBranch.getCurrentNode();
+		int connectedNode = currentBranch.getConnectedNode();
+
+		// creates two new branches
+		Branch[] branches = new Branch[2];
+		for (int i = 0; i < 2; i++) {
+			branches[i] = new Branch(currentBranch.getAdjacencyMatrix(), currentBranch.getRoute(),
+					currentBranch.getEdgesLeft(), currentBranch.getEdgesConnected(), currentNode, connectedNode,
+					currentBranch.getCurrentGroups());
+		}
+
+		// one branch adds a node, the other removes it
+		branches[0].addEdge(allLocations, currentNode, connectedNode);
+		branches[1].removeEdge(currentNode, connectedNode);
+
+		// checks impact of adding or removing nodes on the adjacency matrix and
+		// modifies accordingly
+		for (int x = 0; x < branches.length; x++) {
+			// System.out.println();
+			// System.out.println("BRANCH: " + x);
+
+			// check to see if an edge must be added as it would not be possible
+			// for either node to have two edges without it
+			// System.out.println("Adds needed connections");
+			branches[x].addEssentialConnections(allLocations);
+
+			// checks for potential cycles in branch
+			// System.out.println("Checking for cycles");
+			branches[x].checkForCycles(allLocations);
+
+			// calculate the lower bound for the branch
+			// System.out.println("calculating the lower bound");
+			branches[x].setLowerBound();
+
+			// System.out.println("END OF BRANCH");
+		}
+
+		// deals with the two different routes in order of lowest lower bound
+		// first
+		// checks which route has the lowest lower bound
+		if (branches[0].getLowerBound() > branches[1].getLowerBound()) {
+			pruneBranches(branches[1], branches[0]);
+		} else {
+			pruneBranches(branches[0], branches[1]);
+		}
+	}
+
+	/**
+	 * Prunes branches or commences further splitting of branches in order of
+	 * smallest lower bound first
+	 * 
+	 * @param better
+	 *            the branch with the smaller lower bound
+	 * @param worse
+	 *            the branch with the larger lower bound
+	 */
+	private void pruneBranches(Branch better, Branch worse) {
 		// checks if we can prune either of the splits (i.e. not bother
 		// checking their children as their lower bounds are higher than the
 		// current best weight)
-		if (branches[better].getLowerBound() < lowestWeight) {
+		if (better.getLowerBound() < lowestWeight) {
 			// check if the branch is complete
-			if (branches[better].checkComplete()) {
+			if (better.checkComplete()) {
 				// branch is the new best route
-				lowestWeight = branches[better].getLowerBound();
-				bestRoute = branches[better].getRoute();
-				// prune other route as this is now the shortest length and
-				// it had a larger lower bound
+				lowestWeight = better.getLowerBound();
+				bestRoute = better.getRoute();
+				// prune both routes, do not continue searching
 			} else {
 				// find next available location
-				branches[better].incrementNodes(allLocations);
+				better.incrementNodes(allLocations);
 				// recurse on the best branch
-				getRoute(branches[better]);
+				getRoute(better);
 
 				// check the other route
-				if (branches[worse].getLowerBound() < lowestWeight) {
+				if (worse.getLowerBound() < lowestWeight) {
 					// check if the branch is complete
-					if (branches[worse].checkComplete()) {
+					if (worse.checkComplete()) {
 						// branch is the new best route
-						lowestWeight = branches[better].getLowerBound();
-						bestRoute = branches[better].getRoute();
+						lowestWeight = worse.getLowerBound();
+						bestRoute = worse.getRoute();
 					} else {
 						// find next available location
-						branches[worse].incrementNodes(allLocations);
+						worse.incrementNodes(allLocations);
 						// recurse on the worse branch
-						getRoute(branches[worse]);
+						getRoute(worse);
 					}
 				}
+				// prune only the second route
 			}
 		}
 	}

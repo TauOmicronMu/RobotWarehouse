@@ -29,7 +29,7 @@ public class SingleRobotTests {
 		GridMap providedMap = MapUtils.createRealWarehouse();
 		Map warehouseMap = new Map(providedMap);
 		s = new Search(warehouseMap);
-		tsp = new TSP(s);
+		tsp = new TSP();
 	}
 
 	@Test
