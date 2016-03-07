@@ -1,6 +1,7 @@
-package warehouse.assign;
+package warehouse.select;
 
 import warehouse.job.Job;
+import warehouse.util.Direction;
 import warehouse.util.ItemPickup;
 import warehouse.util.Location;
 import warehouse.util.Robot;
@@ -26,6 +27,7 @@ public class JobWorth implements Comparable<JobWorth>{
 	private double metric;
 	
 	private Route route;
+	private Direction facing;
 	
 	/**
 	 * Create a new JobWorth object that contains a job and also describes
@@ -33,13 +35,15 @@ public class JobWorth implements Comparable<JobWorth>{
 	 * 
 	 * @param job the given job
 	 */
-	public JobWorth(Job job, Robot robot, Location startLocation){
+	public JobWorth(Job job, Robot robot, Location startLocation, Direction facing){
 		
 		this.job = job;
+		this.facing = facing;
 		
 		//TODO Integrate with route planning
 		//TSP tsp = new TSP();
-		//this.route = tsp.getShortestRoute(job , robot, startLocation);
+		//this.route = tsp.getShortestRoute(job , robot, startLocation, this.facing);
+		//this.facing = this.route.finalFacing;
 		
 		//Factor in the cancellation probability
 		double p = 1 - findCancellationProbability(job);
@@ -48,6 +52,21 @@ public class JobWorth implements Comparable<JobWorth>{
 		this.rewardWeight = p * rewardPerWeight(job);
 		
 		this.metric = rewardTime; //TODO focus on timestep for now, deal with weight later
+	}
+	
+	/**
+	 * Get method for the final facing.
+	 * 
+	 * @return the direction corresponding to the final facing
+	 */
+	public Direction getFinalFacing(){
+		
+		return this.facing;
+	}
+	
+	public Location getEndLocation(){
+		
+		return this.route.end;
 	}
 	
 	/**

@@ -1,10 +1,13 @@
-package warehouse.assign;
+package warehouse.select;
 
 import java.util.Collections;
 import java.util.LinkedList;
 
+import warehouse.assign.JobAssignedEvent;
+import warehouse.assign.JobCompleteEvent;
 import warehouse.job.AssignedJob;
 import warehouse.job.Job;
+import warehouse.util.Direction;
 import warehouse.util.EventDispatcher;
 import warehouse.util.Location;
 import warehouse.util.Robot;
@@ -33,6 +36,7 @@ public class JobSelectorSingle extends Thread{
 	private boolean jobComplete;
 	private LinkedList<Job> jobs;
 	private Location robotStartLocation;
+	private Direction robotFacing;
 	
 	/**
 	 * Create a job selector that chooses jobs for a single robot based on a list 
@@ -45,6 +49,8 @@ public class JobSelectorSingle extends Thread{
 		
 		this.robot = robot;
 		this.jobs = jobs;
+		
+		
 	}
 	
 	/**
@@ -64,9 +70,10 @@ public class JobSelectorSingle extends Thread{
 		
 		//TODO Add localisation?
 		Location startLocation = this.robot.position;
+		this.robotFacing = this.robot.rotation;
 		
 		//Get the list of job worths
-		LinkedList<JobWorth> jobworths = convertList(startLocation);
+		LinkedList<JobWorth> jobworths = convertList(startLocation, this.robotFacing);
 		
 		//get the best job
 		bestJob = selectBestJob(jobworths);
@@ -82,11 +89,8 @@ public class JobSelectorSingle extends Thread{
 		JobAssignedEvent e = new JobAssignedEvent(assigned, this.robot);
 		dispatcher.onEvent(e);
 
-		//TODO multiple drop locations?
-		Location dropLocation = new Location(4, 7);
-		
 		//Clear the list and calculate job worths again based on the new location
-		jobworths = convertList(dropLocation);
+		jobworths = convertList(bestJob.getEndLocation(), bestJob.getFinalFacing());
 		
 		//continuously give the best job left to the robot until there are no more jobs
 		//or it is told to stop
@@ -102,8 +106,8 @@ public class JobSelectorSingle extends Thread{
 					
 					//Clear the list and calculate job worths again based on the new location
 					startLocation = this.robot.position;
-				
-					jobworths = convertList(startLocation);
+					
+					jobworths = convertList(startLocation, this.robot.rotation);
 				
 					this.robotGotLost = false;
 				}
@@ -112,7 +116,7 @@ public class JobSelectorSingle extends Thread{
 				bestJob = selectBestJob(jobworths);
 			
 				//get rid of the best job from the list of jobs
-				this.jobs.remove(bestJob);
+				this.jobs.remove(bestJob.getJob());
 	
 				//make a new assigned job
 				assigned = assign(this.robot, bestJob);
@@ -145,7 +149,7 @@ public class JobSelectorSingle extends Thread{
 	 * @param the location the worth is based on
 	 * @return the converted list
 	 */
-	public LinkedList<JobWorth> convertList(Location startLocation){
+	public LinkedList<JobWorth> convertList(Location startLocation, Direction startFacing){
 		
 		//make an empty list of jobworths
 		LinkedList<JobWorth> jobworths = new LinkedList<JobWorth>();
@@ -153,7 +157,7 @@ public class JobSelectorSingle extends Thread{
 		//Calculate the worth of each job and add them to the list
 		for(Job job : this.jobs){
 					
-			jobworths.add(new JobWorth(job, this.robot, startLocation));
+			jobworths.add(new JobWorth(job, this.robot, startLocation, startFacing));
 		}
 		
 		return jobworths;

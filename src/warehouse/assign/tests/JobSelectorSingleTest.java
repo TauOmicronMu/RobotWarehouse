@@ -8,10 +8,10 @@ import java.util.LinkedList;
 import org.junit.Before;
 import org.junit.Test;
 
-import warehouse.assign.JobSelectorSingle;
-import warehouse.assign.JobWorth;
 import warehouse.job.AssignedJob;
 import warehouse.job.Job;
+import warehouse.select.JobSelectorSingle;
+import warehouse.select.JobWorth;
 import warehouse.util.ItemPickup;
 import warehouse.util.Location;
 import warehouse.util.Robot;
