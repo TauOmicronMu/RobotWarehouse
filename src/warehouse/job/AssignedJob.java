@@ -5,14 +5,14 @@ import warehouse.util.Location;
 import warehouse.util.Robot;
 import warehouse.util.Route;
 
-import java.util.LinkedList;
+import java.util.List;
 
 public class AssignedJob extends Job {
 
     public Route route;
     public Robot robot;
 
-    public AssignedJob(Location dropLocation, LinkedList<ItemPickup> pickups, Route route, Robot robot) {
+    public AssignedJob(Location dropLocation, List<ItemPickup> pickups, Route route, Robot robot) {
         super(dropLocation, pickups);
         this.route = route;
         this.robot = robot;
