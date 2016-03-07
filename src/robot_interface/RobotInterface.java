@@ -1,7 +1,10 @@
-package robot_interface;
+
 import lejos.nxt.Button;
+import lejos.nxt.ButtonListener;
 import lejos.nxt.LCD;
+import lejos.nxt.LCDOutputStream;
 import lejos.util.Delay;
+import rp.util.Rate;
 
 /**
  * The main class of the Robot interface
@@ -21,10 +24,26 @@ public class RobotInterface extends Thread
 		interfaceRun = new Boolean(true);
 		hasJob = new Boolean(false);
 		jobRun = new Boolean(false);
-		
 		comm = new Communication();
 
-		Button.ESCAPE.addButtonListener(new ExitListener(comm, hasJob, interfaceRun, jobRun));
+		Button.ESCAPE.addButtonListener(new ButtonListener()
+		{
+
+			@Override
+			public void buttonReleased(Button b)
+			{
+				if (!hasJob.get())
+				{
+					comm.robotOff();
+					interfaceRun.set(false);
+				}
+			}
+
+			@Override
+			public void buttonPressed(Button b)
+			{
+			}
+		});
 
 		reset();
 	}
@@ -34,9 +53,9 @@ public class RobotInterface extends Thread
 	 */
 	public void reset()
 	{
-		LCD.clear();
-		System.out.println("Waiting to get to the next pick-up location!");
-		hasJob.set(false);;
+		LCD.clearDisplay();
+		LCD.drawString("Moving around!", 0, 0);
+		hasJob.set(false);
 	}
 
 	@Override
@@ -48,19 +67,11 @@ public class RobotInterface extends Thread
 			{
 				// Start a new job
 
-				hasJob.set(true);;
-				jobRun.set(true);;
+				hasJob.set(true);
+				jobRun.set(true);
 
 				PickupJob pj = new PickupJob(comm, jobRun);
-				pj.start();
-
-				try
-				{
-					pj.join();
-				} catch (InterruptedException e)
-				{
-					e.printStackTrace();
-				}
+				pj.run();
 
 				// After finishing the job:
 				reset();
@@ -68,7 +79,8 @@ public class RobotInterface extends Thread
 			}
 
 			// Show mercy to the processor
-			Delay.msDelay(50);
+			Rate r = new Rate(20);
+			r.sleep();
 		}
 	}
 

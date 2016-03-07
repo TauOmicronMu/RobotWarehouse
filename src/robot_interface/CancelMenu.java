@@ -1,30 +1,39 @@
-package robot_interface;
+
 import lejos.nxt.Button;
 import lejos.nxt.LCD;
 
-public class CancelMenu extends Thread
+/**
+ * The cancellation menu
+ * 
+ * @author txs
+ *
+ */
+public class CancelMenu
 {
 
 	private final String[] menu =
 	{ "Cancel Job", "Wrong Place", "Back" };
 
 	private Communication comm;
-	private Boolean jobRun, running;
+	private Boolean jobRun;
 	private int selected;
+	private boolean running;
 
+	/**
+	* Constructor
+	*/
 	public CancelMenu(Communication comm, Boolean jobRun)
 	{
 		this.comm = comm;
 		this.jobRun = jobRun;
 
-		running = new Boolean(true);
+		running = true;
 		selected = 0;
 	}
 
-	@Override
 	public void run()
 	{
-		while (running.get())
+		while (running)
 		{
 			update(selected);
 			int button = Button.waitForAnyPress();
@@ -42,20 +51,24 @@ public class CancelMenu extends Thread
 					comm.wrongPlace();
 					jobRun.set(false);
 				}
-				running.set(false);
+				running = false;
 			}
 				break;
 
 			case Button.ID_ESCAPE:
-				running.set(false);
+				running = false;
+				break;
 
 			case Button.ID_LEFT:
 				if (selected > 0)
 					selected--;
+				break;
 
 			case Button.ID_RIGHT:
-				if (selected < 3)
+				if (selected < 2)
 					selected++;
+				break;
+				
 			default:
 				break;
 			}
@@ -64,14 +77,14 @@ public class CancelMenu extends Thread
 
 	private void update(int selected)
 	{
-		LCD.clear();
+		LCD.clearDisplay();
 
 		for (int i = 0; i < 3; i++)
 		{
 			if (i == selected)
-				System.out.println("-> " + menu[i]);
+				LCD.drawString("-> " + menu[i], 0, i + 1);
 			else
-				System.out.println("   " + menu[i]);
+				LCD.drawString("   " + menu[i], 0, i + 1);
 		}
 	}
 }

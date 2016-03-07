@@ -1,4 +1,4 @@
-package robot_interface;
+// NOT READY YET
 
 /**
  * The class assuring the connection between the server and the robot. This is a
@@ -8,9 +8,13 @@ package robot_interface;
 public class Communication
 {
 
+	boolean hasJob;
+
 	public Communication()
 	{
 		// TODO
+
+		hasJob = true;
 	}
 
 	/**
@@ -21,7 +25,8 @@ public class Communication
 	public boolean hasJob()
 	{
 		// TODO
-		return false;
+		
+		return hasJob;
 	}
 
 	/**
@@ -38,6 +43,8 @@ public class Communication
 	public void jobCancelled()
 	{
 		// TODO
+
+		hasJob = false;
 	}
 
 	/**
@@ -46,6 +53,8 @@ public class Communication
 	public void wrongPlace()
 	{
 		// TODO
+
+		hasJob = false;
 	}
 
 	/**
@@ -56,7 +65,8 @@ public class Communication
 	public String getItemName()
 	{
 		// TODO
-		return "";
+		
+		return "Item *01*";
 	}
 
 	/**
@@ -67,7 +77,8 @@ public class Communication
 	public int getItemNumber()
 	{
 		// TODO
-		return 0;
+		
+		return 5;
 	}
 
 	/**
@@ -76,6 +87,8 @@ public class Communication
 	public void jobDone()
 	{
 		// TODO
+
+		hasJob = false;
 	}
 
 }
