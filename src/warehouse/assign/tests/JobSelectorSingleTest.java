@@ -8,7 +8,6 @@ import java.util.LinkedList;
 import org.junit.Before;
 import org.junit.Test;
 
-import warehouse.job.AssignedJob;
 import warehouse.job.Job;
 import warehouse.select.JobSelectorSingle;
 import warehouse.select.JobWorth;
@@ -107,12 +106,4 @@ public class JobSelectorSingleTest {
 		assertEquals(testSelector.selectBestJob(jobworths), testJobWorth1);
 		assertEquals(testSelector.selectBestJob(jobworths).getJob(), testJob1);
 	}
-
-	@Test
-	public void testGetCurrentJob() {
-		
-		assertNotNull(testSelector.getCurrentJob());
-		assertEquals(testSelector.getCurrentJob(), new AssignedJob(testJobWorth1.getJob(), testJobWorth1.getRoute(), testRobot));
-	}
-
 }

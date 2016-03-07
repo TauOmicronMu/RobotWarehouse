@@ -1,6 +1,6 @@
 package warehouse.assign.tests;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.LinkedList;
 
@@ -49,12 +49,14 @@ public class JobWorthTest {
 	@Test
 	public void testGetRewardTime() {
 
+		assertNotNull(testJobWorth.getRewardTime());
 		assertEquals(testJobWorth.getRewardTime(), 10.2, 0.001);
 	}
-
+	
 	@Test
-	public void testGetRewardWeight() {
+	public void testGetMetric(){
 		
-		assertEquals(testJobWorth.getRewardWeight(), 5.1, 0.001);
+		assertNotNull(testJobWorth.getMetric());
+		assertEquals(testJobWorth.getMetric(), 10.2, 0.001);
 	}
 }

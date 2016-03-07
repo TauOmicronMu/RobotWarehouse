@@ -3,15 +3,11 @@ package warehouse.select;
 import java.util.Collections;
 import java.util.LinkedList;
 
-import warehouse.assign.JobAssignedEvent;
-import warehouse.assign.JobCompleteEvent;
-import warehouse.job.AssignedJob;
 import warehouse.job.Job;
 import warehouse.util.Direction;
 import warehouse.util.EventDispatcher;
 import warehouse.util.Location;
 import warehouse.util.Robot;
-import warehouse.util.Subscriber;
 
 
 /**
@@ -31,12 +27,12 @@ public class JobSelectorSingle extends Thread{
 
 	private Robot robot;
 	private boolean run;
-	private AssignedJob currentJob;
-	private boolean robotGotLost;
-	private boolean jobComplete;
 	private LinkedList<Job> jobs;
 	private Location robotStartLocation;
 	private Direction robotFacing;
+	
+	private LinkedList<JobWorth> convertedList;
+	private LinkedList<JobWorth> selectedList;
 	
 	/**
 	 * Create a job selector that chooses jobs for a single robot based on a list 
@@ -47,10 +43,15 @@ public class JobSelectorSingle extends Thread{
 	 */
 	public JobSelectorSingle(Robot robot, LinkedList<Job> jobs){
 		
+		//Set the fields
 		this.robot = robot;
+		this.robotStartLocation = this.robot.position;
+		this.robotFacing = this.robot.rotation;
+		
 		this.jobs = jobs;
 		
-		
+		//Start the thread
+		this.start();
 	}
 	
 	/**
@@ -59,86 +60,30 @@ public class JobSelectorSingle extends Thread{
 	@Override
 	public void run(){
 		
-		EventDispatcher.subscribe2(this);
-		
 		this.run = true;
 		
-		//Sign up to the event dispatcher
-		EventDispatcher dispatcher = EventDispatcher.INSTANCE;
+		EventDispatcher.subscribe2(this);
 		
 		JobWorth bestJob;
 		
-		//TODO Add localisation?
-		Location startLocation = this.robot.position;
-		this.robotFacing = this.robot.rotation;
-		
-		//Get the list of job worths
-		LinkedList<JobWorth> jobworths = convertList(startLocation, this.robotFacing);
-		
-		//get the best job
-		bestJob = selectBestJob(jobworths);
-		
-		//get rid of the best job from the list of jobs
-		this.jobs.remove(bestJob.getJob());
-
-		//make a new assigned job
-		AssignedJob assigned = assign(this.robot, bestJob);
-		this.currentJob = assigned;
-		
-		//send the assigned job to subscribers
-		JobAssignedEvent e = new JobAssignedEvent(assigned, this.robot);
-		dispatcher.onEvent(e);
-
-		//Clear the list and calculate job worths again based on the new location
-		jobworths = convertList(bestJob.getEndLocation(), bestJob.getFinalFacing());
-		
-		//continuously give the best job left to the robot until there are no more jobs
-		//or it is told to stop
 		while(run && (this.jobs.size() > 0)){
 			
-			//If the robot has completed a job and now has no assigned job, give it a new one
-			if(this.jobComplete){
-				
-				//If the robot is not going to start its next job from the drop location as it got lost
-				if(robotGotLost){
+			//convert it into a list of jobworths
+			this.convertedList = this.convertList(this.robotStartLocation, this.robotFacing);
 			
-					//TODO wait for localisation event?
-					
-					//Clear the list and calculate job worths again based on the new location
-					startLocation = this.robot.position;
-					
-					jobworths = convertList(startLocation, this.robot.rotation);
-				
-					this.robotGotLost = false;
-				}
+			//get the best one
+			bestJob = Collections.max(this.convertedList);
 			
-				//get the best job
-				bestJob = selectBestJob(jobworths);
+			//remove it from the reference job list
+			this.jobs.remove(bestJob.getJob());
 			
-				//get rid of the best job from the list of jobs
-				this.jobs.remove(bestJob.getJob());
-	
-				//make a new assigned job
-				assigned = assign(this.robot, bestJob);
-				this.currentJob = assigned;
+			//add it to the list of selected jobs
+			this.selectedList.add(bestJob);
 			
-				//send the assigned job to route execution?
-				e = new JobAssignedEvent(assigned, this.robot);
-				dispatcher.onEvent(e);
-				
-				this.jobComplete = false;
-				
-			}
+			this.robotStartLocation = bestJob.getRoute().end;
 			
-			try {
-				
-				Thread.sleep(100);
-				
-			} catch (InterruptedException e1) {
-				
-				//Sleep was interrupted for some reason
-				e1.printStackTrace();
-			}
+			//FIXME add endFacing field in route
+			//this.robotFacing = bestJob.getRoute().endFacing;
 		}
 	}
 	
@@ -161,54 +106,17 @@ public class JobSelectorSingle extends Thread{
 		}
 		
 		return jobworths;
-	} 
+	}
 	
 	/**
-	 * Get the best job worth based on a list of job worths
+	 * Get the best job worth from a given list
 	 * 
 	 * @param jobworths the list of job worths
-	 * @return the best job worth
+	 * @return the best one
 	 */
 	public JobWorth selectBestJob(LinkedList<JobWorth> jobworths){
 		
 		return Collections.max(jobworths);
-	}
-	
-	/**
-	 * Method to listen for robot getting lost, and localising to a new location
-	 * 
-	 * @param l the new location
-	 */
-	@Subscriber
-	private void onRobotLost(Location l){
-		
-		//TODO integrate with localisation
-		this.robotStartLocation = l;
-		this.robotGotLost = true;
-	}
-	
-	/**
-	 * Method to listen for robot having finished last job
-	 * 
-	 * @param e the job finished event
-	 */
-	@Subscriber
-	private void onJobComplete(JobCompleteEvent e){
-		
-		this.jobComplete = true;
-		this.robotStartLocation = e.getLocation();
-	}
-	
-	/**
-	 * Helper method to create a new assigned job for the robot.
-	 * 
-	 * @param robot the robot
-	 * @param job the job to be assigned
-	 * @return an AssignedJob object
-	 */
-	private AssignedJob assign(Robot robot, JobWorth jobWorth){
-		
-		return new AssignedJob(jobWorth.getJob(), jobWorth.getRoute(), robot);
 	}
 	
 	/**
@@ -218,14 +126,14 @@ public class JobSelectorSingle extends Thread{
 		
 		this.run = false;
 	}
-	
+
 	/**
-	 * Method to get the current assigned job the selector has chosen
+	 * Method to get the current list of jobs to perform
 	 * 
-	 * @return the current assigned job
+	 * @return the current list of selected jobs
 	 */
-	public AssignedJob getCurrentJob(){
+	public LinkedList<JobWorth> getSelectedList() {
 		
-		return this.currentJob;
+		return this.selectedList;
 	}
 }

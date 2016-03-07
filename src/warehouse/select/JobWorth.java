@@ -48,10 +48,9 @@ public class JobWorth implements Comparable<JobWorth>{
 		//Factor in the cancellation probability
 		double p = 1 - findCancellationProbability(job);
 		
-		this.rewardTime = p * rewardPerTimeStep(job);
-		this.rewardWeight = p * rewardPerWeight(job);
-		
-		this.metric = rewardTime; //TODO focus on timestep for now, deal with weight later
+		this.rewardTime = rewardPerTimeStep(job);
+	
+		this.metric = p * rewardTime; //TODO focus on timestep for now, deal with weight later
 	}
 	
 	/**
@@ -99,16 +98,7 @@ public class JobWorth implements Comparable<JobWorth>{
 	}
 
 	/**
-	 * Get method for reward per weight.
-	 * 
-	 * @return the reward per weight
-	 */
-	public double getRewardWeight() {
-		return rewardWeight;
-	}
-
-	/**
-	 * Get method for average of the two reward values.
+	 * Get method for cancellation probability incorporated with reward values.
 	 * 
 	 * @return the average reward for the job
 	 */
@@ -153,37 +143,6 @@ public class JobWorth implements Comparable<JobWorth>{
 		int bestDistance = this.route.totalDistance;
 		
 		return (sumReward/bestDistance);
-	}
-	
-	/**
-	 * Helper method to calculate the reward per weight.
-	 * 
-	 * @param job the given job
-	 * @return the reward per weight
-	 */
-	private double rewardPerWeight(Job job){
-		
-		/*reward per weight = 
-		 * 
-		 *  sum from 1 to k (number of pickups) of:
-		 *  	
-		 *  	number of items * reward per item
-		 * 	
-		 * Divided by:
-		 * 
-		 * 	number of items * item weight
-		 */
-		
-		double sumReward = 0; 
-		double sumWeight = 0;
-		
-		for(ItemPickup pickup : job.pickups){
-			
-			sumReward += (pickup.itemCount * pickup.reward);
-			sumWeight += (pickup.itemCount * pickup.weight);
-		}
-		
-		return (sumReward/sumWeight);
 	}
 	
 	/**
