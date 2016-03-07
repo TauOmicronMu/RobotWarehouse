@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import warehouse.job.Job;
 import warehouse.select.JobWorth;
+import warehouse.util.Direction;
 import warehouse.util.ItemPickup;
 import warehouse.util.Location;
 import warehouse.util.Robot;
@@ -24,7 +25,7 @@ public class JobWorthTest {
 	public void setUp(){
 		
 		testLocation = new Location(4, 7);
-		testRobot = new Robot("testrobot", testLocation);
+		testRobot = new Robot("testrobot", testLocation, Direction.NORTH);
 		
 		LinkedList<ItemPickup> pickups = new LinkedList<ItemPickup>();
 		
@@ -42,7 +43,7 @@ public class JobWorthTest {
 		
 		testJob = new Job(new Location(5, 5), pickups);
 		
-		testJobWorth = new JobWorth(testJob, testRobot, testLocation);
+		testJobWorth = new JobWorth(testJob, testRobot, testLocation, Direction.NORTH);
 	}
 	
 	@Test

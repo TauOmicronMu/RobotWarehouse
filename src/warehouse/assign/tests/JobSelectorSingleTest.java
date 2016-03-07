@@ -12,6 +12,7 @@ import warehouse.job.AssignedJob;
 import warehouse.job.Job;
 import warehouse.select.JobSelectorSingle;
 import warehouse.select.JobWorth;
+import warehouse.util.Direction;
 import warehouse.util.ItemPickup;
 import warehouse.util.Location;
 import warehouse.util.Robot;
@@ -72,7 +73,7 @@ public class JobSelectorSingleTest {
 		testJob3 = new Job(new Location(2, 2), pickups3);
 		
 		testLocation = new Location(0, 0);
-		testRobot = new Robot("testrobot", testLocation);
+		testRobot = new Robot("testrobot", testLocation, Direction.NORTH);
 		LinkedList<Job> jobs = new LinkedList<Job>();
 		
 		jobs.add(testJob1);
@@ -81,9 +82,9 @@ public class JobSelectorSingleTest {
 		
 		testSelector = new JobSelectorSingle(testRobot, jobs);
 		
-		testJobWorth1 = new JobWorth(testJob1, testRobot, testLocation);
-		JobWorth testJobWorth2 = new JobWorth(testJob2, testRobot, testLocation);
-		JobWorth testJobWorth3 = new JobWorth(testJob3, testRobot, testLocation);
+		testJobWorth1 = new JobWorth(testJob1, testRobot, testLocation, Direction.NORTH);
+		JobWorth testJobWorth2 = new JobWorth(testJob2, testRobot, testLocation, Direction.NORTH);
+		JobWorth testJobWorth3 = new JobWorth(testJob3, testRobot, testLocation, Direction.NORTH);
 		
 		jobworths = new LinkedList<JobWorth>();
 		
@@ -95,8 +96,8 @@ public class JobSelectorSingleTest {
 	@Test
 	public void testConvertList() {
 		
-		assertNotNull(testSelector.convertList(testLocation));
-		assertEquals(testSelector.convertList(testLocation), jobworths);
+		assertNotNull(testSelector.convertList(testLocation, Direction.NORTH));
+		assertEquals(testSelector.convertList(testLocation, Direction.NORTH), jobworths);
 	}
 
 	@Test
