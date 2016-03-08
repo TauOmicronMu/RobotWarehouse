@@ -13,6 +13,7 @@ public class Job {
     public Job(Location dropLocation, List<ItemPickup> pickups) {
         this.dropLocation = dropLocation;
         this.pickups = pickups;
+
     }
     
     public boolean isAssigned() {
