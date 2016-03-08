@@ -17,14 +17,14 @@ public class JobInput {
         	while(scanner.hasNextLine()) {
         		String line = scanner.nextLine();
        			String[] values = line.split(",");
-       			// Add the item location to the hash map using the values array
+       			// TODO: Add the item location to the hash map using the values array
        			// values[0] = item name, values[1] = x coordinate, values[2] = y coordinate
         	}
         	
-        	// Parse items file and intitialise each item pickup with the locations from itemLocations
+        	// TODO: Parse items file and intitialise each item pickup with the locations from itemLocations
         	// ...
         	
-        	// Parse jobs file and get ach pickup from the hash map created when parsing the items file
+        	// TODO: Parse jobs file and get each pickup from the hash map created when parsing the items file
         	// ...
         }
     }
