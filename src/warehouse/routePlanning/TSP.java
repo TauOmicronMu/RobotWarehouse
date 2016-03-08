@@ -42,18 +42,8 @@ public class TSP {
 	 * @return optional type which should contain the optimal route
 	 */
 	public Optional<Route> getShortestRoute(Job job, Location start, Direction facing) {
-		// TODO Include weight and direction of facing into TSP: must return to
-		// the drop off location iff weight gets too large and the start facing
-		// is based on the end facing of the previous route
-
-		return Optional.empty();
-	}
-
-	// Current method used
-	// Currently works but is not the final system
-	public LinkedList<Edge> getShortestRoute(Job j, Location startLocation) {
 		// builds full list of locations
-		allLocations = makeListLocations(j, startLocation);
+		allLocations = makeListLocations(job, start);
 
 		// gets the number of locations to visit
 		numberOfLocations = allLocations.size();
@@ -64,7 +54,7 @@ public class TSP {
 		adjacencyMatrix = initiateMatrix(adjacencyMatrix);
 
 		// gives these matrices their initial values
-		adjacencyMatrix = setUpMatrices(adjacencyMatrix, allLocations, startLocation, j.dropLocation);
+		adjacencyMatrix = setUpMatrices(adjacencyMatrix, allLocations, start, job.dropLocation);
 
 		// initialises array of the amount of edges left available to each node
 		int[] edgesLeft = new int[numberOfLocations];
@@ -95,12 +85,15 @@ public class TSP {
 		// return new Route(moves, startingPosition, j.dropLocation);
 		int pos = 0;
 		for (int i = 0; i < bestRoute.size(); i++) {
-			if (bestRoute.get(i).getStart().equals(startLocation) && bestRoute.get(i).getEnd().equals(j.dropLocation)) {
+			if (bestRoute.get(i).getStart().equals(start) && bestRoute.get(i).getEnd().equals(job.dropLocation)) {
 				pos = i;
 			}
 		}
 		bestRoute.remove(pos);
-		return bestRoute;
+
+		LinkedList<Location> path = createLocationList(start);
+
+		return s.getRoute(path, facing);
 	}
 
 	/**
@@ -158,9 +151,6 @@ public class TSP {
 			Location end) {
 		for (int Node1 = 0; Node1 < allLocations.size() - 1; Node1++) {
 			for (int Node2 = Node1 + 1; Node2 < allLocations.size(); Node2++) {
-				// THIS NEEDS TO BE CHANGED DIRECTION NEEDS TO BE KEPT TRACK OF
-				// METHODS NEED TO BE CHANGED TO FIND BEST ROUTE GIVEN LOCATION
-				// ARRIVES IN PREVIOUS NODE
 
 				// dummy edge to ensure end linked to start for removal later
 				if (allLocations.get(Node1).equals(start) && allLocations.get(Node2).equals(end)) {
@@ -168,12 +158,11 @@ public class TSP {
 					adjacencyMatrix[Node2][Node1] = 0;
 				} else {
 					// normal creation
-					Optional<Route> foundRoute = s.getRoute(allLocations.get(Node1), allLocations.get(Node2),
-							Direction.NORTH);
-					if (foundRoute.isPresent()) {
-						Route r = foundRoute.get();
-						adjacencyMatrix[Node1][Node2] = r.totalDistance;
-						adjacencyMatrix[Node2][Node1] = r.totalDistance;
+					Optional<Integer> foundDistance = s.getEstimatedDistance(allLocations.get(Node1),
+							allLocations.get(Node2));
+					if (foundDistance.isPresent()) {
+						adjacencyMatrix[Node1][Node2] = foundDistance.get();
+						adjacencyMatrix[Node2][Node1] = foundDistance.get();
 					} else {
 						System.err.println("Could not find a route in adjMatrix between: " + Node1 + " and " + Node2);
 					}
@@ -282,5 +271,35 @@ public class TSP {
 				// prune only the second route
 			}
 		}
+	}
+	
+	private LinkedList<Location> createLocationList(Location start) {
+		LinkedList<Location> path = new LinkedList<Location>();
+		
+		Location [][] positions = new Location[bestRoute.size()][2];
+		for(int x = 0; x < bestRoute.size(); x++){
+			positions[x][0] = bestRoute.get(x).getStart();
+			positions[x][1] = bestRoute.get(x).getEnd();
+		}
+		
+		return addNext(start, positions, path);
+	}
+	
+	private LinkedList<Location> addNext(Location toFind, Location[][] positions, LinkedList<Location> path){
+		System.out.println("To Find: " +toFind.x +", " + toFind.y);
+		for(int x = 0; x < positions.length; x++){
+			for (int y = 0; y < 2; y++) {
+                if (positions[x][y].x == toFind.x && positions[x][y].y == toFind.y) {
+                	Location next = new Location (positions[x][1 - y].x, positions[x][1 - y].y) ;
+                	System.out.println("next: " + next.x +", " + next.y);
+                	positions[x][0] = new Location(-1, -1);
+                	positions[x][1] = new Location(-1, -1);
+                	
+                	path.addAll(addNext(next, positions, path));
+                	path.add(toFind);
+                }
+            }
+		}
+		return path;
 	}
 }
