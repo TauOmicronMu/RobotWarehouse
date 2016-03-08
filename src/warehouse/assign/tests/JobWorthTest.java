@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import warehouse.job.Job;
-import warehouse.select.JobWorth;
+import warehouse.jobselection.JobWorth;
 import warehouse.util.Direction;
 import warehouse.util.ItemPickup;
 import warehouse.util.Location;
