@@ -2,6 +2,10 @@ package warehouse.jobselection;
 
 import java.util.LinkedList;
 
+import warehouse.event.BeginAssigningEvent;
+import warehouse.event.JobAssignedEvent;
+import warehouse.event.JobCancellationEvent;
+import warehouse.event.JobCompleteEvent;
 import warehouse.job.AssignedJob;
 import warehouse.job.Job;
 import warehouse.util.EventDispatcher;

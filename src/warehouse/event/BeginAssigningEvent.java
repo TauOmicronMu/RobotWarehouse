@@ -1,4 +1,4 @@
-package warehouse.jobselection;
+package warehouse.event;
 
 /**
  * Event to be passed when the robot is ready to be assigned jobs

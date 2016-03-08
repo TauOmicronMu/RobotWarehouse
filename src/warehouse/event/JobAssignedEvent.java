@@ -1,4 +1,4 @@
-package warehouse.jobselection;
+package warehouse.event;
 
 import warehouse.job.AssignedJob;
 import warehouse.util.Robot;

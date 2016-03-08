@@ -1,4 +1,4 @@
-package warehouse.jobselection;
+package warehouse.event;
 
 import warehouse.util.Location;
 
