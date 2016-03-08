@@ -1,5 +1,7 @@
 package com.github.samtebbs33.net;
 
+import com.sun.tools.doclets.internal.toolkit.util.DocFinder;
+
 import java.io.*;
 import java.net.Socket;
 
@@ -11,12 +13,10 @@ public class SocketStream implements Closeable {
     public long id;
     private ObjectInputStream in;
     private ObjectOutputStream out;
-    private Socket socket;
 
-    public SocketStream(Socket socket) throws IOException {
-        this.socket = socket;
-        this.out = new ObjectOutputStream(socket.getOutputStream());
-        this.in = new ObjectInputStream(socket.getInputStream());
+    public SocketStream(OutputStream out, InputStream in) throws IOException {
+        this.out = new ObjectOutputStream(out);
+        this.in = new ObjectInputStream(in);
     }
 
     public void write(Serializable obj) throws IOException {
@@ -31,6 +31,5 @@ public class SocketStream implements Closeable {
     public void close() throws IOException {
         in.close();
         out.close();
-        socket.close();
     }
 }
