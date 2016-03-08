@@ -1,4 +1,4 @@
-package warehouse.assign.tests;
+package warehouse.jobselection.tests;
 
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;

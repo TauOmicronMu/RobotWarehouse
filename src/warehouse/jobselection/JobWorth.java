@@ -1,4 +1,4 @@
-package warehouse.select;
+package warehouse.jobselection;
 
 import warehouse.job.Job;
 import warehouse.util.Direction;

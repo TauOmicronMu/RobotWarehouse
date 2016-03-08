@@ -1,4 +1,4 @@
-package warehouse.select;
+package warehouse.jobselection;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -9,121 +9,126 @@ import warehouse.util.EventDispatcher;
 import warehouse.util.Location;
 import warehouse.util.Robot;
 
-
 /**
  * 
  * JOB SELECTION - (JobSelectorSingle class):
  * 
  * Created by Owen on 28/02/2016
  * 
- * Preliminary class to:
- * -Select the best job for a single robot
+ * Preliminary class to: 
+ * -Select the best job for a single robot 
  * -Base selection on the 'worth' of a job
  * 
  * @author Owen
  *
  */
-public class JobSelectorSingle extends Thread{
+public class JobSelectorSingle extends Thread {
 
 	private Robot robot;
 	private boolean run;
 	private LinkedList<Job> jobs;
 	private Location robotStartLocation;
 	private Direction robotFacing;
-	
+
 	private LinkedList<JobWorth> convertedList;
 	private LinkedList<JobWorth> selectedList;
-	
+
 	/**
-	 * Create a job selector that chooses jobs for a single robot based on a list 
-	 * of available jobs.
+	 * Create a job selector that chooses jobs for a single robot based on a
+	 * list of available jobs.
 	 * 
-	 * @param robot the robot
-	 * @param jobs the list of available jobs
+	 * @param robot
+	 *            the robot
+	 * @param jobs
+	 *            the list of available jobs
 	 */
-	public JobSelectorSingle(Robot robot, LinkedList<Job> jobs){
-		
-		//Set the fields
+	public JobSelectorSingle(Robot robot, LinkedList<Job> jobs) {
+
+		// Set the fields
 		this.robot = robot;
 		this.robotStartLocation = this.robot.position;
 		this.robotFacing = this.robot.rotation;
-		
+
 		this.jobs = jobs;
-		
-		//Start the thread
+
+		// Start the thread
 		this.start();
 	}
-	
+
 	/**
-	 * Method to run when the thread starts - continuously picks jobs for the robot.
+	 * Method to run when the thread starts - continuously picks jobs for the
+	 * robot.
 	 */
 	@Override
-	public void run(){
-		
+	public void run() {
+
 		this.run = true;
-		
+
 		EventDispatcher.subscribe2(this);
-		
+
 		JobWorth bestJob;
-		
-		while(run && (this.jobs.size() > 0)){
-			
-			//convert it into a list of jobworths
+
+		while (run && (this.jobs.size() > 0)) {
+
+			// convert it into a list of jobworths
 			this.convertedList = this.convertList(this.robotStartLocation, this.robotFacing);
-			
-			//get the best one
+
+			// get the best one
 			bestJob = Collections.max(this.convertedList);
-			
-			//remove it from the reference job list
+
+			// remove it from the reference job list
 			this.jobs.remove(bestJob.getJob());
-			
-			//add it to the list of selected jobs
+
+			// add it to the list of selected jobs
 			this.selectedList.add(bestJob);
-			
+
 			this.robotStartLocation = bestJob.getRoute().end;
-			
-			//FIXME add endFacing field in route
-			//this.robotFacing = bestJob.getRoute().endFacing;
+
+			// FIXME add endFacing field in route
+			// this.robotFacing = bestJob.getRoute().endFacing;
 		}
 	}
-	
+
 	/**
-	 * Convert the list of jobs into a list of jobworth objects
-	 * based on the location given
+	 * Convert the list of jobs into a list of jobworth objects based on the
+	 * location given
 	 * 
-	 * @param the location the worth is based on
+	 * @param the
+	 *            location the worth is based on
 	 * @return the converted list
 	 */
-	public LinkedList<JobWorth> convertList(Location startLocation, Direction startFacing){
-		
-		//make an empty list of jobworths
+	public LinkedList<JobWorth> convertList(Location startLocation, Direction startFacing) {
+
+		// make an empty list of jobworths
 		LinkedList<JobWorth> jobworths = new LinkedList<JobWorth>();
-		
-		//Calculate the worth of each job and add them to the list
-		for(Job job : this.jobs){
-					
+
+		// Calculate the worth of each job and add them to the list
+		for (Job job : this.jobs) {
+
 			jobworths.add(new JobWorth(job, this.robot, startLocation, startFacing));
 		}
-		
+
 		return jobworths;
 	}
-	
+
 	/**
 	 * Get the best job worth from a given list
 	 * 
-	 * @param jobworths the list of job worths
+	 * @param jobworths
+	 *            the list of job worths
 	 * @return the best one
 	 */
-	public JobWorth selectBestJob(LinkedList<JobWorth> jobworths){
-		
+	public JobWorth selectBestJob(LinkedList<JobWorth> jobworths) {
+
 		return Collections.max(jobworths);
 	}
-	
+
 	/**
-	 * Method to allow the selector to be stopped before the list of jobs is empty.
+	 * Method to allow the selector to be stopped before the list of jobs is
+	 * empty.
 	 */
-	public void stopSelection(){
-		
+	public void stopSelection() {
+
 		this.run = false;
 	}
 
@@ -133,7 +138,7 @@ public class JobSelectorSingle extends Thread{
 	 * @return the current list of selected jobs
 	 */
 	public LinkedList<JobWorth> getSelectedList() {
-		
+
 		return this.selectedList;
 	}
 }

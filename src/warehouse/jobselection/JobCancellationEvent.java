@@ -1,4 +1,4 @@
-package warehouse.assign;
+package warehouse.jobselection;
 
 public class JobCancellationEvent {
 
