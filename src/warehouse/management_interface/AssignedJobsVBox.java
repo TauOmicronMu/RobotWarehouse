@@ -1,4 +1,4 @@
-package gui;
+package warehouse.management_interface;
 
 import javafx.scene.control.Button;
 

@@ -1,4 +1,4 @@
-package gui;
+package warehouse.management_interface;
 
 import java.awt.Dimension;
 

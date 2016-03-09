@@ -1,4 +1,4 @@
-package gui;
+package warehouse.management_interface;
 
 import warehouse.job.Job;
 import warehouse.util.Robot;

@@ -1,4 +1,4 @@
-package gui;
+package warehouse.management_interface;
 
 import java.util.List;
 import java.util.Observable;

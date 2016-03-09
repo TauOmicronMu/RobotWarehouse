@@ -1,4 +1,4 @@
-package gui;
+package warehouse.management_interface;
 
 import java.util.ArrayList;
 import java.util.List;
