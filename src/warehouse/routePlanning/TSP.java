@@ -281,22 +281,22 @@ public class TSP {
 			positions[x][0] = bestRoute.get(x).getStart();
 			positions[x][1] = bestRoute.get(x).getEnd();
 		}
-		
 		return addNext(start, positions, path);
 	}
 	
 	private LinkedList<Location> addNext(Location toFind, Location[][] positions, LinkedList<Location> path){
 		System.out.println("To Find: " +toFind.x +", " + toFind.y);
+		path.add(toFind);
 		for(int x = 0; x < positions.length; x++){
 			for (int y = 0; y < 2; y++) {
                 if (positions[x][y].x == toFind.x && positions[x][y].y == toFind.y) {
+                	
                 	Location next = new Location (positions[x][1 - y].x, positions[x][1 - y].y) ;
                 	System.out.println("next: " + next.x +", " + next.y);
                 	positions[x][0] = new Location(-1, -1);
                 	positions[x][1] = new Location(-1, -1);
-                	
-                	path.addAll(addNext(next, positions, path));
-                	path.add(toFind);
+       
+                	addNext(next, positions, path);
                 }
             }
 		}

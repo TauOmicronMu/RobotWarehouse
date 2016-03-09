@@ -80,7 +80,7 @@ public class Search {
 
 		// keeps appending sections of route to the final route until all
 		// locations have been visited
-		Direction currentFacing = facing;
+		Direction currentFacing = currentEdge.get().getLast().getFacing();
 		for (int edge = 1; edge < toVisit.size() -1; edge++) {
 			currentEdge = getEdge(toVisit.get(edge), toVisit.get(edge + 1), currentFacing);
 			if (currentEdge.isPresent()) {
@@ -432,14 +432,14 @@ public class Search {
 			// checks the type of action to add to the route
 			if (previousFacing.equals(currentFacing)) {
 				if (previousLocation.x == currentLocation.x && previousLocation.y == currentLocation.y) {
-					path.addFirst(new IdleAction(1));
+					path.add(new IdleAction(1));
 				} else {
-					path.addFirst(new MoveAction(1, previousLocation));
+					path.add(new MoveAction(1, currentLocation));
 				}
 			} else if (previousFacing.turnLeft().equals(currentFacing)) {
-				path.addFirst(new TurnAction(90));
+				path.add(new TurnAction(90));
 			} else {
-				path.addFirst(new TurnAction(-90));
+				path.add(new TurnAction(-90));
 			}
 		}
 
