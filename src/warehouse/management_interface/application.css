@@ -1,0 +1,21 @@
+.root{
+   
+   -fx-background-image: url("../../../resources/robo_gui_bg.png");
+  
+  
+    
+}
+
+
+
+.button{
+    -fx-background-color: white;
+    -fx-text-fill: #3098b5;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-border-width: 1px;
+    -fx-border-color: #CCCCCC #CCCCCC #CCCCCC #CCCCCC;
+    
+
+
+}

@@ -14,7 +14,7 @@ import java.util.Set;
 /**
  * Created by samtebbs on 30/01/2016.
  */
-public abstract class Server implements SocketEventListener, Startable, Closeable {
+public abstract class Server implements SocketEventListener, Closeable {
 
     String[] robotNames = {"squirtle", "charmander", "bulbasaur"};
 

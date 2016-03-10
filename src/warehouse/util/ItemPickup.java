@@ -15,4 +15,10 @@ public class ItemPickup {
         this.location = location;
         this.itemCount = itemCount;
     }
+    
+    @Override
+    public Object clone() {
+        return new ItemPickup(itemName, location, itemCount);
+    }
+    
 }
