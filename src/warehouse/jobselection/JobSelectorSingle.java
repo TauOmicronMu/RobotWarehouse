@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 
 import warehouse.job.Job;
+import warehouse.jobselection.cancellation.CancellationMachine;
 import warehouse.util.Direction;
 import warehouse.util.EventDispatcher;
 import warehouse.util.Location;
@@ -32,6 +33,8 @@ public class JobSelectorSingle extends Thread {
 
 	private LinkedList<JobWorth> convertedList;
 	private LinkedList<JobWorth> selectedList;
+	
+	private CancellationMachine cancellationMachine;
 
 	/**
 	 * Create a job selector that chooses jobs for a single robot based on a
@@ -42,13 +45,15 @@ public class JobSelectorSingle extends Thread {
 	 * @param jobs
 	 *            the list of available jobs
 	 */
-	public JobSelectorSingle(Robot robot, LinkedList<Job> jobs) {
+	public JobSelectorSingle(Robot robot, LinkedList<Job> jobs, CancellationMachine cancellationMachine) {
 
 		// Set the fields
 		this.robot = robot;
 		this.robotStartLocation = this.robot.position;
 		this.robotFacing = this.robot.rotation;
 
+		this.cancellationMachine = cancellationMachine;
+		
 		this.jobs = jobs;
 
 		// Start the thread
@@ -105,7 +110,14 @@ public class JobSelectorSingle extends Thread {
 		// Calculate the worth of each job and add them to the list
 		for (Job job : this.jobs) {
 
-			jobworths.add(new JobWorth(job, this.robot, startLocation, startFacing));
+			JobWorth jobworth = new JobWorth(job, this.robot, startLocation, startFacing);
+			
+			double metric = jobworth.getMetric();
+			double p = 1 - this.cancellationMachine.getProbability(jobworth);
+			
+			jobworth.setMetric(p * metric);
+			
+			jobworths.add(jobworth);
 		}
 
 		return jobworths;

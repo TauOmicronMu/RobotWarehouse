@@ -8,6 +8,8 @@ import warehouse.event.JobCancellationEvent;
 import warehouse.event.JobCompleteEvent;
 import warehouse.job.AssignedJob;
 import warehouse.job.Job;
+import warehouse.jobselection.cancellation.CancellationMachine;
+import warehouse.jobselection.cancellation.NaiveBayes;
 import warehouse.util.EventDispatcher;
 import warehouse.util.Location;
 import warehouse.util.Robot;
@@ -38,6 +40,8 @@ public class JobAssignerSingle extends Thread {
 	private LinkedList<JobWorth> assignJobs;
 	private AssignedJob currentJob;
 	private boolean jobCancelled;
+	
+	private CancellationMachine cancellationMachine;
 
 	/**
 	 * Create a new Job Assigner for a single robot based on a list of jobs
@@ -57,6 +61,8 @@ public class JobAssignerSingle extends Thread {
 		this.jobCancelled = false;
 		this.robotGotLost = false;
 
+		this.cancellationMachine = new NaiveBayes(jobs);
+		
 		// Begin the thread
 		this.start();
 	}
@@ -80,7 +86,7 @@ public class JobAssignerSingle extends Thread {
 
 			if (this.readyToStart) {
 
-				this.selector = new JobSelectorSingle(this.robot, this.jobs);
+				this.selector = new JobSelectorSingle(this.robot, this.jobs, this.cancellationMachine);
 
 				try {
 					Thread.sleep(100);
@@ -96,10 +102,10 @@ public class JobAssignerSingle extends Thread {
 					if (this.jobComplete || this.jobCancelled) {
 
 						// If the robot is not going to start its next job from
-						// the drop location as it got lost
+						// the drop location as it got lost or the job was cancelled
 						if (this.robotGotLost || this.jobCancelled) {
 
-							this.selector = new JobSelectorSingle(this.robot, this.jobs);
+							this.selector = new JobSelectorSingle(this.robot, this.jobs, this.cancellationMachine);
 							this.robotGotLost = false;
 							this.jobCancelled = false;
 

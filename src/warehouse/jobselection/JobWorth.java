@@ -45,12 +45,9 @@ public class JobWorth implements Comparable<JobWorth>{
 		//this.route = tsp.getShortestRoute(job , robot, startLocation, this.facing);
 		//this.facing = this.route.finalFacing;
 		
-		//Factor in the cancellation probability
-		double p = 1 - findCancellationProbability(job);
-		
 		this.rewardTime = rewardPerTimeStep(job);
 	
-		this.metric = p * rewardTime; //TODO focus on timestep for now, deal with weight later
+		this.metric = rewardTime; //TODO focus on timestep for now, deal with weight later
 	}
 	
 	/**
@@ -63,6 +60,11 @@ public class JobWorth implements Comparable<JobWorth>{
 		return this.facing;
 	}
 	
+	/**
+	 * Get method for the end location of the route
+	 * 
+	 * @return the location at the end of the route
+	 */
 	public Location getEndLocation(){
 		
 		return this.route.end;
@@ -105,6 +107,16 @@ public class JobWorth implements Comparable<JobWorth>{
 	public double getMetric() {
 		return metric;
 	}
+	
+	/**
+	 * Set the metric for this jobworth
+	 * 
+	 * @param metric the metric for this job
+	 */
+	public void setMetric(double metric){
+		
+		this.metric = metric;
+	}
 
 	/**
 	 * To String method.
@@ -143,18 +155,6 @@ public class JobWorth implements Comparable<JobWorth>{
 		int bestDistance = this.route.totalDistance;
 		
 		return (sumReward/bestDistance);
-	}
-	
-	/**
-	 * Helper method to find the cancellation probability
-	 * 
-	 * @param job the given job
-	 * @return the cancellation probability
-	 */
-	private double findCancellationProbability(Job job){
-		
-		//TODO calculate the cancellation probability for a job
-		return 0;
 	}
 
 	@Override

@@ -11,6 +11,7 @@ import org.junit.Test;
 import warehouse.job.Job;
 import warehouse.jobselection.JobSelectorSingle;
 import warehouse.jobselection.JobWorth;
+import warehouse.jobselection.cancellation.NaiveBayes;
 import warehouse.util.Direction;
 import warehouse.util.ItemPickup;
 import warehouse.util.Location;
@@ -79,7 +80,7 @@ public class JobSelectorSingleTest {
 		jobs.add(testJob2);
 		jobs.add(testJob3);
 		
-		testSelector = new JobSelectorSingle(testRobot, jobs);
+		testSelector = new JobSelectorSingle(testRobot, jobs, new NaiveBayes(null)); //TODO test cancellation?
 		
 		testJobWorth1 = new JobWorth(testJob1, testRobot, testLocation, Direction.NORTH);
 		JobWorth testJobWorth2 = new JobWorth(testJob2, testRobot, testLocation, Direction.NORTH);
