@@ -9,11 +9,11 @@ public class Job {
 
     public Location dropLocation;
     public List<ItemPickup> pickups;
+    public boolean cancelledInTrainingSet;
 
     public Job(Location dropLocation, List<ItemPickup> pickups) {
         this.dropLocation = dropLocation;
         this.pickups = pickups;
-
     }
     
     public boolean isAssigned() {
