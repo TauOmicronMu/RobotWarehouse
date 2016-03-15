@@ -1,13 +1,11 @@
 package samtebbs33.net;
 
-import samtebbs33.net.event.SocketEvent;
-import samtebbs33.net.event.SocketEventListener;
-import samtebbs33.net.event.SocketEventManager;
+import com.github.samtebbs33.net.event.SocketEvent;
+import com.github.samtebbs33.net.event.SocketEventListener;
+import com.github.samtebbs33.net.event.SocketEventManager;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.ConnectException;
-import java.net.Socket;
 import java.net.SocketException;
 
 /**
@@ -15,26 +13,12 @@ import java.net.SocketException;
  */
 public abstract class Client implements SocketEventListener {
 
-    protected final String ip;
-    protected final int port;
     private SocketStream stream;
 
-    public Client(String ip, int port, int timeout) throws IOException {
-        this.ip = ip;
-        this.port = port;
-        try {
-            Socket socket = new Socket(ip, port);
-            socket.setSoTimeout(timeout);
-            stream = new SocketStream(socket);
-            SocketEventManager eventManager = new SocketEventManager(stream);
-            eventManager.addListener(this);
-            eventManager.start();
-            onConnected();
-        } catch (ConnectException e) {
-            onConnectionRefused(new SocketEvent(stream));
-        } catch (SocketException e) {
-            onDisconnection(new SocketEvent.SocketExceptionEvent(stream, e));
-        }
+    public Client(String name) throws IOException {
+        NXTConnection conn = Bluetooth.waitForConnection();
+        stream = new SocketStream(conn.openDataOutputStream(), conn.openDataInputStream());
+        onConnected();
     }
 
     /**

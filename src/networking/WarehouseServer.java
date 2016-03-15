@@ -5,8 +5,8 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.github.samtebbs33.net.Server;
-import com.github.samtebbs33.net.SocketStream;
+import samtebbs33.net.Server;
+import samtebbs33.net.SocketStream;
 import com.github.samtebbs33.net.event.SocketEvent;
 import com.github.samtebbs33.net.event.SocketEvent.SocketExceptionEvent;
 import com.github.samtebbs33.net.event.SocketEvent.SocketPacketEvent;

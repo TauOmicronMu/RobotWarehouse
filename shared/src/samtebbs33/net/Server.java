@@ -1,46 +1,28 @@
 package samtebbs33.net;
 
-import samtebbs33.event.Startable;
-import samtebbs33.net.event.SocketEventListener;
-import samtebbs33.net.event.SocketEventManager;
+import com.github.samtebbs33.event.Startable;
+import com.github.samtebbs33.net.event.SocketEventListener;
+import com.github.samtebbs33.net.event.SocketEventManager;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.Set;
 
 /**
  * Created by samtebbs on 30/01/2016.
  */
-public abstract class Server implements SocketEventListener, Startable, Closeable {
+public abstract class Server implements SocketEventListener, Closeable {
 
-    protected ServerSocket socket;
-    private int port;
-    private Thread clientConnectionThread;
+    String[] robotNames = {"squirtle", "charmander", "bulbasaur"};
 
-    public Server(int port, int maxClients, int timeout) throws IOException {
-        this.port = port;
-        this.socket = new ServerSocket(port);
-        this.socket.setSoTimeout(timeout);
-        clientConnectionThread = new Thread(() -> {
-            while (true) {
-                SocketStream client = null;
-                try {
-                    Socket socket = this.socket.accept();
-                    socket.setSoTimeout(timeout);
-                    client = new SocketStream(socket);
-                    if (getNumClients() < maxClients) {
-                        onClientConnected(client);
-                    } else {
-                        onClientRefused(client);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+    public Server() throws IOException {
+        for(String robot : robotNames) {
+            NXTComm nxtComm = NXTCommFactory.createNXTComm(NXTCommFactory.BLUETOOTH);
+            NXTInfo[] info = nxtComm.search(robot);
+            nxtComm.open(info);
+            onClientConnected(new SocketStream(nxtComm.getOutputStream(), nxtComm.getInputStream()));
+        }
     }
 
     /**
@@ -93,20 +75,6 @@ public abstract class Server implements SocketEventListener, Startable, Closeabl
     public abstract Set<SocketStream> getClients();
 
     /**
-     * Stop the slient acceptance thread
-     */
-    public void stopAcceptingClients() {
-        this.clientConnectionThread.interrupt();
-    }
-
-    /**
-     * Restart the client acceptance thread after it has been stopped
-     */
-    public void restartAcceptingClients() {
-        if (!this.clientConnectionThread.isAlive()) this.clientConnectionThread.start();
-    }
-
-    /**
      * Called when a client connects to the server
      *
      * @param client
@@ -136,20 +104,7 @@ public abstract class Server implements SocketEventListener, Startable, Closeabl
      */
     @Override
     public void close() {
-        if (clientConnectionThread.isAlive()) clientConnectionThread.interrupt();
-        try {
-            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
-    /**
-     * Start the server
-     */
-    @Override
-    public void start() {
-        if (!clientConnectionThread.isAlive()) clientConnectionThread.start();
     }
 
 }
