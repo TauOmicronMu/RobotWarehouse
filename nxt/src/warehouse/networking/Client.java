@@ -1,5 +1,6 @@
-package samtebbs33.net;
+package warehouse.networking;
 
+import samtebbs33.net.SocketStream;
 import samtebbs33.net.event.SocketEvent;
 import samtebbs33.net.event.SocketEventListener;
 

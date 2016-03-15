@@ -5,12 +5,9 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import samtebbs33.net.Server;
 import samtebbs33.net.SocketStream;
-import com.github.samtebbs33.net.event.SocketEvent;
-import com.github.samtebbs33.net.event.SocketEvent.SocketExceptionEvent;
-import com.github.samtebbs33.net.event.SocketEvent.SocketPacketEvent;
 
+import samtebbs33.net.event.SocketEvent;
 import warehouse.util.EventDispatcher;
 
 public class WarehouseServer extends Server {
@@ -29,7 +26,7 @@ public class WarehouseServer extends Server {
 	}
 
 	@Override
-	public void onPacketReceived(SocketPacketEvent event) {
+	public void onPacketReceived(SocketEvent.SocketPacketEvent event) {
 		EventDispatcher.onEvent2(event.packet);
 	}
 
@@ -40,7 +37,7 @@ public class WarehouseServer extends Server {
 	}
 
 	@Override
-	public void onDisconnection(SocketExceptionEvent event) {
+	public void onDisconnection(SocketEvent.SocketExceptionEvent event) {
 		// TODO Auto-generated method stub
 
 	}
