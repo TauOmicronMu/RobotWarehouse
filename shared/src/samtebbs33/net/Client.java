@@ -1,8 +1,7 @@
 package samtebbs33.net;
 
-import com.github.samtebbs33.net.event.SocketEvent;
-import com.github.samtebbs33.net.event.SocketEventListener;
-import com.github.samtebbs33.net.event.SocketEventManager;
+import samtebbs33.net.event.SocketEvent;
+import samtebbs33.net.event.SocketEventListener;
 
 import java.io.IOException;
 import java.io.Serializable;

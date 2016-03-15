@@ -1,6 +1,5 @@
 package samtebbs33.net;
 
-import com.sun.tools.doclets.internal.toolkit.util.DocFinder;
 
 import java.io.*;
 import java.net.Socket;

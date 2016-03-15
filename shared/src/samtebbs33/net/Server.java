@@ -1,12 +1,15 @@
 package samtebbs33.net;
 
-import com.github.samtebbs33.event.Startable;
-import com.github.samtebbs33.net.event.SocketEventListener;
-import com.github.samtebbs33.net.event.SocketEventManager;
+
+import samtebbs33.event.Startable;
+import samtebbs33.net.event.SocketEventListener;
+import samtebbs33.net.event.SocketEventManager;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.Set;
 
 /**
@@ -75,6 +78,7 @@ public abstract class Server implements SocketEventListener, Closeable {
     public abstract Set<SocketStream> getClients();
 
     /**
+
      * Called when a client connects to the server
      *
      * @param client
@@ -104,7 +108,20 @@ public abstract class Server implements SocketEventListener, Closeable {
      */
     @Override
     public void close() {
+        if (clientConnectionThread.isAlive()) clientConnectionThread.interrupt();
+        try {
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
+    /**
+     * Start the server
+     */
+    @Override
+    public void start() {
+        if (!clientConnectionThread.isAlive()) clientConnectionThread.start();
     }
 
 }
