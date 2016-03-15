@@ -1,6 +1,6 @@
-package com.github.samtebbs33.net.event;
+package samtebbs33.net.event;
 
-import com.github.samtebbs33.net.SocketStream;
+import samtebbs33.net.SocketStream;
 
 import java.io.Serializable;
 

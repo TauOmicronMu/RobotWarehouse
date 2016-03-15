@@ -1,4 +1,4 @@
-package com.github.samtebbs33.func;
+package samtebbs33.func;
 
 import java.util.function.BiPredicate;
 

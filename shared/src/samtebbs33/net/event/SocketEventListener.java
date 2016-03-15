@@ -1,4 +1,4 @@
-package com.github.samtebbs33.net.event;
+package samtebbs33.net.event;
 
 import jdk.nashorn.internal.ir.annotations.Ignore;
 

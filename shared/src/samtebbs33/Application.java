@@ -1,4 +1,4 @@
-package com.github.samtebbs33;
+package samtebbs33;
 
 import java.io.PrintStream;
 import java.util.Scanner;

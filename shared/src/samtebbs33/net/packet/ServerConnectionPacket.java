@@ -1,4 +1,4 @@
-package com.github.samtebbs33.net.packet;
+package samtebbs33.net.packet;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package com.github.samtebbs33;
+package samtebbs33;
 
 /**
  * Created by samtebbs on 02/02/2016.

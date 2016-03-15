@@ -1,4 +1,4 @@
-package com.github.samtebbs33.event;
+package samtebbs33.event;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
