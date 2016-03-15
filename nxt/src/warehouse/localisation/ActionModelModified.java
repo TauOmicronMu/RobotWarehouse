@@ -1,4 +1,4 @@
-package localisation;
+package warehouse.localisation;
 
 import rp.robotics.localisation.ActionModel;
 import rp.robotics.localisation.GridPositionDistribution;

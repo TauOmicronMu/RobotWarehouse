@@ -1,4 +1,4 @@
-package localisation;
+package warehouse.localisation;
 
 import java.util.Random;
 

@@ -1,4 +1,4 @@
-package linefollower;
+package warehouse.linefollower;
 
 import lejos.robotics.navigation.DifferentialPilot;
 import lejos.robotics.subsumption.Behavior;

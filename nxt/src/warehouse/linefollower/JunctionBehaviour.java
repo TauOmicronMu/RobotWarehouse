@@ -1,7 +1,5 @@
-package linefollower;
+package warehouse.linefollower;
 
-
-import java.util.Random;
 
 import lejos.nxt.LightSensor;
 import lejos.util.Delay;

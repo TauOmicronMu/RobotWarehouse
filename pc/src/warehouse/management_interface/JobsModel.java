@@ -3,10 +3,8 @@ package warehouse.management_interface;
 import java.util.List;
 import java.util.Observable;
 
-import javafx.util.Pair;
 import warehouse.job.AssignedJob;
 import warehouse.job.Job;
-import warehouse.util.Robot;
 
 public class JobsModel extends Observable {
 	

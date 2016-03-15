@@ -1,4 +1,4 @@
-package networking;
+package warehouse.networking;
 
 import java.io.IOException;
 import java.io.Serializable;

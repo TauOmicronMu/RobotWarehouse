@@ -1,4 +1,4 @@
-package localisation;
+package warehouse.localisation;
 
 import rp.robotics.localisation.GridPoseProvider;
 import rp.robotics.mapping.GridMap;

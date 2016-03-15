@@ -1,4 +1,4 @@
-package application;
+package warehouse.management_interface.application;
 	
 import javafx.application.Application;
 import javafx.stage.Stage;
