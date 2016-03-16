@@ -1,12 +1,11 @@
 package warehouse.management_interface;
 
-import java.util.LinkedList;
-import java.util.List;
-
 /**
  * Class that represents the main window. JavaFX graphics work on a tree-like structure.
  */
 
+import java.util.LinkedList;
+import java.util.List;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -20,6 +19,7 @@ import warehouse.action.Action;
 import warehouse.action.TurnAction;
 import warehouse.job.AssignedJob;
 import warehouse.job.Job;
+import warehouse.util.Direction;
 import warehouse.util.ItemPickup;
 import warehouse.util.Location;
 import warehouse.util.Robot;
@@ -42,44 +42,46 @@ public class Main extends Application {
 
 			// Create vertical box which holds the map and it's buttons
 			MapVBox map = new MapVBox();
-			
-			// Create mock job lists for model ----- TEST - remove this code when integrating
-			
+
+			// Create mock job lists for model ----- TEST - remove this code
+			// when integrating
+
 			LinkedList<ItemPickup> pickups = new LinkedList<ItemPickup>();
-			pickups.add(new ItemPickup("cake", new Location(1,2), 3));
-			
-			Job job1 = new Job(new Location(1,2), pickups);
-			Job job2 = new Job(new Location(3,5), pickups);
-			Job job3 = new Job(new Location(5,6), pickups);
-			
+			pickups.add(new ItemPickup("cake", new Location(1, 2), 3));
+
+			Job job1 = new Job(new Location(1, 2), pickups);
+			Job job2 = new Job(new Location(3, 5), pickups);
+			Job job3 = new Job(new Location(5, 6), pickups);
+
 			List<Job> unassigned = new LinkedList<Job>();
 			unassigned.add(job1);
 			unassigned.add(job2);
 			unassigned.add(job3);
-			
+
 			List<AssignedJob> assigned = new LinkedList<AssignedJob>();
-			
-			Robot robot = new Robot("Andrei", new Location(1,2));
-			
+
+			Robot robot = new Robot("Andrei", new Location(1, 2), Direction.NORTH);
+
 			TurnAction action = new TurnAction(3.0);
-			
+
 			LinkedList<Action> actions = new LinkedList<Action>();
 			actions.add(action);
-			
-			Route route = new Route(actions, new Location(1,2), new Location(3,5));
-			
-			AssignedJob job4 = new AssignedJob(new Location(3,5), pickups, route, robot);
+
+			Route route = new Route(actions, new Location(1, 2), new Location(3, 5));
+
+			AssignedJob job4 = new AssignedJob(new Location(3, 5), pickups, route, robot);
 			assigned.add(job4);
-			
+
 			// Create model for Unassigned and Assigned Jobs
 			JobsModel model = new JobsModel(unassigned, assigned);
 
-			// Create vertical box which holds unassigned jobs list and it's buttons
+			// Create vertical box which holds unassigned jobs list and it's
+			// buttons
 			UnassignedJobsVBox unassignedJobs = new UnassignedJobsVBox("Unassigned Jobs", model);
-			
-			// Create vertical box which holds assigned jobs list and it's buttons
+
+			// Create vertical box which holds assigned jobs list and it's
+			// buttons
 			AssignedJobsVBox assignedJobs = new AssignedJobsVBox(model);
-			
 
 			// Add map and jobs vertical boxes to the horizontal box mapAndJobs
 			mapAndJobs.getChildren().addAll(map, unassignedJobs, assignedJobs);
@@ -87,17 +89,12 @@ public class Main extends Application {
 			// Create exit button and add handler to close window
 			Button exit = new Button("Exit Management Interface");
 			exit.setOnAction(e -> primaryStage.close());
-			
-			// Create button that displays info about robots when pressed. TODO: add proper handler
-			Button infoAboutRobots = new Button("Info about robots");
-			infoAboutRobots.setOnAction(e -> System.out.println("Robots are cool"));
 
 			// Create a new horizontal box for menu buttons and add Exit to it
 			HBox buttons = new HBox();
-			
-			buttons.getChildren().add(infoAboutRobots);
+
 			buttons.getChildren().add(exit);
-			
+
 			buttons.setAlignment(Pos.BOTTOM_RIGHT);
 			buttons.setSpacing(50);
 
@@ -108,12 +105,12 @@ public class Main extends Application {
 			// Create a new scene (window) and add CSS styling to it
 			Scene scene = new Scene(root, 1000, 600);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-			
+
 			primaryStage.setTitle("Management interface");
 
 			// Set the scene to primaryStage
 			primaryStage.setScene(scene);
-			
+
 			// Hide toolbar
 			primaryStage.initStyle(StageStyle.TRANSPARENT);
 

@@ -1,15 +1,15 @@
 package warehouse.management_interface;
-
+/**
+ * Communicate with main server
+ */
 import warehouse.job.Job;
-import warehouse.util.Robot;
 
 public class Communication {
 
-	public static void jobAssigned(Job job, Robot robot) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	/**
+	 * Tell server a job's been cancelled
+	 * @param job
+	 */
 	public static void jobCancelled(Job job) {
 		// TODO Auto-generated method stub
 		

@@ -1,5 +1,7 @@
 package warehouse.management_interface;
-
+/**
+ * Graphic element that displays unassigned jobs and interacts with user
+ */
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -7,6 +9,9 @@ import java.util.Observer;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -17,7 +22,11 @@ public class UnassignedJobsVBox extends VBox implements Observer {
 	public ObservableList<String> items;
 	public JobsModel model;
 	
-
+	/**
+	 * Constructor. Initialise everything and start observing the model
+	 * @param title title of section
+	 * @param model
+	 */
 	public UnassignedJobsVBox(String title, JobsModel model) {
 		super();
 		
@@ -42,32 +51,82 @@ public class UnassignedJobsVBox extends VBox implements Observer {
 		addButtons();
 
 	}
-
+	
+	/**
+	 * Add buttons to this VBox
+	 */
 	public void addButtons() {
-		
-//		// Create button to assign jobs TODO: add handler
-//		Button assign = new Button("Assign job");
-//		assign.setOnAction(a -> {
-//			model.assign(model.findAssignedJob(jobList.getSelectionModel().getSelectedItem()).getKey(),
-//					model.findAssignedJob(jobList.getSelectionModel().getSelectedItem()).getValue());
-//		});
-//
-//		getChildren().add(assign);
+		addShowInfoButton(true);
 
 	}
+	
+	/**
+	 * Add a button that shows information about a job
+	 * @param searchInUnassigned true if the job is unassigned, else false
+	 */
+	public void addShowInfoButton(boolean searchInUnassigned){
+		
+		Button info = new Button("Show info");
+		info.setOnAction(i -> {
+			// Try to display the job's info
+			try {
+				Alert infoAboutJob = new Alert(AlertType.INFORMATION);
+				
+				infoAboutJob.setTitle("Job Information");
+				infoAboutJob.setHeaderText("Information about <JOB IDENTIFIER>");
+				
+				String contentText = new String();
+				
+				if(searchInUnassigned) 
+					contentText = model.findUnassignedJob(jobList.getSelectionModel().getSelectedItem()).toString();
+				else contentText = model.findAssignedJob(jobList.getSelectionModel().getSelectedItem()).toString();
+				
+				infoAboutJob.setContentText(contentText);
+				infoAboutJob.show();
+			}
+			// Deal with no selection
+			catch (NullPointerException npe) {
+				showNoJobError();
+			}
 
+		});
+		getChildren().add(info);
+	}
+	
+	/**
+	 * Shows an error when no job is selected
+	 */
+	public void showNoJobError(){
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setTitle("Error");
+		alert.setHeaderText(null);
+		alert.setContentText("No job selected");
+		alert.show();
+	}
+
+	/**
+	 * Update when model changes
+	 */
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		setItems();
 		
 	}
-
+	
+	/**
+	 * Set items of job list
+	 */
 	public void setItems() {
 		items = readyToBeDisplayed(model.getUnassignedList());
 		jobList.setItems(items);
 		
 	}
 
+	/**
+	 * Prepare job for display
+	 * @param jobList the list of jobs
+	 * @return a list of displayable (if that's even a word) items
+	 */
 	public <A> ObservableList<String> readyToBeDisplayed(List<A> jobList) {
 		ArrayList<String> list = new ArrayList<String>();
 		

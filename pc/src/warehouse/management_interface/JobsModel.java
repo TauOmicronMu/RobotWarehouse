@@ -1,5 +1,7 @@
 package warehouse.management_interface;
-
+/**
+ * A model for the job lists
+ */
 import java.util.List;
 import java.util.Observable;
 
@@ -10,32 +12,39 @@ public class JobsModel extends Observable {
 	
 	private List<Job> unassigned;
 	private List<AssignedJob> assigned;
-
+	
+	/**
+	 * Constructor
+	 * @param unassigned unassigned jobs list
+	 * @param assigned assigned jobs list
+	 */
 	public JobsModel(List<Job> unassigned, List<AssignedJob> assigned) {
 		this.unassigned = unassigned;
 		this.assigned = assigned;
 		assert(assigned.size() < 0);
 	}
 	
+	/**
+	 * 
+	 * @return unassigned jobs
+	 */
 	public List<Job> getUnassignedList(){
 		return unassigned;
 	}
 	
+	/**
+	 * 
+	 * @return assigned jobs
+	 */
 	public List<AssignedJob> getAssignedList(){
 		return assigned;
 	}
 	
-	
-//	public void assign(Job job, Robot robot){
-//		AssignedJob newAssignedJob = new AssignedJob();
-//		addToAssigned(job);
-//		unassigned.remove(job);
-//		Communication.jobAssigned(job, robot);
-//		setChanged();
-//		notifyObservers();
-//		
-//	}
-	
+
+	/**
+	 * Add job to unassigned list
+	 * @param job
+	 */
 	public void addToUnassigned(Job job){
 		unassigned.add(job);
 		setChanged();
@@ -44,6 +53,10 @@ public class JobsModel extends Observable {
 		
 	}
 	
+	/**
+	 * Cancel a job
+	 * @param job
+	 */
 	public void cancel (AssignedJob job){
 		addToUnassigned(unassign(job));
 		assigned.remove(job);
@@ -52,17 +65,20 @@ public class JobsModel extends Observable {
 		notifyObservers();
 	}
 	
+	/**
+	 * Unassign a job (Convert from AssignedJob to Job)
+	 * @param job
+	 * @return
+	 */
 	private Job unassign(AssignedJob job){
 		return new Job(job.dropLocation, job.pickups);
 	}
 
-//	public void addToAssigned(AssignedJob job) {
-//		assigned.add(job);
-//		setChanged();
-//		notifyObservers();
-//		
-//	}
-	
+	/**
+	 * Find an unassigned job by it's toString
+	 * @param toString
+	 * @return
+	 */
 	public Job findUnassignedJob(String toString){
 		for(int i=0; i<unassigned.size(); i++)
 			if (unassigned.get(i).toString().equals(toString)) return unassigned.get(i);
@@ -71,6 +87,11 @@ public class JobsModel extends Observable {
 		return null;
 	}
 	
+	/**
+	 * Find an assigned job by it's toString
+	 * @param toString
+	 * @return
+	 */
 	public AssignedJob findAssignedJob(String toString){
 		for(int i=0; i<assigned.size(); i++)
 			if (assigned.get(i).toString().equals(toString)) return assigned.get(i);

@@ -1,6 +1,10 @@
 package warehouse.management_interface;
 
+/**
+ * Graphic element that displays warehouse map
+ */
 import java.awt.Dimension;
+import java.util.ArrayList;
 
 import javafx.embed.swing.SwingNode;
 import javafx.scene.control.Button;
@@ -9,7 +13,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import lejos.robotics.RangeFinder;
 import rp.robotics.MobileRobotWrapper;
-import rp.robotics.control.RandomGridWalk;
 import rp.robotics.mapping.GridMap;
 import rp.robotics.navigation.GridPose;
 import rp.robotics.navigation.Heading;
@@ -21,11 +24,15 @@ import rp.robotics.visualisation.GridMapVisualisation;
 import rp.robotics.visualisation.MapVisualisationComponent;
 
 public class MapVBox extends VBox {
+	private ArrayList<SimController> controllers;
+
+	/**
+	 * Constructor. Initialise everything
+	 */
 	public MapVBox() {
 		super();
 
 		setSpacing(10);
-		
 
 		Text mapTitle = new Text("Map");
 		mapTitle.setFill(Color.WHITE);
@@ -38,11 +45,14 @@ public class MapVBox extends VBox {
 		// handler and show for one button
 		Button showPath = new Button("Show path for all");
 		showPath.setOnAction(e -> System.out.println("This will show path"));
-		
+
 		getChildren().add(showPath);
 
 	}
 
+	/**
+	 * Builds and displays the map visualisation. Taken from Nick's classes
+	 */
 	public void warehouseMap() {
 
 		GridMap map = TestMaps.warehouseMap();
@@ -54,6 +64,9 @@ public class MapVBox extends VBox {
 		// Add a robot of a given configuration to the simulation. The return
 		// value is the object you can use to control the robot. //
 
+		// Initialise list of controllers
+		controllers = new ArrayList<SimController>();
+
 		int robots = 3;
 		for (int i = 0; i < robots; i++) {
 			// Starting point on the grid
@@ -64,9 +77,9 @@ public class MapVBox extends VBox {
 
 			RangeFinder ranger = sim.getRanger(wrapper);
 
-			RandomGridWalk controller = new RandomGridWalk(wrapper.getRobot(), map, gridStart, ranger);
+			controllers.add(new SimController(wrapper.getRobot(), map, gridStart, ranger));
 
-			new Thread(controller).start();
+			new Thread(controllers.get(i)).start();
 		}
 
 		GridMapVisualisation viz = new GridMapVisualisation(map, sim.getMap());
@@ -76,13 +89,16 @@ public class MapVBox extends VBox {
 		// Wrap viz in SwingNode so it can be added
 		SwingNode vizNode = new SwingNode();
 		vizNode.setContent(viz);
-		
+
 		viz.setPreferredSize(new Dimension(500, 320));
 
 		// Add the visualisation to display it
 		this.getChildren().add(vizNode);
-		
+
 	}
 
+	public SimController getController(int index) {
+		return controllers.get(index);
+	}
 
 }
