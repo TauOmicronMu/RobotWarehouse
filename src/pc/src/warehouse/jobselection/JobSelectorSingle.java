@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 
 import warehouse.job.Job;
+import warehouse.jobselection.JobWorth;
 import warehouse.jobselection.cancellation.CancellationMachine;
 import warehouse.util.Direction;
 import warehouse.util.EventDispatcher;
@@ -113,7 +114,7 @@ public class JobSelectorSingle extends Thread {
 			JobWorth jobworth = new JobWorth(job, this.robot, startLocation, startFacing);
 			
 			double metric = jobworth.getMetric();
-			double p = 1 - this.cancellationMachine.getProbability(jobworth);
+			double p = 1 - this.cancellationMachine.getProbability(jobworth.getJob());
 			
 			jobworth.setMetric(p * metric);
 			

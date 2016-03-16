@@ -8,6 +8,8 @@ import warehouse.event.JobCancellationEvent;
 import warehouse.event.JobCompleteEvent;
 import warehouse.job.AssignedJob;
 import warehouse.job.Job;
+import warehouse.jobselection.JobSelectorSingle;
+import warehouse.jobselection.JobWorth;
 import warehouse.jobselection.cancellation.CancellationMachine;
 import warehouse.jobselection.cancellation.NaiveBayes;
 import warehouse.util.EventDispatcher;
