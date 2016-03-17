@@ -5,13 +5,12 @@ import java.util.Optional;
 
 import rp.robotics.mapping.GridMap;
 import rp.robotics.mapping.MapUtils;
-import warehouse.action.Action;
-import warehouse.action.DropoffAction;
-import warehouse.action.MoveAction;
-import warehouse.action.PickupAction;
-import warehouse.action.TurnAction;
+import warehouse.action.*;
 import warehouse.job.Job;
-import warehouse.util.*;
+import warehouse.util.Direction;
+import warehouse.util.ItemPickup;
+import warehouse.util.Location;
+import warehouse.util.Route;
 
 public class Test {
 
