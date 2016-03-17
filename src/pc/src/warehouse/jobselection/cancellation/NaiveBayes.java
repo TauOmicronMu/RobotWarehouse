@@ -60,6 +60,16 @@ public class NaiveBayes implements CancellationMachine {
 			this.q = q;
 		}
 		
+		public double p(){
+			
+			return this.p;
+		}
+		
+		public double q(){
+			
+			return this.q;
+		}
+		
 	}
 }
 

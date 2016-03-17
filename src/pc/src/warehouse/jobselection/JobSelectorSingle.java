@@ -80,7 +80,7 @@ public class JobSelectorSingle extends Thread {
 			this.convertedList = this.convertList(this.robotStartLocation, this.robotFacing);
 
 			// get the best one
-			bestJob = Collections.max(this.convertedList);
+			bestJob = this.selectBestJob(this.convertedList);
 
 			// remove it from the reference job list
 			this.jobs.remove(bestJob.getJob());
@@ -96,7 +96,7 @@ public class JobSelectorSingle extends Thread {
 	}
 
 	/**
-	 * Convert the list of jobs into a list of jobworth objects based on the
+	 * Convert the list of jobs (that this selector contains) into a list of jobworth objects based on the
 	 * location given
 	 * 
 	 * @param the

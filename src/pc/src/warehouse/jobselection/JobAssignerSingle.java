@@ -92,9 +92,9 @@ public class JobAssignerSingle extends Thread {
 
 				try {
 					Thread.sleep(100);
-				} catch (InterruptedException e2) {
+				} catch (InterruptedException e) {
 					// Sleep was interrupted for some reason
-					e2.printStackTrace();
+					e.printStackTrace();
 				}
 
 				while (this.run && (this.jobs.size() > 0)) {
@@ -113,9 +113,9 @@ public class JobAssignerSingle extends Thread {
 
 							try {
 								Thread.sleep(100);
-							} catch (InterruptedException e1) {
+							} catch (InterruptedException e) {
 								// Sleep was interrupted for some reason
-								e1.printStackTrace();
+								e.printStackTrace();
 							}
 						}
 
