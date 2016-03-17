@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import warehouse.job.Job;
+import warehouse.util.ItemPickup;
 
 /**
  * JOB SELECTION - (NaiveBayes class)
@@ -94,19 +95,41 @@ public class NaiveBayes implements CancellationMachine {
 		
 		for (Job job : trainingSet){
 			
+			//sort out denominators
+			if(job.cancelledInTrainingSet){
+				
+				qdenominatorDropLocation++;
+				qdenominatorNumberPickups++;
+				qdenominatorNumberItems++;
+				qdenominatorTotalReward++;
+				qdenominatorTotalWeight++;
+			}
+			else{
+				
+				pdenominatorDropLocation++;
+				pdenominatorNumberPickups++;
+				pdenominatorNumberItems++;
+				pdenominatorTotalReward++;
+				pdenominatorTotalWeight++;
+			}
+
+			//Drop Location
 			if((this.DropLocation.p.probabilities == null) || (!(this.DropLocation.p.contains(job.dropLocation)))){
 				
 				this.DropLocation.p.add(new DPair(job.dropLocation, -1));
 			}	
 			
-			if(job.cancelledInTrainingSet){
-				
-				qdenominatorDropLocation++;
-			}
-			else{
-				
-				pdenominatorDropLocation++;
-			}
+			
+			
+			//sort out a few other things hidden inside item pickups from the jobs
+			
+			//Number of pickups	
+			
+			//Number of item types
+			
+			//Total reward
+			
+			//Total weight
 		}
 
 		for(int i = 0; i < this.DropLocation.p.probabilities.size(); i++){
