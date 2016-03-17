@@ -48,8 +48,9 @@ public class NaiveBayes implements CancellationMachine {
 
 		this.trainingSet = trainingSet;
 		
-		//Drop Location:
+		//INTITALISING VARIABLES FOR CALCULATING DPAIRS LATER
 		
+		//Drop Location:
 		double pnumeratorDropLocation = 0.001;
 		double qnumeratorDropLocation = 0.001;
 		double pdenominatorDropLocation = 0;
@@ -57,21 +58,55 @@ public class NaiveBayes implements CancellationMachine {
 		double pDropLocation;
 		double qDropLocation;
 		
+		//Number of Pickups:
+		double pnumeratorNumberPickups = 0.001;
+		double qnumeratorNumberPickups = 0.001;
+		double pdenominatorNumberPickups = 0;
+		double qdenominatorNumberPickups = 0;
+		double pNumberPickups;
+		double qNumberPickups;
+		
+		//Number of Different Items:
+		double pnumeratorNumberItems = 0.001;
+		double qnumeratorNumberItems = 0.001;
+		double pdenominatorNumberItems = 0;
+		double qdenominatorNumberItems = 0;
+		double pNumberItems;
+		double qNumberItems;
+					
+		//Total Reward:
+		double pnumeratorTotalReward = 0.001;
+		double qnumeratorTotalReward = 0.001;
+		double pdenominatorTotalReward = 0;
+		double qdenominatorTotalReward = 0;
+		double pTotalReward;
+		double qTotalReward;
+					
+		//Total Weight:
+		double pnumeratorTotalWeight = 0.001;
+		double qnumeratorTotalWeight = 0.001;
+		double pdenominatorTotalWeight = 0;
+		double qdenominatorTotalWeight = 0;
+		double pTotalWeight;
+		double qTotalWeight;
+		
+		//DYNAMICALLY CREATING DIFFERENT DESCRIPTOR OBJECTS BASED ON WHICH EXIST IN JOBS
+		
 		for (Job job : trainingSet){
 			
-			if((this.DropLocation.p.probabilities == null) || this.DropLocation.p.contains(job.dropLocation)){
+			if((this.DropLocation.p.probabilities == null) || (!(this.DropLocation.p.contains(job.dropLocation)))){
 				
 				this.DropLocation.p.add(new DPair(job.dropLocation, -1));
+			}	
+			
+			if(job.cancelledInTrainingSet){
 				
-				if(job.cancelledInTrainingSet){
-					
-					qdenominatorDropLocation++;
-				}
-				else{
-					
-					pdenominatorDropLocation++;
-				}
-			}		
+				qdenominatorDropLocation++;
+			}
+			else{
+				
+				pdenominatorDropLocation++;
+			}
 		}
 
 		for(int i = 0; i < this.DropLocation.p.probabilities.size(); i++){
@@ -82,16 +117,6 @@ public class NaiveBayes implements CancellationMachine {
 			this.DropLocation.p.probabilities.get(i).probability = pDropLocation;
 			this.DropLocation.q.probabilities.get(i).probability = qDropLocation;
 		}
-		
-		//Number of Pickups:
-			
-		//Number of Different Items:
-			
-		//Total Reward:
-			
-		//Total Weight:
-			
-		
 	}
 
 	/**
