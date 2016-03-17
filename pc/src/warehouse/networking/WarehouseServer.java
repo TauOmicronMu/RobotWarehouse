@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import lejos.pc.comm.NXTCommException;
 import samtebbs33.net.SocketStream;
 
 import samtebbs33.net.event.SocketEvent;
@@ -15,7 +16,7 @@ public class WarehouseServer extends Server {
 	private SocketStream[] robotConnections = new SocketStream[3];
 	private int numRobots = 0;
 
-	public WarehouseServer(int port, int maxClients, int timeout) throws IOException {
+	public WarehouseServer() throws IOException, NXTCommException {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -62,6 +63,12 @@ public class WarehouseServer extends Server {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+	}
+
+	@Override
+	public void close() throws IOException {
+		// TODO Auto-generated method stub
 		
 	}
 

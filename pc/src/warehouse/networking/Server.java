@@ -1,17 +1,18 @@
 package warehouse.networking;
 
 
-import samtebbs33.event.Startable;
-import samtebbs33.net.SocketStream;
-import samtebbs33.net.event.SocketEventListener;
-import samtebbs33.net.event.SocketEventManager;
-
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.Set;
+
+import lejos.pc.comm.NXTComm;
+import lejos.pc.comm.NXTCommException;
+import lejos.pc.comm.NXTCommFactory;
+import lejos.pc.comm.NXTInfo;
+import samtebbs33.net.SocketStream;
+import samtebbs33.net.event.SocketEventListener;
+import samtebbs33.net.event.SocketEventManager;
 
 /**
  * Created by samtebbs on 30/01/2016.
@@ -20,11 +21,11 @@ public abstract class Server implements SocketEventListener, Closeable {
 
     String[] robotNames = {"squirtle", "charmander", "bulbasaur"};
 
-    public Server() throws IOException {
+    public Server() throws IOException, NXTCommException {
         for(String robot : robotNames) {
             NXTComm nxtComm = NXTCommFactory.createNXTComm(NXTCommFactory.BLUETOOTH);
             NXTInfo[] info = nxtComm.search(robot);
-            nxtComm.open(info);
+            nxtComm.open(info[0]);
             onClientConnected(new SocketStream(nxtComm.getOutputStream(), nxtComm.getInputStream()));
         }
     }
@@ -104,25 +105,5 @@ public abstract class Server implements SocketEventListener, Closeable {
         }
     }
 
-    /**
-     * Close the server socket and stop the client acceptance thread
-     */
-    @Override
-    public void close() {
-        if (clientConnectionThread.isAlive()) clientConnectionThread.interrupt();
-        try {
-            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Start the server
-     */
-    @Override
-    public void start() {
-        if (!clientConnectionThread.isAlive()) clientConnectionThread.start();
-    }
 
 }
