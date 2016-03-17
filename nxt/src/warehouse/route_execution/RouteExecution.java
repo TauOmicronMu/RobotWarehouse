@@ -1,116 +1,44 @@
 package warehouse.route_execution;
 
-import java.util.ArrayList;
-
-import lejos.nxt.Button;
-import lejos.nxt.Motor;
-import lejos.robotics.navigation.DifferentialPilot;
-import lejos.util.Delay;
+import warehouse.action.DropoffAction;
+import warehouse.action.MoveAction;
+import warehouse.action.PickupAction;
+import warehouse.action.TurnAction;
+import warehouse.event.JobAssignedEvent;
+import warehouse.util.EventDispatcher;
+import warehouse.util.Route;
+import warehouse.util.Subscriber;
 
 public class RouteExecution {
 
-	private DifferentialPilot pilot;
-	private int delay;
-	private ArrayList<Integer> direction;
-	private ArrayList<Integer> moves;
-	public int xCoord;
-	public int yCoord;
-	public int xStart;
-	public int yStart;
-	public static final int STRAIGHT = 2;
-	public static final int RIGHT = 0;
-	public static final int LEFT = 1;
+	private Route route;
+	private LineFollow lineFollower;
+	
+	  static {
+	        EventDispatcher.subscribe2(RouteExecution.class);
+	    }
 
+	    public RouteExecution() {
+	        EventDispatcher.subscribe2(this);
+	        lineFollower = new LineFollow();
+	    }
 	
-	public RouteExecution(DifferentialPilot pilot, int xStart , int yStart) {
-		this.pilot = pilot;
-		direction = new ArrayList<Integer>();
-		this.xStart = xStart;
-		this.yStart = yStart;
-		this.xCoord = xStart;
-		this.yCoord = yStart;
-		
-	}
-
-	public void run() {
-		while (!Button.ESCAPE.isDown()) {
-			pilot.setTravelSpeed(0.2);
-			if (direction.get(0) == RIGHT)
-			{
-				pilot.rotate(90);
-				pilot.travel(0.1);
-				moves.add(RIGHT);
-			} 
-			else
-			{
-					if (direction.get(0) == LEFT)
-					{
-						pilot.rotate(-90);
-						pilot.travel(0.1);
-						moves.add(LEFT);
-					}
-					else
-					{
-							pilot.travel(0.1);
-							moves.add(STRAIGHT);
-					}
-					
+	@Subscriber
+	public void onJobAssignment(JobAssignedEvent jobEvent)
+	{
+		route = jobEvent.getAssignedJob().route;
+		for(warehouse.action.Action a: route.actions){
+			if(a instanceof MoveAction){
+				lineFollower.moveAction(((MoveAction) a).distance);
+			}else if(a instanceof TurnAction){
+				lineFollower.turnAction(((TurnAction) a).angle);
+			}else if(a instanceof PickupAction){
+				//TODO
+			}else if(a instanceof DropoffAction){
+				//TODO
+			}else{
+				//TODO
 			}
-			direction.remove(0);
-			Delay.msDelay(delay);
-	}
-	
-}
-	
-	public void addDirection(int move) 
-	{
-		direction.add(move);
-	}
-	
-	public int lastMove()
-	{
-		return moves.get(moves.size());
-	}
-		
-	public void revertMoves()
-	{
-		xCoord = xStart;
-		yCoord = yStart;
-		
-		while(moves.get(0) != null)
-		{
-			if (moves.get(0) == RIGHT)
-			{
-				pilot.travel(-0.1);
-				pilot.rotate(-90);
-			} 
-			else
-			{
-					if (moves.get(0) == LEFT)
-					{
-						pilot.travel(-0.1);
-						pilot.rotate(90);
-					}
-					else
-					{
-							pilot.travel(-0.1);
-					}
-					
-			}
-			moves.remove(0);
-			Delay.msDelay(delay);
 		}
 	}
-
-	public static void main(String[] args) {
-		RouteExecution robot = new RouteExecution(new DifferentialPilot(0.056, 0.12, Motor.B, Motor.C), 0, 0);
-		robot.addDirection(RouteExecution.STRAIGHT);
-		robot.addDirection(RouteExecution.STRAIGHT);
-		robot.addDirection(RouteExecution.LEFT);
-		robot.addDirection(RouteExecution.LEFT);
-		robot.addDirection(RouteExecution.RIGHT);
-		robot.addDirection(RouteExecution.RIGHT);
-		robot.run();
-	}
-
 }

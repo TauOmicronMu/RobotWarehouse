@@ -1,4 +1,4 @@
-package rp.assignments.ex2;
+package warehouse.linefollower;
 
 import java.util.Random;
 
@@ -12,8 +12,6 @@ import rp.config.WheeledRobotConfiguration;
 import rp.systems.WheeledRobotSystem;
 
 public class LineFollower {
-
-	private static final boolean isRandomWalk = false; 
 	
 	private static WheeledRobotSystem robot;
 	private static final float TRACK_WIDTH = 0.175f, WHEEL_DIAMETER = 0.056f, ROBOT_LENGTH = 0.23f;

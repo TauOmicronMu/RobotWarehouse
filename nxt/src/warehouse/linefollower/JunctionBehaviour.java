@@ -1,8 +1,6 @@
-package warehouse.linefollower;
-
+package  warehouse.linefollower;
 
 import lejos.nxt.LightSensor;
-import lejos.util.Delay;
 import rp.systems.WheeledRobotSystem;
 
 public class JunctionBehaviour extends AbstractBehaviour

@@ -1,6 +1,5 @@
 package warehouse.linefollower;
 
-
 import lejos.util.Delay;
 import rp.systems.WheeledRobotSystem;
 

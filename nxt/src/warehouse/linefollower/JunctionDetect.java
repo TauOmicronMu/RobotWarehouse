@@ -1,16 +1,13 @@
 package warehouse.linefollower;
 
-
 import lejos.nxt.Button;
 import lejos.nxt.ButtonListener;
 import lejos.nxt.LightSensor;
 import lejos.nxt.SensorPort;
-import lejos.nxt.comm.RConsole.Monitor;
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
 import lejos.util.Delay;
 import rp.config.RobotConfigs;
-import rp.systems.RobotProgrammingDemo;
 import rp.systems.WheeledRobotSystem;
 
 public class JunctionDetect extends RobotProgrammingDemo implements Runnable 
