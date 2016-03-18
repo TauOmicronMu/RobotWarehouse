@@ -7,7 +7,11 @@ import java.util.stream.Collectors;
 import warehouse.util.*;
 
 public class JobInput {
-	@SuppressWarnings("unused")
+	
+	static {
+		EventDispatcher.subscribe2(JobInput.class);
+	}
+	
 	public static void main(String[] args) throws IOException {
 		// Parse locations
 		Scanner scanner = new Scanner(new File("locations.csv"));
@@ -49,6 +53,7 @@ public class JobInput {
 
 		// Convert the job map to a list
 		List<Job> jobList = jobs.values().stream().collect(Collectors.toList());
+		EventDispatcher.onEvent2(new BeginAssigningEvent(jobList));
 	}
 }
 }
