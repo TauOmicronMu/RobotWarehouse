@@ -3,10 +3,8 @@ package warehouse.jobselection.cancellation;
 import java.util.LinkedList;
 
 import warehouse.job.Job;
-import warehouse.util.Direction;
 import warehouse.util.ItemPickup;
 import warehouse.util.Location;
-import warehouse.util.Robot;
 
 public class Test {
 
@@ -17,10 +15,8 @@ public class Test {
 		Job testJob1;
 		Job testJob2;
 		Job testJob3;
-		Robot testRobot;
-		Location testLocation;
 		
-			//JOB 1
+		//JOB 1
 			LinkedList<ItemPickup> pickups = new LinkedList<ItemPickup>();
 			
 			ItemPickup testitem1 = new ItemPickup("testitem1", new Location(4, 0), 5);
@@ -74,6 +70,13 @@ public class Test {
 	CancellationMachine testMachine = new NaiveBayes(jobs);
 	
 	System.out.println(testMachine);
+	
+	LinkedList<ItemPickup> pickups4 = new LinkedList<ItemPickup>();
+	pickups4.add(testitem5);
+	pickups4.add(testitem3);
+	pickups4.add(testitem1);
+	
+	System.out.println(testMachine.getProbability(new Job(new Location(4, 7), pickups4)));
 	
 	}
 }
