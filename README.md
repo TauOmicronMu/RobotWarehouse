@@ -11,7 +11,7 @@ public void onJobUpdate(JobUpdateEvent event) {
 }
 ```
 
-You then have to tell the EventDispatcher that this class has subscriber methods, to do so, you can either use a static initialiser or a constructor.
+You then have to tell the EventDispatcher that this class has subscriber methods. If you have static subscriber methods, you can either use a static initialiser or use the constructor method. If you have non-static subscriber methods, then you must use the constructor method.
 ```
 public class Test {
 
@@ -43,5 +43,5 @@ git pull origin dev
 
 To get the lates changes, make sure you are in your role's repo and do:
 ```
-git merge dev
+git merge origin/dev
 ```
