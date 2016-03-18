@@ -56,4 +56,3 @@ public class JobInput {
 		EventDispatcher.onEvent2(new BeginAssigningEvent(jobList));
 	}
 }
-}
