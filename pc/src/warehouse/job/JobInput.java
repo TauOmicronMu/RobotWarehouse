@@ -41,7 +41,7 @@ public class JobInput {
 				p.itemCount = Integer.parseInt(values[i+1]);
 				jobPickups.add(p);
 			}
-			jobs.put(values[0], new Job(null, jobPickups));
+			jobs.put(values[0], new Job(null, jobPickups, values[0]));
 		}
 
 		// Parse cancellations file (I'm not sure of the actual file name)
