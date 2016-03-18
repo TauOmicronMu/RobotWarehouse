@@ -1,5 +1,7 @@
 package warehouse.event;
 
+import warehouse.job.Job;
+
 import java.util.*;
 
 /**
