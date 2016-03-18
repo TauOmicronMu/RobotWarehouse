@@ -30,9 +30,9 @@ public class NaiveBayes implements CancellationMachine {
 	private Distribution TotalRewardGivenNotCancelled;
 	private Distribution TotalWeightGivenNotCancelled;
 	
-	private Descriptor NumberPickups = new Descriptor("Number of Pickups", NumberPickupsGivenCancelled, NumberPickupsGivenNotCancelled);
-	private Descriptor TotalReward = new Descriptor("Total Reward", TotalRewardGivenCancelled, TotalRewardGivenNotCancelled);
-	private Descriptor TotalWeight = new Descriptor("Total Weight", TotalWeightGivenCancelled, TotalWeightGivenNotCancelled);
+	private Descriptor NumberPickups;
+	private Descriptor TotalReward;
+	private Descriptor TotalWeight;
 	
 	/**
 	 * Construct a NaiveBayes object with a training set and set up class
@@ -41,78 +41,93 @@ public class NaiveBayes implements CancellationMachine {
 	 * @param trainingSet
 	 *            the set of jobs to learn from
 	 */
-	@SuppressWarnings("unchecked")
 	public NaiveBayes(LinkedList<Job> trainingSet) {
-
-		
 		
 		//INITIALISING DPAIRS FOR THE DISTRIBUTIONS
 		
 		//number of pickups
-		ArrayList<DPair> numberPickupsList = new ArrayList<DPair>();
-		numberPickupsList.add(new DPair(NumRange.OneToNine, 0.001));
-		numberPickupsList.add(new DPair(NumRange.TenToNineteen, 0.001));
-		numberPickupsList.add(new DPair(NumRange.TwentyToTwentyNine, 0.001));
-		numberPickupsList.add(new DPair(NumRange.ThirtyPlus, 0.001));
+		ArrayList<DPair> numberPickupsList1 = new ArrayList<DPair>();
+		numberPickupsList1.add(new DPair(NumRange.OneToNine, 0));
+		numberPickupsList1.add(new DPair(NumRange.TenToNineteen, 0));
+		numberPickupsList1.add(new DPair(NumRange.TwentyToTwentyNine, 0));
+		numberPickupsList1.add(new DPair(NumRange.ThirtyPlus, 0));
 		
-		this.NumberPickupsGivenCancelled = new Distribution((ArrayList<DPair>) numberPickupsList.clone());
-		this.NumberPickupsGivenNotCancelled = new Distribution((ArrayList<DPair>) numberPickupsList.clone());
+		ArrayList<DPair> numberPickupsList2 = new ArrayList<DPair>();
+		numberPickupsList2.add(new DPair(NumRange.OneToNine, 0));
+		numberPickupsList2.add(new DPair(NumRange.TenToNineteen, 0));
+		numberPickupsList2.add(new DPair(NumRange.TwentyToTwentyNine, 0));
+		numberPickupsList2.add(new DPair(NumRange.ThirtyPlus, 0));
+		
+		this.NumberPickupsGivenCancelled = new Distribution(numberPickupsList1);
+		this.NumberPickupsGivenNotCancelled = new Distribution(numberPickupsList2);
 		
 		//total reward
-		ArrayList<DPair> totalRewardList = new ArrayList<DPair>();
-		totalRewardList.add(new DPair(RewardRange.ZeroToNineteen, 0.001));
-		totalRewardList.add(new DPair(RewardRange.TwentyToThirtyNine, 0.001));
-		totalRewardList.add(new DPair(RewardRange.FortyToFiftyNine, 0.001));
-		totalRewardList.add(new DPair(RewardRange.SixtyToSeventyNine, 0.001));
-		totalRewardList.add(new DPair(RewardRange.EightyPlus, 0.001));
+		ArrayList<DPair> totalRewardList1 = new ArrayList<DPair>();
+		totalRewardList1.add(new DPair(RewardRange.ZeroToNineteen, 0));
+		totalRewardList1.add(new DPair(RewardRange.TwentyToThirtyNine, 0));
+		totalRewardList1.add(new DPair(RewardRange.FortyToFiftyNine, 0));
+		totalRewardList1.add(new DPair(RewardRange.SixtyToSeventyNine, 0));
+		totalRewardList1.add(new DPair(RewardRange.EightyPlus, 0));
 		
-		this.TotalRewardGivenCancelled = new Distribution((ArrayList<DPair>) totalRewardList.clone());
-		this.TotalRewardGivenNotCancelled = new Distribution((ArrayList<DPair>) totalRewardList.clone());
+		ArrayList<DPair> totalRewardList2 = new ArrayList<DPair>();
+		totalRewardList2.add(new DPair(RewardRange.ZeroToNineteen, 0));
+		totalRewardList2.add(new DPair(RewardRange.TwentyToThirtyNine, 0));
+		totalRewardList2.add(new DPair(RewardRange.FortyToFiftyNine, 0));
+		totalRewardList2.add(new DPair(RewardRange.SixtyToSeventyNine, 0));
+		totalRewardList2.add(new DPair(RewardRange.EightyPlus, 0));
+		
+		this.TotalRewardGivenCancelled = new Distribution(totalRewardList1);
+		this.TotalRewardGivenNotCancelled = new Distribution(totalRewardList2);
 		
 		//total weight
-		ArrayList<DPair> totalWeightList = new ArrayList<DPair>();
-		totalWeightList.add(new DPair(WeightRange.ZeroToFour, 0.001));
-		totalWeightList.add(new DPair(WeightRange.FiveToNine, 0.001));
-		totalWeightList.add(new DPair(WeightRange.TenToFourteen, 0.001));
-		totalWeightList.add(new DPair(WeightRange.FifteenToNineteen, 0.001));
-		totalWeightList.add(new DPair(WeightRange.TwentyToTwentyFour, 0.001));
-		totalWeightList.add(new DPair(WeightRange.TwentyFiveToTwentyNine, 0.001));
-		totalWeightList.add(new DPair(WeightRange.ThirtyPlus, 0.001));
+		ArrayList<DPair> totalWeightList1 = new ArrayList<DPair>();
+		totalWeightList1.add(new DPair(WeightRange.ZeroToFour, 0));
+		totalWeightList1.add(new DPair(WeightRange.FiveToNine, 0));
+		totalWeightList1.add(new DPair(WeightRange.TenToFourteen, 0));
+		totalWeightList1.add(new DPair(WeightRange.FifteenToNineteen, 0));
+		totalWeightList1.add(new DPair(WeightRange.TwentyToTwentyFour, 0));
+		totalWeightList1.add(new DPair(WeightRange.TwentyFiveToTwentyNine, 0));
+		totalWeightList1.add(new DPair(WeightRange.ThirtyPlus, 0));
 		
-		this.TotalWeightGivenCancelled = new Distribution((ArrayList<DPair>) totalWeightList.clone());
-		this.TotalWeightGivenNotCancelled = new Distribution((ArrayList<DPair>) totalWeightList.clone());
+		ArrayList<DPair> totalWeightList2 = new ArrayList<DPair>();
+		totalWeightList2.add(new DPair(WeightRange.ZeroToFour, 0));
+		totalWeightList2.add(new DPair(WeightRange.FiveToNine, 0));
+		totalWeightList2.add(new DPair(WeightRange.TenToFourteen, 0));
+		totalWeightList2.add(new DPair(WeightRange.FifteenToNineteen, 0));
+		totalWeightList2.add(new DPair(WeightRange.TwentyToTwentyFour, 0));
+		totalWeightList2.add(new DPair(WeightRange.TwentyFiveToTwentyNine, 0));
+		totalWeightList2.add(new DPair(WeightRange.ThirtyPlus, 0));
+		
+		this.TotalWeightGivenCancelled = new Distribution(totalWeightList1);
+		this.TotalWeightGivenNotCancelled = new Distribution(totalWeightList2);
+		
+		this.NumberPickups = new Descriptor("Number of Pickups", this.NumberPickupsGivenCancelled, this.NumberPickupsGivenNotCancelled);
+		this.TotalReward = new Descriptor("Total Reward", this.TotalRewardGivenCancelled, this.TotalRewardGivenNotCancelled);
+		this.TotalWeight = new Descriptor("Total Weight", this.TotalWeightGivenCancelled, this.TotalWeightGivenNotCancelled);
+		
+		//DEBUG
+//		System.out.println(numberPickupsList);
+//		System.out.println(numberPickupsList.clone());
+//		
+//		System.out.println(totalRewardList);
+//		System.out.println(totalRewardList.clone());
+//		
+//		System.out.println(totalWeightList);
+//		System.out.println(totalWeightList.clone());
+//		
+//		System.out.println(this.NumberPickupsGivenCancelled);
+//		System.out.println(this.NumberPickupsGivenNotCancelled);
+//		
+//		System.out.println(this.NumberPickups);
+//		System.out.println(this.TotalReward);
+//		System.out.println(this.TotalWeight);
 		
 		//INTITALISING VARIABLES FOR CALCULATING DPAIRS LATER
 		
-		//Number of Pickups:
-		double pdenominatorNumberPickups = 0;
-		double qdenominatorNumberPickups = 0;
-					
-		//Total Reward:
-		double pdenominatorTotalReward = 0;
-		double qdenominatorTotalReward = 0;
-					
-		//Total Weight:
-		double pdenominatorTotalWeight = 0;
-		double qdenominatorTotalWeight = 0;
-		
-		//DYNAMICALLY CREATING DIFFERENT DESCRIPTOR OBJECTS BASED ON WHICH EXIST IN JOBS
+		double pdenominator = 0;
+		double qdenominator = 0;
 		
 		for (Job job : trainingSet){
-			
-			//sort out denominators
-			if(job.cancelledInTrainingSet){
-				
-				pdenominatorNumberPickups++;
-				pdenominatorTotalReward++;
-				pdenominatorTotalWeight++;
-			}
-			else{
-				
-				qdenominatorNumberPickups++;
-				qdenominatorTotalReward++;
-				qdenominatorTotalWeight++;
-			}
 			
 			//sort out a few other things hidden inside item pickups from the jobs
 			
@@ -205,44 +220,128 @@ public class NaiveBayes implements CancellationMachine {
 			assert(totalReward != RewardRange.Error);
 			assert(totalWeight != WeightRange.Error);
 			
-			//Number of pickups	
-			if(this.NumberPickups.p.contains(numberPickups)){
+			//DEBUG:
+//			System.out.println(numberPickups);
+//			System.out.println(totalReward);
+//			System.out.println(totalWeight);
+			
+			//sort out denominators and numerators
+			if(job.cancelledInTrainingSet){
 				
-				assert(this.NumberPickups.p.get(numberPickups).isPresent());
-				this.NumberPickups.p.get(numberPickups).get().probability++;
+				pdenominator++;
+				
+				//Number of pickups	
+				if(this.NumberPickups.p.contains(numberPickups)){
+					
+					assert(this.NumberPickups.p.get(numberPickups).isPresent());
+						
+//					System.out.println("p = " + this.NumberPickups.p);
+//					System.out.println("q = " + this.NumberPickups.q);
+					
+					this.NumberPickups.p.get(numberPickups).get().probability++;
+					
+//					System.out.println("p = " + this.NumberPickups.p);
+//					System.out.println("q = " + this.NumberPickups.q);
+				}
+				
+				//Total reward
+				if(this.TotalReward.p.contains(totalReward)){
+					
+					assert(this.TotalReward.p.get(totalReward).isPresent());
+						
+//					System.out.println("p = " + this.TotalReward.p);
+//					System.out.println("q = " + this.TotalReward.q);
+					
+					this.TotalReward.p.get(totalReward).get().probability++;
+					
+//					System.out.println("p = " + this.TotalReward.p);
+//					System.out.println("q = " + this.TotalReward.q);
+				}
+
+				//Total weight
+				if(this.TotalWeight.p.contains(totalWeight)){
+					
+					assert(this.TotalWeight.p.get(totalWeight).isPresent());
+						
+//					System.out.println("p = " + this.TotalWeight.p);
+//					System.out.println("q = " + this.TotalWeight.q);
+					
+					this.TotalWeight.p.get(totalWeight).get().probability++;
+					
+//					System.out.println("p = " + this.TotalWeight.p);
+//					System.out.println("q = " + this.TotalWeight.q);
+				}
+			}
+			else if(!job.cancelledInTrainingSet){
+				
+				qdenominator++;
+				
+				//Number of pickups	
+				if(this.NumberPickups.q.contains(numberPickups)){
+					
+					assert(this.NumberPickups.q.get(numberPickups).isPresent());
+						
+//					System.out.println("p = " + this.NumberPickups.p);
+//					System.out.println("q = " + this.NumberPickups.q);
+					
+					this.NumberPickups.q.get(numberPickups).get().probability++;
+					
+//					System.out.println("p = " + this.NumberPickups.p);
+//					System.out.println("q = " + this.NumberPickups.q);
+				}
+				
+				//Total reward
+				if(this.TotalReward.q.contains(totalReward)){
+					
+					assert(this.TotalReward.q.get(totalReward).isPresent());
+					
+//					System.out.println("p = " + this.TotalReward.p);
+//					System.out.println("q = " + this.TotalReward.q);
+					
+					this.TotalReward.q.get(totalReward).get().probability++;
+					
+//					System.out.println("p = " + this.TotalReward.p);
+//					System.out.println("q = " + this.TotalReward.q);
+				}
+
+				//Total weight
+				if(this.TotalWeight.q.contains(totalWeight)){
+					
+					assert(this.TotalWeight.q.get(totalWeight).isPresent());
+						
+//					System.out.println("p = " + this.TotalWeight.p);
+//					System.out.println("q = " + this.TotalWeight.q);
+					
+					this.TotalWeight.q.get(totalWeight).get().probability++;
+					
+//					System.out.println("p = " + this.TotalWeight.p);
+//					System.out.println("q = " + this.TotalWeight.q);
+				}
 			}
 			
-			//Total reward
-			if(this.TotalReward.p.contains(totalReward)){
-				
-				assert(this.TotalReward.p.get(totalReward).isPresent());
-				this.TotalReward.p.get(totalReward).get().probability++;
-			}
-
-			//Total weight
-			if(this.TotalWeight.p.contains(totalWeight)){
-				
-				assert(this.TotalWeight.p.get(totalWeight).isPresent());
-				this.TotalWeight.p.get(totalWeight).get().probability++;
-			}
+			
 		}
+		
+		//DEBUG:
+//		System.out.println("Number of jobs cancelled: " + pdenominator);
+//		System.out.println("Number of jobs not cancelled: " + qdenominator);
 		
 		for(int i = 0; i < this.NumberPickups.p.probabilities.size(); i++){
 			
-			this.NumberPickups.p.probabilities.get(i).probability /= pdenominatorNumberPickups;
-			this.NumberPickups.q.probabilities.get(i).probability /= qdenominatorNumberPickups;
+			this.NumberPickups.p.probabilities.get(i).probability /= pdenominator;
+			this.NumberPickups.q.probabilities.get(i).probability /= qdenominator;
 		}
 		
 		for(int i = 0; i < this.TotalReward.p.probabilities.size(); i++){
 			
-			this.TotalReward.p.probabilities.get(i).probability /= pdenominatorTotalReward;
-			this.TotalReward.q.probabilities.get(i).probability /= qdenominatorTotalReward;
+			this.TotalReward.p.probabilities.get(i).probability /= pdenominator;
+			this.TotalReward.q.probabilities.get(i).probability /= qdenominator;
 		}
 		
 		for(int i = 0; i < this.TotalWeight.p.probabilities.size(); i++){
 			
-			this.TotalWeight.p.probabilities.get(i).probability /= pdenominatorTotalWeight;
-			this.TotalWeight.q.probabilities.get(i).probability /= qdenominatorTotalWeight;
+			this.TotalWeight.p.probabilities.get(i).probability /= pdenominator;
+			this.TotalWeight.q.probabilities.get(i).probability /= qdenominator;
 		}
 	}
 
@@ -259,6 +358,12 @@ public class NaiveBayes implements CancellationMachine {
 		return 0;
 	}
 
+	@Override
+	public String toString(){
+		
+		return "Naive Bayes of: \n" + this.NumberPickups + ", \n" + this.TotalReward + ", \n" + this.TotalWeight;
+	}
+	
 	//DESCRIBES AN ARRAY OF DPAIRS
 	
 	private class Distribution {
@@ -360,7 +465,7 @@ public class NaiveBayes implements CancellationMachine {
 		
 		public String toString(){
 			
-			return "For Descriptor: " + this.name + " Distibution of: cancelled = " + this.p + " not cancelled = " + this.q;
+			return "For Descriptor: '" + this.name + "' Distibution of: cancelled = " + this.p + " not cancelled = " + this.q;
 		}
 	}
 
