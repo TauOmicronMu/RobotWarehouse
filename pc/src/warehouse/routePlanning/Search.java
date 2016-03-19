@@ -435,9 +435,9 @@ public class Search {
 					path.add(new MoveAction(1, currentLocation));
 				}
 			} else if (previousFacing.turnLeft().equals(currentFacing)) {
-				path.add(new TurnAction(90));
+				path.add(new TurnAction(-95));
 			} else {
-				path.add(new TurnAction(-90));
+				path.add(new TurnAction(95));
 			}
 		}
 
