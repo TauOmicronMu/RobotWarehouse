@@ -70,8 +70,6 @@ public class JobSelectorSingle extends Thread {
 
 		this.run = true;
 
-		EventDispatcher.subscribe2(this);
-
 		JobWorth bestJob;
 
 		while (run && (this.jobs.size() > 0)) {

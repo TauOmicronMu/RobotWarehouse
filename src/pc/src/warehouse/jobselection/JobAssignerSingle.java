@@ -90,9 +90,6 @@ public class JobAssignerSingle extends Thread {
 
 		this.run = true;
 
-		// Sign up to the event dispatcher
-		EventDispatcher dispatcher = EventDispatcher.INSTANCE;
-
 		EventDispatcher.subscribe2(this);
 
 		JobWorth jobToBeAssigned;
@@ -145,7 +142,7 @@ public class JobAssignerSingle extends Thread {
 
 						// Tell subscribers
 						JobAssignedEvent e = new JobAssignedEvent(this.currentJob, this.robot);
-						dispatcher.onEvent(e);
+						EventDispatcher.onEvent2(e);
 
 						this.jobComplete = false;
 					}
