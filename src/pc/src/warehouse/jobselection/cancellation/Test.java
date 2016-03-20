@@ -1,5 +1,7 @@
 package warehouse.jobselection.cancellation;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 
 import warehouse.job.Job;
@@ -67,8 +69,9 @@ public class Test {
 			jobs.add(testJob2);
 			jobs.add(testJob3);
 		
-	CancellationMachine testMachine = new NaiveBayes(jobs);
-	
+			CancellationMachine testMachine = new NaiveBayes(jobs, new ArrayList<String>(
+						Arrays.asList("testitem1", "testitem2", "testitem3", "testitem4", "testitem5", "testitem6")));
+
 	System.out.println(testMachine);
 	
 	LinkedList<ItemPickup> pickups4 = new LinkedList<ItemPickup>();
@@ -76,7 +79,19 @@ public class Test {
 	pickups4.add(testitem3);
 	pickups4.add(testitem1);
 	
+	LinkedList<ItemPickup> pickups5 = new LinkedList<ItemPickup>();
+	pickups5.add(testitem4);
+	pickups5.add(testitem3);
+	pickups5.add(testitem1);
+	
+	LinkedList<ItemPickup> pickups6 = new LinkedList<ItemPickup>();
+	pickups6.add(testitem6);
+	pickups6.add(testitem3);
+	pickups6.add(testitem2);
+	
 	System.out.println(testMachine.getProbability(new Job(new Location(4, 7), pickups4)));
+	System.out.println(testMachine.getProbability(new Job(new Location(4, 7), pickups5)));
+	System.out.println(testMachine.getProbability(new Job(new Location(4, 7), pickups6)));
 	
 	}
 }

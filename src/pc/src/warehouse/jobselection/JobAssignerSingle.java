@@ -68,6 +68,10 @@ public class JobAssignerSingle extends Thread {
 			
 			this.cancellationMachine = new NaiveBayes(jobs);
 		}
+		catch(NullPointerException e){
+			
+			this.cancellationMachine = new Backup();
+		}
 		catch(AssertionError e){
 			
 			this.cancellationMachine = new Backup();
