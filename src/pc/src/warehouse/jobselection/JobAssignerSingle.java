@@ -10,6 +10,7 @@ import warehouse.job.AssignedJob;
 import warehouse.job.Job;
 import warehouse.jobselection.JobSelectorSingle;
 import warehouse.jobselection.JobWorth;
+import warehouse.jobselection.cancellation.Backup;
 import warehouse.jobselection.cancellation.CancellationMachine;
 import warehouse.jobselection.cancellation.NaiveBayes;
 import warehouse.util.EventDispatcher;
@@ -63,8 +64,16 @@ public class JobAssignerSingle extends Thread {
 		this.jobCancelled = false;
 		this.robotGotLost = false;
 
-		this.cancellationMachine = new NaiveBayes(jobs);
-		
+		try{
+			
+			this.cancellationMachine = new NaiveBayes(jobs);
+		}
+		catch(AssertionError e){
+			
+			this.cancellationMachine = new Backup();
+		}
+			
+			
 		// Begin the thread
 		this.start();
 	}

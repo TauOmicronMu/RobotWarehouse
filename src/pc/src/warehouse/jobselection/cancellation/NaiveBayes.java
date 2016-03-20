@@ -1,7 +1,10 @@
 package warehouse.jobselection.cancellation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Optional;
 
 import warehouse.job.Job;
@@ -23,16 +26,18 @@ import warehouse.util.ItemPickup;
 public class NaiveBayes implements CancellationMachine {
 
 	private Distribution NumberPickupsGivenCancelled;
+	private Distribution NumberPickupsGivenNotCancelled;
+	
 	private Distribution TotalRewardGivenCancelled;
 	private Distribution TotalWeightGivenCancelled;
 
-	private Distribution NumberPickupsGivenNotCancelled;
 	private Distribution TotalRewardGivenNotCancelled;
 	private Distribution TotalWeightGivenNotCancelled;
 
-	private Descriptor NumberPickups;
-	private Descriptor TotalReward;
-	private Descriptor TotalWeight;
+	private Map<String, Feature> NumberPickups;
+	
+	private Feature TotalReward;
+	private Feature TotalWeight;
 
 	private double pCancelled;
 	private double qCancelled;
@@ -52,21 +57,36 @@ public class NaiveBayes implements CancellationMachine {
 		// Each Descriptor contains two Distribution objects - one for the
 		// probabilities given cancelled, and one for given not cancelled
 
-		// number of pickups
-		ArrayList<DPair> numberPickupsList1 = new ArrayList<DPair>();
-		numberPickupsList1.add(new DPair(NumRange.OneToNine, 0));
-		numberPickupsList1.add(new DPair(NumRange.TenToNineteen, 0));
-		numberPickupsList1.add(new DPair(NumRange.TwentyToTwentyNine, 0));
-		numberPickupsList1.add(new DPair(NumRange.ThirtyPlus, 0));
+		// number of pickups for each item
+		
+		//TODO Parse Items.csv from JobInput for this list!
+		ArrayList<String> allItems = new ArrayList<String>(Arrays.asList("aa", "ab", "ac", "ad", "ae", "af", "ag", "ah", "ai", "aj",
+				"ba", "bb", "bc", "bd", "be", "bf", "bg", "bh", "bi", "bj",
+				"ca", "cb", "cc", "cd", "ce", "cf", "cg", "ch", "ci", "cj"));
 
-		ArrayList<DPair> numberPickupsList2 = new ArrayList<DPair>();
-		numberPickupsList2.add(new DPair(NumRange.OneToNine, 0));
-		numberPickupsList2.add(new DPair(NumRange.TenToNineteen, 0));
-		numberPickupsList2.add(new DPair(NumRange.TwentyToTwentyNine, 0));
-		numberPickupsList2.add(new DPair(NumRange.ThirtyPlus, 0));
-
-		this.NumberPickupsGivenCancelled = new Distribution(numberPickupsList1);
-		this.NumberPickupsGivenNotCancelled = new Distribution(numberPickupsList2);
+		this.NumberPickups = new HashMap<String, Feature>();
+		
+		for(String item : allItems){
+			
+			ArrayList<DPair> numberPickupsList1 = new ArrayList<DPair>();
+			numberPickupsList1.add(new DPair(NumRange.One, 0));
+			numberPickupsList1.add(new DPair(NumRange.Two, 0));
+			numberPickupsList1.add(new DPair(NumRange.Three, 0));
+			numberPickupsList1.add(new DPair(NumRange.Four, 0));
+			numberPickupsList1.add(new DPair(NumRange.FivePlus, 0));
+			
+			ArrayList<DPair> numberPickupsList2 = new ArrayList<DPair>();
+			numberPickupsList1.add(new DPair(NumRange.One, 0));
+			numberPickupsList1.add(new DPair(NumRange.Two, 0));
+			numberPickupsList1.add(new DPair(NumRange.Three, 0));
+			numberPickupsList1.add(new DPair(NumRange.Four, 0));
+			numberPickupsList1.add(new DPair(NumRange.FivePlus, 0));
+			
+			NumberPickupsGivenCancelled = new Distribution("NP" + item + "|cancelled", numberPickupsList1);
+			NumberPickupsGivenNotCancelled = new Distribution("NP" + item + "|!cancelled", numberPickupsList2);
+			
+			this.NumberPickups.put(item, new Feature("NP" + item, NumberPickupsGivenCancelled, NumberPickupsGivenNotCancelled));
+		}
 
 		// total reward
 		ArrayList<DPair> totalRewardList1 = new ArrayList<DPair>();
@@ -83,9 +103,12 @@ public class NaiveBayes implements CancellationMachine {
 		totalRewardList2.add(new DPair(RewardRange.SixtyToSeventyNine, 0));
 		totalRewardList2.add(new DPair(RewardRange.EightyPlus, 0));
 
-		this.TotalRewardGivenCancelled = new Distribution(totalRewardList1);
-		this.TotalRewardGivenNotCancelled = new Distribution(totalRewardList2);
+		this.TotalRewardGivenCancelled = new Distribution("TR|cancelled", totalRewardList1);
+		this.TotalRewardGivenNotCancelled = new Distribution("TR|!cancelled", totalRewardList2);
 
+		this.TotalReward = new Feature("TR", this.TotalRewardGivenCancelled,
+				this.TotalRewardGivenNotCancelled);
+		
 		// total weight
 		ArrayList<DPair> totalWeightList1 = new ArrayList<DPair>();
 		totalWeightList1.add(new DPair(WeightRange.ZeroToFour, 0));
@@ -105,14 +128,10 @@ public class NaiveBayes implements CancellationMachine {
 		totalWeightList2.add(new DPair(WeightRange.TwentyFiveToTwentyNine, 0));
 		totalWeightList2.add(new DPair(WeightRange.ThirtyPlus, 0));
 
-		this.TotalWeightGivenCancelled = new Distribution(totalWeightList1);
-		this.TotalWeightGivenNotCancelled = new Distribution(totalWeightList2);
+		this.TotalWeightGivenCancelled = new Distribution("TW|cancelled", totalWeightList1);
+		this.TotalWeightGivenNotCancelled = new Distribution("TW|!cancelled", totalWeightList2);
 
-		this.NumberPickups = new Descriptor("Number of Pickups", this.NumberPickupsGivenCancelled,
-				this.NumberPickupsGivenNotCancelled);
-		this.TotalReward = new Descriptor("Total Reward", this.TotalRewardGivenCancelled,
-				this.TotalRewardGivenNotCancelled);
-		this.TotalWeight = new Descriptor("Total Weight", this.TotalWeightGivenCancelled,
+		this.TotalWeight = new Feature("TW", this.TotalWeightGivenCancelled,
 				this.TotalWeightGivenNotCancelled);
 
 		// Initialising a few variables for later so the probability of a job
@@ -131,24 +150,45 @@ public class NaiveBayes implements CancellationMachine {
 
 			numJobs++;
 
-			int intPickups = 0;
+			String itemName = "";
+			int itemNumber = 0;
 			double doubleReward = 0;
 			double doubleWeight = 0;
 
 			for (ItemPickup pickup : job.pickups) {
 
-				intPickups += pickup.itemCount;
+				itemName = pickup.itemName;
+				itemNumber = pickup.itemCount;
+				
+				NumRange numberPickups = this.convertNumber(itemNumber);
+				assert (numberPickups != NumRange.Error);
+				
+				//Increment the probabilities of number of pickups for each item in the job if it was cancelled
+				if ((job.cancelledInTrainingSet) && this.NumberPickups.get(itemName).p.contains(numberPickups)) {
+		
+					assert (this.NumberPickups.get(itemName).p.get(numberPickups).isPresent());
+		
+					this.NumberPickups.get(itemName).p.get(numberPickups).get().probability++;
+				} 
+				
+				//Increment the probabilities of number of pickups for each item in the job if it was not cancelled
+				else if ((!job.cancelledInTrainingSet) && this.NumberPickups.get(itemName).q.contains(numberPickups)) {
+		
+					assert (this.NumberPickups.get(itemName).q.get(numberPickups).isPresent());
+		
+					this.NumberPickups.get(itemName).q.get(numberPickups).get().probability++;
+				}
+				
+				//Increase the total reward and weight counts
 				doubleReward += (pickup.reward * pickup.itemCount);
 				doubleWeight += (pickup.weight * pickup.itemCount);
 			}
 
 			// Convert the raw numbers from the job into general range enums so
 			// they can be compared against easily later
-			NumRange numberPickups = this.convertNumber(intPickups);
 			RewardRange totalReward = this.convertReward(doubleReward);
 			WeightRange totalWeight = this.convertWeight(doubleWeight);
 
-			assert (numberPickups != NumRange.Error);
 			assert (totalReward != RewardRange.Error);
 			assert (totalWeight != WeightRange.Error);
 
@@ -159,7 +199,8 @@ public class NaiveBayes implements CancellationMachine {
 				numCancelled++;
 				pdenominator++;
 
-				this.pincrementProbabilities(numberPickups, totalReward, totalWeight);
+				//Increment the probabilities for the other two features, total reward and total weight given the job was cancelled
+				this.pincrementProbabilities(totalReward, totalWeight);
 
 			}
 			// If the job was not cancelled, increment the numerators of the
@@ -169,7 +210,8 @@ public class NaiveBayes implements CancellationMachine {
 				numNotCancelled++;
 				qdenominator++;
 
-				this.qincrementProbabilities(numberPickups, totalReward, totalWeight);
+				//Increment the probabilities for the other two features, total reward and total weight given the job was not cancelled
+				this.qincrementProbabilities(totalReward, totalWeight);
 			}
 
 		}
@@ -197,18 +239,21 @@ public class NaiveBayes implements CancellationMachine {
 		// cancellation machine anyway)
 		NumRange numberPickups = NumRange.Error;
 
-		if ((0 < intPickups) && (intPickups < 10)) {
+		if (intPickups == 1) {
 
-			numberPickups = NumRange.OneToNine;
-		} else if ((10 <= intPickups) && (intPickups < 20)) {
+			numberPickups = NumRange.One;
+		} else if (intPickups == 2) {
 
-			numberPickups = NumRange.TenToNineteen;
-		} else if ((20 <= intPickups) && (intPickups < 30)) {
+			numberPickups = NumRange.Two;
+		} else if (intPickups == 3) {
 
-			numberPickups = NumRange.TwentyToTwentyNine;
-		} else if (30 <= intPickups) {
+			numberPickups = NumRange.Three;
+		} else if (intPickups == 4) {
 
-			numberPickups = NumRange.ThirtyPlus;
+			numberPickups = NumRange.Four;
+		} else if (intPickups >= 5) {
+			
+			numberPickups = NumRange.FivePlus;
 		}
 
 		return numberPickups;
@@ -297,15 +342,7 @@ public class NaiveBayes implements CancellationMachine {
 	 * @param totalWeight
 	 *            the enum for the total weight
 	 */
-	private void pincrementProbabilities(NumRange numberPickups, RewardRange totalReward, WeightRange totalWeight) {
-
-		// Number of pickups
-		if (this.NumberPickups.p.contains(numberPickups)) {
-
-			assert (this.NumberPickups.p.get(numberPickups).isPresent());
-
-			this.NumberPickups.p.get(numberPickups).get().probability++;
-		}
+	private void pincrementProbabilities(RewardRange totalReward, WeightRange totalWeight) {
 
 		// Total reward
 		if (this.TotalReward.p.contains(totalReward)) {
@@ -335,15 +372,15 @@ public class NaiveBayes implements CancellationMachine {
 	 * @param totalWeight
 	 *            the enum for the total weight
 	 */
-	private void qincrementProbabilities(NumRange numberPickups, RewardRange totalReward, WeightRange totalWeight) {
+	private void qincrementProbabilities(RewardRange totalReward, WeightRange totalWeight) {
 
 		// Number of pickups
-		if (this.NumberPickups.q.contains(numberPickups)) {
-
-			assert (this.NumberPickups.q.get(numberPickups).isPresent());
-
-			this.NumberPickups.q.get(numberPickups).get().probability++;
-		}
+//		if (this.NumberPickups.q.contains(numberPickups)) {
+//
+//			assert (this.NumberPickups.q.get(numberPickups).isPresent());
+//
+//			this.NumberPickups.q.get(numberPickups).get().probability++;
+//		}
 
 		// Total reward
 		if (this.TotalReward.q.contains(totalReward)) {
@@ -373,11 +410,11 @@ public class NaiveBayes implements CancellationMachine {
 	 */
 	private void denominate(double pdenom, double qdenom) {
 
-		for (int i = 0; i < this.NumberPickups.p.probabilities.size(); i++) {
-
-			this.NumberPickups.p.probabilities.get(i).probability /= pdenom;
-			this.NumberPickups.q.probabilities.get(i).probability /= qdenom;
-		}
+//		for (int i = 0; i < this.NumberPickups.p.probabilities.size(); i++) {
+//
+//			this.NumberPickups.p.probabilities.get(i).probability /= pdenom;
+//			this.NumberPickups.q.probabilities.get(i).probability /= qdenom;
+//		}
 
 		for (int i = 0; i < this.TotalReward.p.probabilities.size(); i++) {
 
@@ -396,15 +433,16 @@ public class NaiveBayes implements CancellationMachine {
 	 * Get the probability that a job had this enum given it was cancelled
 	 * 
 	 * @param n
-	 *            th enum
+	 *            the enum
 	 * @return the probability as a double
 	 */
 	private double pgetProbability(NumRange n) {
+		return 0;
 
-		assert (this.NumberPickups.p.get(n).isPresent());
-
-		return this.NumberPickups.p.get(n).get().probability == 0 ? 0.01
-				: this.NumberPickups.p.get(n).get().probability;
+//		assert (this.NumberPickups.p.get(n).isPresent());
+//
+//		return this.NumberPickups.p.get(n).get().probability == 0 ? 0.01
+//				: this.NumberPickups.p.get(n).get().probability;
 	}
 
 	/**
@@ -443,11 +481,12 @@ public class NaiveBayes implements CancellationMachine {
 	 * @return the probability as a double
 	 */
 	private double qgetqrobability(NumRange n) {
+		return 0;
 
-		assert (this.NumberPickups.q.get(n).isPresent());
-
-		return this.NumberPickups.q.get(n).get().probability == 0 ? 0.01
-				: this.NumberPickups.q.get(n).get().probability;
+//		assert (this.NumberPickups.q.get(n).isPresent());
+//
+//		return this.NumberPickups.q.get(n).get().probability == 0 ? 0.01
+//				: this.NumberPickups.q.get(n).get().probability;
 	}
 
 	/**
@@ -524,6 +563,8 @@ public class NaiveBayes implements CancellationMachine {
 		// will be cancelled can be calculated
 		double finalProbability = this.normalisedProbabilityOfCancellation(p, q);
 
+		assert((finalProbability >= 0) && (finalProbability <= 1));
+		
 		return finalProbability;
 	}
 
@@ -533,7 +574,7 @@ public class NaiveBayes implements CancellationMachine {
 	@Override
 	public String toString() {
 
-		return "Naive Bayes of: \n" + this.NumberPickups + ", \n" + this.TotalReward + ", \n" + this.TotalWeight;
+		return "Naive Bayes of: \n" /*+ this.NumberPickups*/ + ", \n" + this.TotalReward + ", \n" + this.TotalWeight;
 	}
 
 	/**
@@ -548,35 +589,46 @@ public class NaiveBayes implements CancellationMachine {
 	 */
 	private double normalisedProbabilityOfCancellation(double p, double q) {
 
-		// print(""+p);
-		// print(""+q);
-
 		double total = p + q;
-
-		// print(""+total);
 
 		double multiplier = 1 / total;
 
-		// print(""+multiplier);
-
 		double result = p * multiplier;
-
-		// print(""+result);
 
 		return result;
 	}
 
 	// DESCRIBES AN ARRAY OF DPAIRS
 
+	/**
+	 * Class that describes an arraylist of probability pairs
+	 * 
+	 * @author Owen
+	 *
+	 */
 	private class Distribution {
 
 		private ArrayList<DPair> probabilities;
+		private String name;
 
-		private Distribution(ArrayList<DPair> set) {
+		/**
+		 * Create a new Distribution based on an arraylist of pairs and a name
+		 * 
+		 * @param name the name of the Distribution
+		 * @param set the arraylist of pairs
+		 */
+		private Distribution(String name, ArrayList<DPair> set) {
 
+			this.name = name;
 			this.probabilities = set;
 		}
 
+		/**
+		 * Check if this Distribution contains a pair wit the same descriptor
+		 * 
+		 * @param descriptor the descriptor to check
+		 * @return true if it contains a pair with that descriptor, else false
+		 */
 		public boolean contains(Object descriptor) {
 
 			for (int i = 0; i < this.probabilities.size(); i++) {
@@ -590,6 +642,12 @@ public class NaiveBayes implements CancellationMachine {
 			return false;
 		}
 
+		/**
+		 * Get the pair related to a descriptor
+		 * 
+		 * @param descriptor the descriptor
+		 * @return an Optional of the pair if it exists, or an empty Optional
+		 */
 		public Optional<DPair> get(Object descriptor) {
 
 			for (int i = 0; i < this.probabilities.size(); i++) {
@@ -635,13 +693,26 @@ public class NaiveBayes implements CancellationMachine {
 
 	// DESCRIBES SOMETHING WE CAN CATEGORISE A JOB BY
 
-	private class Descriptor {
+	/**
+	 * Class that describes a feature of a job, with a p distribution (for cancelled) and a q distribution (for not cancelled)
+	 * 
+	 * @author Owen
+	 *
+	 */
+	private class Feature {
 
 		private String name;
 		private Distribution p;
 		private Distribution q;
 
-		private Descriptor(String name, Distribution p, Distribution q) {
+		/**
+		 * Create a new Feature, with a name for debugging and two distributions
+		 * 
+		 * @param name the name of the Feature
+		 * @param p the distribution for cancelled
+		 * @param q the distribution for not cancelled
+		 */
+		private Feature(String name, Distribution p, Distribution q) {
 
 			this.name = name;
 			this.p = p;
@@ -651,8 +722,7 @@ public class NaiveBayes implements CancellationMachine {
 		@Override
 		public boolean equals(Object o) {
 
-			if ((o instanceof Descriptor) && (((Descriptor) o).p.equals(this.p))
-					&& (((Descriptor) o).q.equals(this.q))) {
+			if ((o instanceof Feature) && ((Feature)o).name.equals(this.name)) {
 
 				return true;
 			}
@@ -663,23 +733,38 @@ public class NaiveBayes implements CancellationMachine {
 		@Override
 		public int hashCode() {
 
-			return 0;
+			return hash(this.name, (this.p.probabilities.size() + this.q.probabilities.size()) / 2);
 		}
 
+		/**
+		 * To String method for debugging
+		 */
 		public String toString() {
 
-			return "For Descriptor: '" + this.name + "' Distibution of: cancelled = " + this.p + " not cancelled = "
+			return "For Feature: '" + this.name + "' Distibution of: cancelled = " + this.p + " not cancelled = "
 					+ this.q;
 		}
 	}
 
 	// DESCRIBES A LINKED OBJECT AND PROBABILITY
 
+	/**
+	 * Class that describes a pair of an object descriptor and a double
+	 * 
+	 * @author Owen
+	 *
+	 */
 	private class DPair {
 
 		private Object descriptor;
 		public double probability;
 
+		/**
+		 * Create a new DPair
+		 * 
+		 * @param a the object
+		 * @param b the double
+		 */
 		private DPair(Object a, double b) {
 
 			this.descriptor = a;
@@ -703,9 +788,65 @@ public class NaiveBayes implements CancellationMachine {
 			return 0;
 		}
 
+		/**
+		 * To String method for debugging
+		 */
 		public String toString() {
 
 			return "[" + this.descriptor.toString() + " p = " + this.probability + "]";
 		}
+	}
+	
+	//METHOD FOR HASHING FEATURES
+	
+	/**
+	 * Method for generating a hash for a hashmap based on a string and a number to modulus by
+	 * 
+	 * @param string the string to base the hashcode on
+	 * @return the hashcode generated
+	 */
+	public static int hash(String string, int mod){
+		
+		int stringValue = 0;
+		
+		int size = string.length();
+		
+		for(int i = 0; i < size; i++){
+			
+			char c = string.toLowerCase().charAt(i);
+			
+			switchCase:
+			switch(c){
+	
+				case('a') : stringValue += 0; break switchCase;
+				case('b') : stringValue += 1; break switchCase;
+				case('c') : stringValue += 2; break switchCase;
+				case('d') : stringValue += 3; break switchCase;
+				case('e') : stringValue += 4; break switchCase;
+				case('f') : stringValue += 5; break switchCase;
+				case('g') : stringValue += 6; break switchCase;
+				case('h') : stringValue += 7; break switchCase;
+				case('i') : stringValue += 8; break switchCase;
+				case('j') : stringValue += 9; break switchCase;
+				case('k') : stringValue += 10; break switchCase;
+				case('l') : stringValue += 11; break switchCase;
+				case('m') : stringValue += 12; break switchCase;
+				case('n') : stringValue += 13; break switchCase;
+				case('o') : stringValue += 14; break switchCase;
+				case('p') : stringValue += 15; break switchCase;
+				case('q') : stringValue += 16; break switchCase;
+				case('r') : stringValue += 17; break switchCase;
+				case('s') : stringValue += 18; break switchCase;
+				case('t') : stringValue += 19; break switchCase;
+				case('u') : stringValue += 20; break switchCase;
+				case('v') : stringValue += 21; break switchCase;
+				case('w') : stringValue += 22; break switchCase;
+				case('x') : stringValue += 23; break switchCase;
+				case('y') : stringValue += 24; break switchCase;
+				case('z') : stringValue += 25; break switchCase;
+			}
+		}
+		
+		return stringValue%mod;
 	}
 }

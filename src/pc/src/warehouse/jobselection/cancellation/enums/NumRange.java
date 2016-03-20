@@ -3,5 +3,5 @@ package warehouse.jobselection.cancellation.enums;
 public enum NumRange {
 
 	//Inclusive
-	Error, OneToNine, TenToNineteen, TwentyToTwentyNine, ThirtyPlus
+	Error, One, Two, Three, Four, FivePlus
 }
