@@ -1,5 +1,6 @@
 package warehouse.localisation;
 
+
 import lejos.nxt.LightSensor;
 import lejos.nxt.Motor;
 import lejos.nxt.SensorPort;
@@ -16,7 +17,7 @@ public class LineFollowingL  {
 	private boolean goRight = false;
 	
 	//changes travel speed
-	private final int travelSpeed = 1;
+	private final int travelSpeed = 10;
 
 	private int delay;
 	
@@ -71,7 +72,7 @@ public class LineFollowingL  {
 	}
 	public void turnAction(double angle){
 		//distance to travel before turning
-		pilot.travel(6);
+		pilot.travel(0.06);
 		
 		pilot.stop();
 		pilot.rotate(angle);
