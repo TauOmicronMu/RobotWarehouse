@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import warehouse.event.BeginAssigningEvent;
 import warehouse.util.*;
 
 public class JobInput {
