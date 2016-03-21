@@ -10,6 +10,7 @@ public class Job {
     public final Location dropLocation;
     public final List<ItemPickup> pickups;
     public final String id;
+    public boolean cancelledInTrainingSet;
 
     public Job(Location dropLocation, List<ItemPickup> pickups, String id) {
         this.dropLocation = dropLocation;
