@@ -28,6 +28,11 @@ public class Job {
 
     @Override
     public String toString() {
-        return id;
+        return "{" +
+                "dropLocation=" + dropLocation +
+                ", pickups=" + pickups +
+                ", id='" + id + '\'' +
+                ", cancelledInTrainingSet=" + cancelledInTrainingSet +
+                '}';
     }
 }
