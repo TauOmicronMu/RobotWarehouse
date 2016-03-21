@@ -1,6 +1,8 @@
 package warehouse.event;
 
 import warehouse.util.Location;
+import warehouse.job.*;
+
 
 /**
  * Event to send to subscribers when a job is completed.
@@ -11,6 +13,7 @@ import warehouse.util.Location;
 public class JobCompleteEvent {
 
 	private Location currentLocation;
+	public Job job;
 	
 	/**
 	 * Create a new JobCompleteEvent which contains a location
