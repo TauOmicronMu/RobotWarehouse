@@ -14,6 +14,7 @@ import javafx.scene.text.Text;
 import lejos.robotics.RangeFinder;
 import rp.robotics.MobileRobotWrapper;
 import rp.robotics.mapping.GridMap;
+import rp.robotics.mapping.MapUtils;
 import rp.robotics.navigation.GridPose;
 import rp.robotics.navigation.Heading;
 import rp.robotics.simulation.MapBasedSimulation;
@@ -55,7 +56,8 @@ public class MapVBox extends VBox {
 	 */
 	public void warehouseMap() {
 
-		GridMap map = TestMaps.warehouseMap();
+//		GridMap map = TestMaps.warehouseMap();
+		GridMap map = MapUtils.createRealWarehouse();
 
 		// Create the simulation using the given map. This simulation can run
 		// without a GUI.
