@@ -2,8 +2,10 @@ package warehouse.job;
 
 import java.io.*;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import warehouse.event.BeginAssigningEvent;
 import warehouse.util.*;
 
 public class JobInput {
@@ -14,27 +16,18 @@ public class JobInput {
 	
 	public static void main(String[] args) throws IOException {
 		// Parse locations
-		Scanner scanner = new Scanner(new File("locations.csv"));
 		HashMap<String, Location> itemLocations = new HashMap<>();
-		while(scanner.hasNextLine()) {
-			String line = scanner.nextLine();
-			String[] values = line.split(",");
-			itemLocations.put(values[0], new Location(Integer.parseInt(values[1]), Integer.parseInt(values[2])));
-		}
+		parseFile("locations.csv", values -> itemLocations.put(values[0], new Location(Integer.parseInt(values[1]), Integer.parseInt(values[2]))));
 
 		// Parse items file
 		HashMap<String, ItemPickup> itemPickups = new HashMap<>();
-		scanner = new Scanner(new File("items.csv"));
-		while(scanner.hasNextLine()) {
-			String[] values = scanner.nextLine().split(",");
+		parseFile("items.csv", values -> {
 			itemPickups.put(values[0], new ItemPickup(values[0], itemLocations.get(values[0]), 0));
-		}
+		});
 
 		// Parse jobs file
-		scanner = new Scanner(new File("jobs.csv"));
 		HashMap<String, Job> jobs = new HashMap<>();
-		while(scanner.hasNextLine()) {
-			String[] values = scanner.nextLine().split(",");
+		parseFile("jobs.csv", values -> {
 			List<ItemPickup> jobPickups = new LinkedList<>();
 			for(int i = 1; i < values.length; i += 2) {
 				ItemPickup p = (ItemPickup) itemPickups.get(values[i]).clone();
@@ -42,17 +35,25 @@ public class JobInput {
 				jobPickups.add(p);
 			}
 			jobs.put(values[0], new Job(null, jobPickups, values[0]));
-		}
+		});
 
 		// Parse cancellations file (I'm not sure of the actual file name)
-		scanner = new Scanner("cancellations.csv");
-		while(scanner.hasNextLine()) {
-			String[] values = scanner.nextLine().split(",");
+		parseFile("cancellations.csv", values -> {
 			jobs.get(values[0]).cancelledInTrainingSet = values[1].equals("0") ? false : true;
-		}
+		});
+
+        List<Location> dropLocations = new ArrayList<>();
+        parseFile("drops.csv", values -> dropLocations.add(new Location(Integer.parseInt(values[0]), Integer.parseInt(values[1]))));
 
 		// Convert the job map to a list
 		List<Job> jobList = jobs.values().stream().collect(Collectors.toList());
-		EventDispatcher.onEvent2(new BeginAssigningEvent(jobList));
+        System.out.println(jobList);
+        EventDispatcher.onEvent2(new BeginAssigningEvent(jobList, dropLocations));
 	}
+
+	public static void parseFile(String filePath, Consumer<String[]> consumer) throws FileNotFoundException {
+		Scanner in = new Scanner(new File(filePath));
+		while(in.hasNextLine()) consumer.accept(in.nextLine().split(","));
+	}
+
 }

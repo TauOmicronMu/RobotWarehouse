@@ -7,13 +7,15 @@ import java.util.List;
 
 public class Job {
 
-    public Location dropLocation;
-    public List<ItemPickup> pickups;
+    public final Location dropLocation;
+    public final List<ItemPickup> pickups;
+    public final String id;
     public boolean cancelledInTrainingSet;
 
-    public Job(Location dropLocation, List<ItemPickup> pickups) {
+    public Job(Location dropLocation, List<ItemPickup> pickups, String id) {
         this.dropLocation = dropLocation;
         this.pickups = pickups;
+        this.id = id;
     }
     
     public boolean isAssigned() {
@@ -22,9 +24,6 @@ public class Job {
 
     @Override
     public String toString() {
-        return "Job{" +
-                "dropLocation=" + dropLocation +
-                ", pickups=" + pickups +
-                '}';
+        return id;
     }
 }
