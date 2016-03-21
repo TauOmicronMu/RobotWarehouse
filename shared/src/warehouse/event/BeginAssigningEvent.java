@@ -1,6 +1,7 @@
 package warehouse.event;
 
 import warehouse.job.Job;
+import warehouse.util.*;
 
 import java.util.*;
 
@@ -13,11 +14,13 @@ import java.util.*;
 public class BeginAssigningEvent {
 	
 	public List<Job> jobs;
+	public List<Location> dropLocations;
 
 	/**
 	 * Create a new event
 	 */
-	public BeginAssigningEvent(List<Job> jobs){
+	public BeginAssigningEvent(List<Job> jobs, List<Location> dropLocations){
 		this.jobs = jobs;
+		this.dropLocations = dropLocations;
 	}
 }
