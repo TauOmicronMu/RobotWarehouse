@@ -126,7 +126,7 @@ public class SensorModelModified implements SensorModel {
 				}
 
 			}
-		}
+	}
 	}
 	
 	private void headMinusY(GridPositionDistribution _from, GridPositionDistribution to) {

@@ -4,6 +4,8 @@ import java.util.Random;
 
 import javax.swing.JFrame;
 
+import lejos.robotics.RangeReading;
+import lejos.robotics.RangeReadings;
 import lejos.util.Delay;
 import rp.robotics.LocalisedRangeScanner;
 import rp.robotics.MobileRobotWrapper;
@@ -49,10 +51,14 @@ public class LocalistaionMain implements StoppableRunnable {
 
 	// distances to the every object in the map
 	private Distances dist;
+	
+	
+	LineFollowingL lineFollow;
 
 	public LocalistaionMain(MovableRobot _robot, GridMap _gridMap, GridPose _start, LocalisedRangeScanner _ranger,
-			Distances dist) {
+			Distances dist, LineFollowingL lineFollow) {
 
+		this.lineFollow= lineFollow;
 		m_map = _gridMap;
 		m_pilot = new GridPilotModified(_robot.getPilot(), _gridMap, _start);
 		m_ranger = _ranger;
@@ -106,13 +112,20 @@ public class LocalistaionMain implements StoppableRunnable {
 
 		// Move robot forward
 		// NOTE: Not checking for this being a valid move, collisions etc.
-		if (m_ranger.getRange() >= 0.35f) {
+//		if (m_ranger.getRange() >= 0.35f) {
+//			m_pilot.moveForward();
+//			
+//			// Update estimate of position using the action model
+//			m_distribution = _actionModel.updateAfterMove(m_distribution, heading);
+//		}
+		if (lineFollow.getRange() >= 0.35f) {
+			lineFollow.moveAction(1);
 			m_pilot.moveForward();
-
+			
 			// Update estimate of position using the action model
 			m_distribution = _actionModel.updateAfterMove(m_distribution, heading);
 		}
-
+		
 		m_distribution.normalise();
 
 		// If visualising, update the shown distribution
@@ -124,7 +137,9 @@ public class LocalistaionMain implements StoppableRunnable {
 		Delay.msDelay(delay);
 
 		// Update the estimate of position using the sensor model
-		m_distribution = _sensorModel.updateAfterSensing(m_distribution, heading, m_ranger.getRangeValues());
+		RangeReadings readings  = new RangeReadings(1);
+		readings.set(0, new RangeReading(0f, (float) lineFollow.getRange()));
+		m_distribution = _sensorModel.updateAfterSensing(m_distribution, heading, readings);
 
 		m_distribution.normalise();
 		// If visualising, update the shown distribution
@@ -139,7 +154,9 @@ public class LocalistaionMain implements StoppableRunnable {
 	private void sense(SensorModel _sensorModel) {
 		Heading heading = m_pilot.getGridPose().getHeading();
 		// Update the estimate of position using the sensor model
-		m_distribution = _sensorModel.updateAfterSensing(m_distribution, heading, m_ranger.getRangeValues());
+		RangeReadings readings  = new RangeReadings(1);
+		readings.set(0, new RangeReading(0f, (float) lineFollow.getRange()));
+		m_distribution = _sensorModel.updateAfterSensing(m_distribution, heading, readings);
 
 		m_distribution.normalise();
 		// If visualising, update the shown distribution
@@ -177,17 +194,23 @@ public class LocalistaionMain implements StoppableRunnable {
 		while (m_running) {
 
 			if (!knownCoordinates()) {
-				if (m_ranger.getRange() >= 0.4f)
+				if (m_ranger.getRange() >= 0.4f){
 					move(actionModel, sensorModel);
+				}
+					
 				else {
 					int temp = random.nextInt(2);
 					switch (temp) {
 					case 0:
 						m_pilot.rotateNegative();
+						lineFollow.turnAction(-90);
+						Delay.msDelay(1000);
 						sense(sensorModel);
 						break;
 					case 1:
 						m_pilot.rotatePositive();
+						lineFollow.turnAction(90);
+						Delay.msDelay(1000);
 						sense(sensorModel);
 						break;
 					}
@@ -216,6 +239,8 @@ public class LocalistaionMain implements StoppableRunnable {
 	 */
 	public static void main(String[] args) {
 
+		
+		LineFollowingL lineFollow = new LineFollowingL();
 		// Work on this map
 		GridMap map = TestMaps.warehouseMap();
 
@@ -236,7 +261,7 @@ public class LocalistaionMain implements StoppableRunnable {
 		LocalisedRangeScanner ranger = sim.getRanger(wrapper);
 
 		Distances dist = new Distances(map);
-		LocalistaionMain ml = new LocalistaionMain(wrapper.getRobot(), map, gridStart, ranger, dist);
+		LocalistaionMain ml = new LocalistaionMain(wrapper.getRobot(), map, gridStart, ranger, dist, lineFollow);
 		ml.visualise(sim);
 		ml.run();
 
