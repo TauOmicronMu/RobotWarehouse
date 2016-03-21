@@ -32,9 +32,9 @@ public class Communication
 	}
 	
 	@Subscriber
-	public void onString(String message)
+	public void onString(DropOffEvent e)
 	{
-		this.message = message;
+		message = e.getMessage();
 	}
 	
 	@Subscriber
