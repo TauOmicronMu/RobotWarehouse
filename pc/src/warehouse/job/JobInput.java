@@ -22,7 +22,7 @@ public class JobInput {
 		// Parse items file
 		HashMap<String, ItemPickup> itemPickups = new HashMap<>();
 		parseFile("items.csv", values -> {
-			itemPickups.put(values[0], new ItemPickup(values[0], itemLocations.get(values[0]), 0));
+			itemPickups.put(values[0], new ItemPickup(values[0], itemLocations.get(values[0]), 0, Double.parseDouble(values[1]), Double.parseDouble(values[2])));
 		});
 
 		// Parse jobs file
@@ -44,8 +44,9 @@ public class JobInput {
 
         List<Location> dropLocations = new ArrayList<>();
         parseFile("drops.csv", values -> {
+            if(values.length < 2) return;
             System.out.println(Arrays.toString(values));
-            dropLocations.add(new Location(Integer.parseInt(values[0]), Integer.parseInt(values[1])))
+            dropLocations.add(new Location(Integer.parseInt(values[0]), Integer.parseInt(values[1])));
         });
 
 		// Convert the job map to a list
