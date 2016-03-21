@@ -67,7 +67,7 @@ public class MapVBox extends VBox {
 		// Initialise list of controllers
 		controllers = new ArrayList<SimController>();
 
-		int robots = 3;
+		int robots = 1;
 		for (int i = 0; i < robots; i++) {
 			// Starting point on the grid
 			GridPose gridStart = new GridPose(3 * i, 0, Heading.PLUS_Y);

@@ -15,6 +15,8 @@ import rp.robotics.navigation.GridPilot;
 import rp.robotics.navigation.GridPose;
 import rp.robotics.simulation.MovableRobot;
 import rp.systems.StoppableRunnable;
+import warehouse.util.EventDispatcher;
+import warehouse.util.Subscriber;
 
 public class SimController implements StoppableRunnable {
 
@@ -30,6 +32,7 @@ public class SimController implements StoppableRunnable {
 		pilot = new GridPilot(_robot.getPilot(), _map, _start);
 		ranger = _ranger;
 		robot = _robot;
+		EventDispatcher.subscribe2(this);
 	}
 
 	/**
@@ -59,6 +62,17 @@ public class SimController implements StoppableRunnable {
 		while (running) {
 			// Nothing to do here. Just looping and listening for events using
 			// methods below
+			// Testing:
+//			for(int i=0; i<6; i++)
+//				onMoveAheadEvent();
+//			onTurnRightEvent();
+//			for(int i=0; i<4; i++)
+//				onMoveAheadEvent();
+//			onStoppedEvent();
+//			Delay.msDelay(5000);
+//			for(int i=0; i<2; i++)
+//				onMoveAheadEvent();
+			
 		}
 	}
 
@@ -68,20 +82,30 @@ public class SimController implements StoppableRunnable {
 	 */
 
 	public void onMoveAheadEvent() {
+		
 		if (moveAheadClear()) {
+			float speed = 0.15f;
+			pilot.setTravelSpeed(speed);
 			pilot.moveForward();
 		}
 	}
 
+	@Subscriber
 	public void onStoppedEvent() {
-		// TODO
+		pilot.setTravelSpeed(0f);
 	}
 
+	@Subscriber
 	public void onTurnRightEvent() {
+//		float speed = ...; TODO
+//		pilot.setTurnSpeed(speed);
 		pilot.rotateNegative();
 	}
 
+	@Subscriber
 	public void onTurnLeftEvent() {
+//		float speed = ...; TODO
+//		pilot.setTurnSpeed(speed);
 		pilot.rotatePositive();
 	}
 
