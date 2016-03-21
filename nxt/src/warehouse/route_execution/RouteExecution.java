@@ -30,15 +30,15 @@ public class RouteExecution {
 		route = jobEvent.getAssignedJob().route;
 		for(warehouse.action.Action a: route.actions){
 			if(a instanceof MoveAction){
-				lineFollower.moveAction(((MoveAction) a).distance);
+				lineFollower.moveAction(((MoveAction) a).distance, jobEvent.getAssignedJob().robot.robotName);
 			}else if(a instanceof TurnAction){
-				lineFollower.turnAction(((TurnAction) a).angle);
+				lineFollower.turnAction(((TurnAction) a).angle,jobEvent.getAssignedJob().robot.robotName);
 			}else if(a instanceof PickupAction){
-				lineFollower.pickupAction(((PickupAction) a).pickup);
+				lineFollower.pickupAction(((PickupAction) a).pickup,jobEvent.getAssignedJob().robot.robotName);
 			}else if(a instanceof DropoffAction){
-				lineFollower.dropoffAction();
+				lineFollower.dropoffAction(jobEvent.getAssignedJob());
 			}else{
-				lineFollower.idleAction(((IdleAction)a).time);
+				lineFollower.idleAction(((IdleAction)a).time,jobEvent.getAssignedJob().robot.robotName);
 			}
 		}
 	}

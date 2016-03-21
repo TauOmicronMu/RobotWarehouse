@@ -1,12 +1,17 @@
 package warehouse.route_execution;
 
+import java.awt.Event;
+
 import lejos.nxt.LightSensor;
 import lejos.nxt.Motor;
 import lejos.nxt.SensorPort;
 import lejos.robotics.navigation.DifferentialPilot;
 import lejos.util.Delay;
+import warehouse.event.JobCompleteEvent;
+import warehouse.job.AssignedJob;
 import warehouse.util.EventDispatcher;
 import warehouse.util.ItemPickup;
+import warehouse.util.Subscriber;
 
 /**
  * Class that enables a NXT Robot to follow a line.
@@ -27,8 +32,12 @@ public class LineFollow {
 	private final int travelSpeed = 1;
 
 	private int delay;
+	private boolean pickUp =true;
+	private boolean dropOff =true;
 	
 	public LineFollow(){
+		
+		EventDispatcher.subscribe2(this);
 		pilot = new DifferentialPilot(0.056, 0.12, Motor.B, Motor.C);
 		delay = 50;
 		pilot.setTravelSpeed(travelSpeed);
@@ -46,7 +55,11 @@ public class LineFollow {
 		ls2Listener.start();
 	}
 	
-	public void moveAction(int distance){
+	 static {
+	        EventDispatcher.subscribe2(LineFollow.class);
+	 }
+	
+	public void moveAction(int distance, String robotname){
 		while (distance > 0) {
 			if (goLeft) {
 				Delay.msDelay(delay);
@@ -67,18 +80,29 @@ public class LineFollow {
 					}
 			}
 			pilot.forward();
+			EventDispatcher.onEvent2(new MoveAheadEvent(robotname,travelSpeed));
 		}
 	}
 	
-	public void turnAction(double angle){
+	public void turnAction(double angle,String robotname){
 		//distance to travel before turning
-		pilot.travel(0.1);
+		pilot.travel(0.05);
 		
 		pilot.stop();
 		pilot.rotate(angle);
+		if(angle>0)
+		{
+			EventDispatcher.onEvent2(new TurnRightEvent(robotname));
+		}
+		else
+		{
+			EventDispatcher.onEvent2(new TurnLeftEvent(robotname));
+		}
 	}
 
-	public void idleAction(int time) {
+	public void idleAction(int time,String robotname) {
+		
+		EventDispatcher.onEvent2(new RobotStoppedEvent(robotname));
 		while(time > 0)
 		{
 			Delay.msDelay(lengthOfMovement);
@@ -86,12 +110,36 @@ public class LineFollow {
 		}
 	}
 	
-	public void dropoffAction() {	
-		EventDispatcher.onEvent2("Robot at drop off location.");
+	public void dropoffAction(AssignedJob job) {
+		EventDispatcher.onEvent2(new RobotStoppedEvent(job.robot.robotName));
+		EventDispatcher.onEvent2(new DropOffEvent("Robot at drop-off location.", job));
+		dropOff =true;
+		while(dropOff)
+		{
+			Delay.msDelay(delay);
+		}
 	}
 	
-	public void pickupAction(ItemPickup pickup) {
-		EventDispatcher.onEvent2(pickup);
+	@Subscriber
+	public void onJobFinished(JobCompleteEvent e)
+	{
+		dropOff = false;
+	}
+	
+	public void pickupAction(ItemPickup pickup, String robotname) {
+		EventDispatcher.onEvent2(new RobotStoppedEvent(robotname));
+		EventDispatcher.onEvent2(new PickupEvent(pickup));
+		pickUp =true;
+		while(pickUp)
+		{
+			Delay.msDelay(delay);
+		}
+	}
+	
+	@Subscriber
+	public void onPickupFinished(PickupCompleteEvent e)
+	{
+		pickUp = false;
 	}
 	
 	public void setGoLeft(boolean goLeft) {
