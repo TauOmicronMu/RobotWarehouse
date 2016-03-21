@@ -37,7 +37,7 @@ public class JobInput {
 			jobs.put(values[0], new Job(null, jobPickups, values[0]));
 		});
 
-		// Parse cancellations file (I'm not sure of the actual file name)
+		// Parse cancellations file
 		parseFile("cancellations.csv", values -> {
 			jobs.get(values[0]).cancelledInTrainingSet = values[1].equals("0") ? false : true;
 		});
