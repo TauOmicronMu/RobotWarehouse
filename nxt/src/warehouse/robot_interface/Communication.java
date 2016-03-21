@@ -1,8 +1,10 @@
 package warehouse.robot_interface;
 
 import warehouse.event.JobCancellationEvent;
+import warehouse.event.JobCompleteEvent;
 import warehouse.event.RobotOffEvent;
 import warehouse.event.WrongPlaceEvent;
+import warehouse.job.Job;
 import warehouse.util.EventDispatcher;
 import warehouse.util.ItemPickup;
 import warehouse.util.Subscriber;
@@ -32,15 +34,16 @@ public class Communication
 	}
 	
 	@Subscriber
-	public void onString(String message)
+	public void onDropOff(DropOffEvent e)
 	{
-		this.message = message;
+		message = e.getMessage();
+		EventDispatcher.onEvent2(new JobCompleteEvent(e.getJob()));
 	}
 	
 	@Subscriber
-	public void onPickup(ItemPickup pickup)
+	public void onPickup(PickupEvent e)
 	{
-		this.pickup = pickup;
+		pickup = e.getPickup();
 	}
 	
 	/**
@@ -116,6 +119,7 @@ public class Communication
 	public void jobDone()
 	{
 		pickup = null;
+		EventDispatcher.onEvent2(new PickupCompleteEvent());
 	}
 
 }

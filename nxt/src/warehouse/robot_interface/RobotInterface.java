@@ -85,6 +85,15 @@ public class RobotInterface extends Thread
 			{
 				LCD.clearDisplay();
 				LCD.drawString(message, 1, 1);
+				try
+				{
+					Thread.sleep(5000);
+				} catch (InterruptedException e)
+				{
+					System.err.println("Catch2");
+					System.exit(1);
+				}
+				reset();
 			}
 
 			// Show mercy to the processor
