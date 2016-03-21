@@ -12,6 +12,7 @@ public class WarehouseClient extends Client {
 	public WarehouseClient() throws IOException {
 		// TODO Auto-generated constructor stub
 		super();
+		EventDispatcher.subscribe2(this);
 	}
 
 	@Override
@@ -42,6 +43,11 @@ public class WarehouseClient extends Client {
 	protected void onConnected() {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@MultiSubscriber
+	public void onEvent(Object event) {
+		send(event);
 	}
 	
 
