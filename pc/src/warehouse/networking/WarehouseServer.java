@@ -18,6 +18,7 @@ public class WarehouseServer extends Server {
 
 	public WarehouseServer() throws IOException, NXTCommException {
 		super();
+		EventDispatcher.subscribe2(this);
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -70,6 +71,11 @@ public class WarehouseServer extends Server {
 	public void close() throws IOException {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@MultiSubscriber
+	public void onEvent(Object event) {
+		broadcast(event);
 	}
 
 }
