@@ -17,6 +17,7 @@ public class Communication
 {
 
 	ItemPickup pickup;
+	String message;
 
 	static 
 	{
@@ -27,12 +28,29 @@ public class Communication
 	{
 		EventDispatcher.subscribe2(this);
 		pickup = null;
+		message = null;
+	}
+	
+	@Subscriber
+	public void onString(String message)
+	{
+		this.message = message;
 	}
 	
 	@Subscriber
 	public void onPickup(ItemPickup pickup)
 	{
 		this.pickup = pickup;
+	}
+	
+	/**
+	 * Gets the message
+	 * 
+	 * @return The message
+	 */
+	public String getMessage()
+	{
+		return message;
 	}
 
 	/**
