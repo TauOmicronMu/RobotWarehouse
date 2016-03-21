@@ -1,6 +1,7 @@
 package warehouse.route_execution;
 
 import warehouse.action.DropoffAction;
+import warehouse.action.IdleAction;
 import warehouse.action.MoveAction;
 import warehouse.action.PickupAction;
 import warehouse.action.TurnAction;
@@ -33,11 +34,11 @@ public class RouteExecution {
 			}else if(a instanceof TurnAction){
 				lineFollower.turnAction(((TurnAction) a).angle);
 			}else if(a instanceof PickupAction){
-				//TODO
+				lineFollower.pickupAction(((PickupAction) a).pickup);
 			}else if(a instanceof DropoffAction){
-				//TODO
+				lineFollower.dropoffAction();
 			}else{
-				//TODO
+				lineFollower.idleAction(((IdleAction)a).time);
 			}
 		}
 	}

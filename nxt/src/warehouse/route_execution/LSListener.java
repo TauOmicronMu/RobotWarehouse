@@ -9,6 +9,7 @@ package warehouse.route_execution;
 		private LightSensor ls;
 		private int direction;
 		private int backgroundValue;
+		public static boolean stop=true;
 
 		public LSListener(LineFollow robotUnit, LightSensor ls, int direction) {
 			this.robotUnit = robotUnit;
@@ -23,9 +24,8 @@ package warehouse.route_execution;
 		@Override
 		public void run() {
 			int lightValue;
-			while (!Button.ESCAPE.isDown()) {
+			while(stop) {
 				lightValue = ls.getLightValue();
-				System.out.println(backgroundValue);
 				if (lightValue < backgroundValue - 6) {
 					if (direction == LineFollow.LEFT) {
 						robotUnit.setGoLeft(true);

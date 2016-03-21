@@ -5,6 +5,8 @@ import lejos.nxt.Motor;
 import lejos.nxt.SensorPort;
 import lejos.robotics.navigation.DifferentialPilot;
 import lejos.util.Delay;
+import warehouse.util.EventDispatcher;
+import warehouse.util.ItemPickup;
 
 /**
  * Class that enables a NXT Robot to follow a line.
@@ -19,6 +21,7 @@ public class LineFollow {
 	public static final int LEFT = 1;
 	private boolean goLeft = false;
 	private boolean goRight = false;
+	private int lengthOfMovement = 2000;
 	
 	//changes travel speed
 	private final int travelSpeed = 1;
@@ -48,7 +51,8 @@ public class LineFollow {
 			if (goLeft) {
 				Delay.msDelay(delay);
 				if (goRight) {
-					distance--;					
+					distance--;
+					pilot.stop();
 				} else {
 					pilot.stop();
 					while (goLeft) {
@@ -68,12 +72,28 @@ public class LineFollow {
 	
 	public void turnAction(double angle){
 		//distance to travel before turning
-		pilot.travel(6);
+		pilot.travel(0.1);
 		
 		pilot.stop();
 		pilot.rotate(angle);
 	}
 
+	public void idleAction(int time) {
+		while(time > 0)
+		{
+			Delay.msDelay(lengthOfMovement);
+			time--;
+		}
+	}
+	
+	public void dropoffAction() {	
+		EventDispatcher.onEvent2("Robot at drop off location.");
+	}
+	
+	public void pickupAction(ItemPickup pickup) {
+		EventDispatcher.onEvent2(pickup);
+	}
+	
 	public void setGoLeft(boolean goLeft) {
 		this.goLeft = goLeft;
 	}
@@ -81,4 +101,5 @@ public class LineFollow {
 	public void setGoRight(boolean goRight) {
 		this.goRight = goRight;
 	}
+
 }
