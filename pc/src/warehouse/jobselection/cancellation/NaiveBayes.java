@@ -1,11 +1,6 @@
 package warehouse.jobselection.cancellation;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import warehouse.job.Job;
 import warehouse.jobselection.cancellation.enums.NumRange;
@@ -49,7 +44,7 @@ public class NaiveBayes implements CancellationMachine {
 	 * @param trainingSet
 	 *            the training set of jobs
 	 */
-	public NaiveBayes(LinkedList<Job> trainingSet) {
+	public NaiveBayes(List<Job> trainingSet) {
 
 		// TODO Parse Items.csv from JobInput for this list!
 		this(trainingSet,
@@ -67,7 +62,7 @@ public class NaiveBayes implements CancellationMachine {
 	 * @param itemNames
 	 *            the names of all the items
 	 */
-	public NaiveBayes(LinkedList<Job> trainingSet, ArrayList<String> itemNames) {
+	public NaiveBayes(List<Job> trainingSet, ArrayList<String> itemNames) {
 
 		// Create Descriptor objects for the features of the training set - this
 		// is assuming that we are only using Number of Items, Total Reward and
