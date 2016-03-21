@@ -17,7 +17,7 @@ public class JobInput {
 	public static void main(String[] args) throws IOException {
 		// Parse locations
 		HashMap<String, Location> itemLocations = new HashMap<>();
-		parseFile("locations.csv", values -> itemLocations.put(values[0], new Location(Integer.parseInt(values[1]), Integer.parseInt(values[2]))));
+		parseFile("locations.csv", values -> itemLocations.put(values[2], new Location(Integer.parseInt(values[0]), Integer.parseInt(values[1]))));
 
 		// Parse items file
 		HashMap<String, ItemPickup> itemPickups = new HashMap<>();
@@ -43,7 +43,10 @@ public class JobInput {
 		});
 
         List<Location> dropLocations = new ArrayList<>();
-        parseFile("drops.csv", values -> dropLocations.add(new Location(Integer.parseInt(values[0]), Integer.parseInt(values[1]))));
+        parseFile("drops.csv", values -> {
+            System.out.println(Arrays.toString(values));
+            dropLocations.add(new Location(Integer.parseInt(values[0]), Integer.parseInt(values[1])))
+        });
 
 		// Convert the job map to a list
 		List<Job> jobList = jobs.values().stream().collect(Collectors.toList());
@@ -53,7 +56,7 @@ public class JobInput {
 
 	public static void parseFile(String filePath, Consumer<String[]> consumer) throws FileNotFoundException {
 		Scanner in = new Scanner(new File(filePath));
-		while(in.hasNextLine()) consumer.accept(in.nextLine().split(","));
+		while(in.hasNextLine()) consumer.accept(in.nextLine().trim().split(","));
 	}
 
 }
