@@ -18,6 +18,10 @@ public class Job {
         this.id = id;
     }
     
+    public Job(Location dropLocation, List<ItemPickup> pickups) {
+        this(dropLocation, pickups, "123test");
+    }
+    
     public boolean isAssigned() {
         return false;
     }
