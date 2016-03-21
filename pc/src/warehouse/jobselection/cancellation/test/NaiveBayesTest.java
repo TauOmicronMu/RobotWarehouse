@@ -45,7 +45,7 @@ public class NaiveBayesTest {
         files5[4] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\5\\drops.csv";
 
         try {
-            CancellationMachineTester tester = new CancellationMachineTester(0.9, files1, files2, files3, files4, files5);
+            CancellationMachineTester tester = new CancellationMachineTester(0.9999, files1, files2, files3, files4, files5);
         } catch (IOException e) {
             e.printStackTrace();
         }

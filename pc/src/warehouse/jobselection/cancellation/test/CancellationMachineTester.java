@@ -62,7 +62,6 @@ public class CancellationMachineTester {
         List<Location> dropLocations = new ArrayList<>();
         parseFile(fileNameArray[4], values -> {
             if(values.length < 2) return;
-            System.out.println(Arrays.toString(values));
             dropLocations.add(new Location(Integer.parseInt(values[0]), Integer.parseInt(values[1])));
         });
 
@@ -84,27 +83,34 @@ public class CancellationMachineTester {
 
         CancellationMachine testMachine = new NaiveBayes(trainingJobsList);
 
+        System.out.println(testMachine);
         double percentageCorrect = 0;
-        int numberJobs = knownJobsList.size();
+        int numberJobsCancelled = 0;
 
         for(Job job : knownJobsList){
 
             double generatedProbability = testMachine.getProbability(job);
 
-            System.out.println("p = " + generatedProbability + ", cancelled = " + job.cancelledInTrainingSet);
+            System.out.println("p = " + generatedProbability + " cancelled: " + job.cancelledInTrainingSet);
 
-            if(job.cancelledInTrainingSet && generatedProbability > 0.5){
+            if(job.cancelledInTrainingSet){
 
-                percentageCorrect += 1;
+                numberJobsCancelled++;
+
+             if (generatedProbability > 0.5) {
+
+                 percentageCorrect++;
+             }
             }
         }
 
-        System.out.println(jobList.size());
-        System.out.println(trainingJobsList.size());
-        System.out.println(knownJobsList.size());
-        System.out.println(percentageCorrect);
-        System.out.println(numberJobs);
-        return (percentageCorrect/numberJobs)*100;
+        System.out.println("Total Jobs:         " + jobList.size());
+        System.out.println("Training with:      " + trainingJobsList.size());
+        System.out.println("Checking with:      " + knownJobsList.size());
+        System.out.println("Number Cancelled:   " + numberJobsCancelled);
+        System.out.println("Percentage correct: " + percentageCorrect);
+        System.out.println("Number correct:     " + numberJobsCancelled*percentageCorrect);
+        return (percentageCorrect/numberJobsCancelled)*100;
     }
 
     public static void parseFile(String filePath, Consumer<String[]> consumer) throws FileNotFoundException {
