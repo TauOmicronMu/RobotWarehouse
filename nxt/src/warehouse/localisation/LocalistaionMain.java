@@ -40,7 +40,7 @@ public class LocalistaionMain implements StoppableRunnable {
 	private GridPositionDistribution m_distribution;
 
 	// The visualisation showing position uncertainty
-	private GridPositionDistributionVisualisation m_mapVis;
+//	private GridPositionDistributionVisualisation m_mapVis;
 
 	// The pilot object used to move the robot around on the grid.
 	private final GridPilotModified m_pilot;
