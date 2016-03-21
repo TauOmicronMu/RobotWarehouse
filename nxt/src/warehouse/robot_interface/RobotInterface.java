@@ -16,6 +16,7 @@ public class RobotInterface extends Thread
 {
 	private Boolean interfaceRun, jobRun, hasJob;
 	private Communication comm;
+	private String message;
 
 	/**
 	 * Constructor
@@ -26,6 +27,7 @@ public class RobotInterface extends Thread
 		hasJob = new Boolean(false);
 		jobRun = new Boolean(false);
 		comm = new Communication();
+		message = comm.getMessage();
 
 		Button.ESCAPE.addButtonListener(new ButtonListener()
 		{
@@ -57,6 +59,7 @@ public class RobotInterface extends Thread
 		LCD.clearDisplay();
 		LCD.drawString("Moving around!", 0, 0);
 		hasJob.set(false);
+		message = null;
 	}
 
 	@Override
@@ -76,7 +79,12 @@ public class RobotInterface extends Thread
 
 				// After finishing the job:
 				reset();
-
+			}
+			
+			if (message != null)
+			{
+				LCD.clearDisplay();
+				LCD.drawString(message, 1, 1);
 			}
 
 			// Show mercy to the processor
