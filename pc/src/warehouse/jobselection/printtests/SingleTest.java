@@ -90,6 +90,7 @@ public class SingleTest  extends Thread{
         actualFiles[4] = filePath + "\\actual\\drops.csv";
         fileSet.add(actualFiles);
 
+        int counter = 0;
 
         for(String[] fileNameArray : fileSet) {
 
@@ -114,13 +115,17 @@ public class SingleTest  extends Thread{
                 }
                 jobs.put(values[0], new Job(null, jobPickups, values[0]));
             });
-            // Parse cancellations file (I'm not sure of the actual file name)
-            assert(jobs != null);
-            
-            parseFile(fileNameArray[3], values -> {
-            	assert(jobs.containsKey(values[0]));
-            	jobs.get(values[0]).cancelledInTrainingSet = values[1].equals("0") ? false : true;
-            });
+
+            if(counter == 0) {
+                parseFile(fileNameArray[3], values -> {
+
+                    if (values[values.length - 1].equals("Cancel")) {
+
+                        jobs.get(values[0]).cancelledInTrainingSet = true;
+                    }
+                });
+            }
+
             List<Location> dropLocations = new ArrayList<>();
             parseFile(fileNameArray[4], values -> jobs.values().forEach(job -> job.dropLocation = new Location(Integer.parseInt(values[0]), Integer.parseInt(values[1].trim()))));
 
@@ -129,6 +134,8 @@ public class SingleTest  extends Thread{
             List<Job> jobList = jobs.values().stream().collect(Collectors.toList());
 
             jobSet.add(jobList);
+
+            counter++;
         }
 
         SingleTest tester = new SingleTest(jobSet);
