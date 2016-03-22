@@ -23,7 +23,7 @@ public class WarehouseServer extends Server {
 	}
 	
 	@Override
-	public void onClientConnected(SocketStream stream) {
+	public void onClientConnected(SocketStream stream) throws IOException {
 		super.onClientConnected(stream);
 		robotConnections[numRobots++] = stream;  
 	}
