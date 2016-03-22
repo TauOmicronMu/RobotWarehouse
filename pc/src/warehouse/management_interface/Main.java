@@ -1,11 +1,11 @@
 package warehouse.management_interface;
 
 /**
- * Class that represents the main window. JavaFX graphics work on a tree-like structure.
+ * The main management interface class that can be launched from outside
  */
 
-import java.util.LinkedList;
 import java.util.List;
+
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -15,17 +15,30 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import warehouse.action.Action;
-import warehouse.action.TurnAction;
 import warehouse.job.AssignedJob;
 import warehouse.job.Job;
-import warehouse.util.Direction;
-import warehouse.util.ItemPickup;
-import warehouse.util.Location;
-import warehouse.util.Robot;
-import warehouse.util.Route;
 
 public class Main extends Application {
+	private static List<Job> unassigned;
+	private static List<AssignedJob> assigned;
+	
+	private static List<String> robotNames;
+	
+	/**
+	 * Set parameters for management GUI
+	 * @param unassigned Unassigned Jobs list
+	 * @param assigned Assigned Jobs list
+	 * @param numberOfRobots The number of robots
+	 * @param robotNames An ArrayList containing the names of the robots
+	 */
+	public static void setParameters(List<Job> unassigned, List<AssignedJob> assigned, List<String> robotNames) {
+		Main.unassigned = unassigned;
+		Main.assigned = assigned;
+	
+		Main.robotNames = robotNames;
+	}
+	
+	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
@@ -41,36 +54,7 @@ public class Main extends Application {
 			mapAndJobs.setAlignment(Pos.CENTER);
 
 			// Create vertical box which holds the map and it's buttons
-			MapVBox map = new MapVBox();
-
-			// Create mock job lists for model ----- TEST - remove this code
-			// when integrating
-
-			LinkedList<ItemPickup> pickups = new LinkedList<ItemPickup>();
-			pickups.add(new ItemPickup("cake", new Location(1, 2), 3));
-
-			Job job1 = new Job(new Location(1, 2), pickups);
-			Job job2 = new Job(new Location(3, 5), pickups);
-			Job job3 = new Job(new Location(5, 6), pickups);
-
-			List<Job> unassigned = new LinkedList<Job>();
-			unassigned.add(job1);
-			unassigned.add(job2);
-			unassigned.add(job3);
-
-			List<AssignedJob> assigned = new LinkedList<AssignedJob>();
-
-			Robot robot = new Robot("Andrei", new Location(1, 2), Direction.NORTH);
-
-			TurnAction action = new TurnAction(3.0);
-
-			LinkedList<Action> actions = new LinkedList<Action>();
-			actions.add(action);
-
-			Route route = new Route(actions, new Location(1, 2), new Location(3, 5));
-
-			AssignedJob job4 = new AssignedJob(new Location(3, 5), pickups, route, robot);
-			assigned.add(job4);
+			MapVBox map = new MapVBox(robotNames);
 
 			// Create model for Unassigned and Assigned Jobs
 			JobsModel model = new JobsModel(unassigned, assigned);
@@ -121,7 +105,10 @@ public class Main extends Application {
 		}
 	}
 
-	public static void main(String[] args) {
-		launch(args);
+	/**
+	 * Start Management GUI
+	 */
+	public static void startGUI() {
+		launch();
 	}
 }

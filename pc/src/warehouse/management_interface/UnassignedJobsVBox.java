@@ -16,6 +16,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import warehouse.job.Job;
 
 public class UnassignedJobsVBox extends VBox implements Observer {
 	public ListView<String> jobList;
@@ -127,10 +128,10 @@ public class UnassignedJobsVBox extends VBox implements Observer {
 	 * @param jobList the list of jobs
 	 * @return a list of displayable (if that's even a word) items
 	 */
-	public <A> ObservableList<String> readyToBeDisplayed(List<A> jobList) {
+	public ObservableList<String> readyToBeDisplayed(List<Job> jobList) {
 		ArrayList<String> list = new ArrayList<String>();
 		
-		jobList.forEach(j -> list.add(j.toString()));
+		jobList.forEach(j -> list.add(j.id));
 		
 		ObservableList<String> items = FXCollections.observableArrayList(list);
 		return items;

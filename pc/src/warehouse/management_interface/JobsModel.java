@@ -8,6 +8,7 @@ import java.util.Observable;
 
 import warehouse.event.JobAssignedEvent;
 import warehouse.event.JobCancellationEvent;
+import warehouse.event.JobCompleteEvent;
 import warehouse.job.AssignedJob;
 import warehouse.job.Job;
 import warehouse.util.EventDispatcher;
@@ -111,9 +112,8 @@ public class JobsModel extends Observable {
 	}
 
 	public void jobCancelled(AssignedJob assignedJob) {
-		Job job = unassign(assignedJob);
 		// Generate JobCancelledEvent
-		EventDispatcher.onEvent2(new JobCancellationEvent(job)); //TODO
+		EventDispatcher.onEvent2(new JobCancellationEvent(assignedJob)); 
 		
 	}
 
@@ -133,9 +133,9 @@ public class JobsModel extends Observable {
 	 * @param toString
 	 * @return
 	 */
-	public Job findUnassignedJob(String toString) {
+	public Job findUnassignedJob(String id) {
 		for (int i = 0; i < unassigned.size(); i++)
-			if (unassigned.get(i).toString().equals(toString))
+			if (unassigned.get(i).id.equals(id))
 				return unassigned.get(i);
 
 		// will not happen
@@ -148,9 +148,9 @@ public class JobsModel extends Observable {
 	 * @param toString
 	 * @return
 	 */
-	public AssignedJob findAssignedJob(String toString) {
+	public AssignedJob findAssignedJob(String id) {
 		for (int i = 0; i < assigned.size(); i++)
-			if (assigned.get(i).toString().equals(toString))
+			if (assigned.get(i).id.equals(id))
 				return assigned.get(i);
 
 		// will not happen
@@ -163,8 +163,8 @@ public class JobsModel extends Observable {
 
 	@Subscriber
 	public void onJobCancelled(JobCancellationEvent e) {
-		Job toAddToUnassigned = e.getJob(); //TODO
-		AssignedJob toDeleteFromAssigned = findAssignedJob(toAddToUnassigned.toString());
+		AssignedJob toDeleteFromAssigned = e.job;
+		Job toAddToUnassigned = findAssignedJob(toDeleteFromAssigned.id);
 		
 		addToUnassigned(toAddToUnassigned);
 		removeFromAssigned(toDeleteFromAssigned);
@@ -173,16 +173,16 @@ public class JobsModel extends Observable {
 	
 	@Subscriber
 	public void onJobAssigned(JobAssignedEvent e) {
-		AssignedJob toAddToAssigned = e.getAssignedJob();
-		Job toDeleteFromUnassigned = findUnassignedJob(toAddToAssigned.toString());
+		AssignedJob toAddToAssigned = e.assignedJob;
+		Job toDeleteFromUnassigned = findUnassignedJob(toAddToAssigned.id);
 
 		addToAssigned(toAddToAssigned);
 		removeFromUnassigned(toDeleteFromUnassigned);
 	}
 	
 	@Subscriber
-	public void onJobFinished(JobFinishedEvent e) { //TODO
-		Job job = e.getJob();
+	public void onJobFinished(JobCompleteEvent e) { //TODO
+		Job job = e.job;
 		
 		if (assigned.contains(job))
 			removeFromAssigned((AssignedJob) job);

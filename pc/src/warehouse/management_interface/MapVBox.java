@@ -5,6 +5,7 @@ package warehouse.management_interface;
  */
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.List;
 
 import javafx.embed.swing.SwingNode;
 import javafx.scene.control.Button;
@@ -20,18 +21,23 @@ import rp.robotics.navigation.Heading;
 import rp.robotics.simulation.MapBasedSimulation;
 import rp.robotics.simulation.MovableRobot;
 import rp.robotics.simulation.SimulatedRobots;
-import rp.robotics.testing.TestMaps;
 import rp.robotics.visualisation.GridMapVisualisation;
 import rp.robotics.visualisation.MapVisualisationComponent;
 
 public class MapVBox extends VBox {
 	private ArrayList<SimController> controllers;
 
+	private List<String> robotNames;
+
 	/**
 	 * Constructor. Initialise everything
 	 */
-	public MapVBox() {
+	public MapVBox(List<String> robotNames) {
+		
 		super();
+		
+		
+		this.robotNames = robotNames;
 
 		setSpacing(10);
 
@@ -69,8 +75,7 @@ public class MapVBox extends VBox {
 		// Initialise list of controllers
 		controllers = new ArrayList<SimController>();
 
-		int robots = 1;
-		for (int i = 0; i < robots; i++) {
+		for (int i = 0; i < robotNames.size(); i++) {
 			// Starting point on the grid
 			GridPose gridStart = new GridPose(3 * i, 0, Heading.PLUS_Y);
 
@@ -79,7 +84,7 @@ public class MapVBox extends VBox {
 
 			RangeFinder ranger = sim.getRanger(wrapper);
 
-			controllers.add(new SimController(wrapper.getRobot(), map, gridStart, ranger));
+			controllers.add(new SimController(wrapper.getRobot(), map, gridStart, ranger, robotNames.get(i)));
 
 			new Thread(controllers.get(i)).start();
 		}

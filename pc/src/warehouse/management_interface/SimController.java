@@ -15,6 +15,12 @@ import rp.robotics.navigation.GridPilot;
 import rp.robotics.navigation.GridPose;
 import rp.robotics.simulation.MovableRobot;
 import rp.systems.StoppableRunnable;
+import warehouse.action.Action;
+import warehouse.action.DropoffAction;
+import warehouse.action.MoveAction;
+import warehouse.action.PickupAction;
+import warehouse.action.TurnAction;
+import warehouse.event.ActionCompleteEvent;
 import warehouse.util.EventDispatcher;
 import warehouse.util.Subscriber;
 
@@ -26,13 +32,15 @@ public class SimController implements StoppableRunnable {
 	private boolean running = true;
 	private final RangeFinder ranger;
 	private final MovableRobot robot;
+	private String myName;
 
-	public SimController(MovableRobot _robot, GridMap _map, GridPose _start, RangeFinder _ranger) {
+	public SimController(MovableRobot _robot, GridMap _map, GridPose _start, RangeFinder _ranger, String myName) {
 		map = _map;
 		pilot = new GridPilot(_robot.getPilot(), _map, _start);
 		ranger = _ranger;
 		robot = _robot;
 		EventDispatcher.subscribe2(this);
+		this.myName = myName;
 	}
 
 	/**
@@ -62,54 +70,68 @@ public class SimController implements StoppableRunnable {
 		while (running) {
 			// Nothing to do here. Just looping and listening for events using
 			// methods below
-			// Testing:
-//			for(int i=0; i<6; i++)
-//				onMoveAheadEvent();
-//			onTurnRightEvent();
-//			for(int i=0; i<4; i++)
-//				onMoveAheadEvent();
-//			onStoppedEvent();
-//			Delay.msDelay(5000);
-//			for(int i=0; i<2; i++)
-//				onMoveAheadEvent();
 			
 		}
 	}
+	
+	/**
+	 * Listen to action events and perform the action if 
+	 * the robot name is the same as mine
+	 * @param e the event
+	 */
+	@Subscriber
+	public void onActionCompleteEvent(ActionCompleteEvent e) {
+		if (e.robot.get().robotName.equals(myName)) {
+			Action action = e.action;
+			
+			if (action instanceof MoveAction) 
+				moveAhead(((MoveAction) action).speed);
+			
+			else if (action instanceof TurnAction) {
+				if (((TurnAction) action).angle == 90)
+					turnLeft();
+				else turnRight();
+			}
+			
+			else if (action instanceof DropoffAction || action instanceof PickupAction)
+				stopRobot();
+				
+			
+		}
+		
+	}
 
 	/**
-	 * Below are methods that listen for events related to robots' actions They
-	 * are self-explanatory so I won't document each one of them
+	 * Below are methods that are called by the event listener,
+	 * in order to make robots perform actions
 	 */
 
-	public void onMoveAheadEvent() {
-		
+	
+	public void moveAhead(double speed) {
 		if (moveAheadClear()) {
-			float speed = 0.15f;
-			pilot.setTravelSpeed(speed);
+			pilot.setTravelSpeed((float) speed);
 			pilot.moveForward();
 		}
 	}
 
-	@Subscriber
-	public void onStoppedEvent() {
+	
+	public void stopRobot() {
 		pilot.setTravelSpeed(0f);
 	}
 
-	@Subscriber
-	public void onTurnRightEvent() {
-//		float speed = ...; TODO
-//		pilot.setTurnSpeed(speed);
+	
+	public void turnRight() {
+
 		pilot.rotateNegative();
 	}
 
-	@Subscriber
-	public void onTurnLeftEvent() {
-//		float speed = ...; TODO
-//		pilot.setTurnSpeed(speed);
+	
+	public void turnLeft() {
+
 		pilot.rotatePositive();
 	}
 
-	@Override
+	
 	public void stop() {
 		running = false;
 	}
