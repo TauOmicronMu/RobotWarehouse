@@ -164,7 +164,7 @@ public class JobAssignerSingle extends Thread {
 						System.out.println("\nThe current job is: " + this.currentJob);
 
 						// Tell subscribers
-						JobAssignedEvent e = new JobAssignedEvent(this.currentJob, this.robot);
+						JobAssignedEvent e = new JobAssignedEvent(this.currentJob);
 
 						System.out.println("\nDispatched Event");
 

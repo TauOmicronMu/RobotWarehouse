@@ -128,7 +128,7 @@ public class SingleTest  extends Thread{
 
             JobAssignerSingle assigner = new JobAssignerSingle(robot);
 
-            EventDispatcher.onEvent2(new BeginAssigningEvent(jobs);
+            //EventDispatcher.onEvent2(new BeginAssigningEvent(jobs));
 
             for(int i = 0; i < 10; i++) {
 
@@ -139,7 +139,7 @@ public class SingleTest  extends Thread{
                     e.printStackTrace();
                 }
 
-                EventDispatcher.onEvent2(new JobCompleteEvent(new Location(0, 0)));
+                EventDispatcher.onEvent2(new JobCompleteEvent(assigner.getCurrentJob()));
             }
 
             assigner.stopAssigning();
