@@ -163,7 +163,7 @@ public class SingleTest  extends Thread{
                 try {
 
                     //System.out.println("\nTEST THREAD: Sleeping");
-                    Thread.sleep(1000);
+                    Thread.sleep(10000);
                     //System.out.println("\nTEST THREAD: Woke up");
                 } catch (InterruptedException e) {
                     // Sleep was interrupted for some reason
