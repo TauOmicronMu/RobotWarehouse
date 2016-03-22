@@ -73,6 +73,14 @@ public class SingleTest  extends Thread{
         files5[4] = filePath + "\\5\\drops.csv";
         fileSet.add(files5);
 
+        String[] actualFiles = new String[5];
+        actualFiles[0] = filePath + "\\actual\\locations.csv";
+        actualFiles[1] = filePath + "\\actual\\items.csv";
+        actualFiles[2] = filePath + "\\actual\\jobs.csv";
+        actualFiles[3] = filePath + "\\actual\\cancellations.csv";
+        actualFiles[4] = filePath + "\\actual\\drops.csv";
+        fileSet.add(actualFiles);
+
         for(String[] fileNameArray : fileSet) {
 
             assert (fileNameArray.length == 5);

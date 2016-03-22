@@ -25,21 +25,22 @@ public class CancellationActualTester {
 
     }
 
-    public double testMachine(String[] fileNameArray, double percentage) throws IOException{
+    public double testMachine(String[] trainingSet, String[] testSet) throws IOException{
 
-        assert(fileNameArray.length == 5);
+        assert(trainingSet.length == 5);
+        assert(testSet.length == 5);
 
         // Parse locations
         HashMap<String, Location> itemLocations = new HashMap<>();
-        parseFile(fileNameArray[0], values -> itemLocations.put(values[2], new Location(Integer.parseInt(values[0]), Integer.parseInt(values[1]))));
+        parseFile(trainingSet[0], values -> itemLocations.put(values[2], new Location(Integer.parseInt(values[0]), Integer.parseInt(values[1]))));
 
         // Parse items file
         HashMap<String, ItemPickup> itemPickups = new HashMap<>();
-        parseFile(fileNameArray[1], values -> itemPickups.put(values[0], new ItemPickup(values[0], itemLocations.get(values[0]), 0, Double.parseDouble(values[1]), Double.parseDouble(values[2]))));
+        parseFile(trainingSet[1], values -> itemPickups.put(values[0], new ItemPickup(values[0], itemLocations.get(values[0]), 0, Double.parseDouble(values[1]), Double.parseDouble(values[2]))));
 
         // Parse jobs file
         HashMap<String, Job> jobs = new HashMap<>();
-        parseFile(fileNameArray[2], values -> {
+        parseFile(trainingSet[2], values -> {
             List<ItemPickup> jobPickups = new LinkedList<>();
             for(int i = 1; i < values.length; i += 2) {
                 ItemPickup p = (ItemPickup) itemPickups.get(values[i]).clone();
@@ -50,10 +51,10 @@ public class CancellationActualTester {
         });
 
         // Parse cancellations file (I'm not sure of the actual file name)
-        parseFile(fileNameArray[3], values -> jobs.get(values[0]).cancelledInTrainingSet = values[1].equals("0") ? false : true);
+        parseFile(trainingSet[3], values -> jobs.get(values[0]).cancelledInTrainingSet = values[1].equals("0") ? false : true);
 
         List<Location> dropLocations = new ArrayList<>();
-        parseFile(fileNameArray[4], values -> {
+        parseFile(trainingSet[4], values -> {
             if(values.length < 2) return;
             dropLocations.add(new Location(Integer.parseInt(values[0]), Integer.parseInt(values[1])));
         });
