@@ -32,7 +32,7 @@ public abstract class Client implements SocketEventListener {
     public void send(Serializable packet) throws IOException {
         try {
             stream.write(packet);
-        } catch (SocketException e) {
+        } catch (SocketExnxt/ception e) {
             onDisconnection(new SocketEvent.SocketExceptionEvent(stream, e));
         }
     }

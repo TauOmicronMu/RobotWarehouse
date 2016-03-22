@@ -2,7 +2,6 @@ package samtebbs33.net;
 
 
 import java.io.*;
-import java.net.Socket;
 
 /**
  * Created by samtebbs on 31/01/2016.
