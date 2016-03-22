@@ -109,14 +109,14 @@ public class JobAssignerSingle extends Thread {
 
 				System.out.println("\nASSIGNER THREAD: Created Single Robot Selector, assigning jobs");
 
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					// Sleep was interrupted for some reason
-					e.printStackTrace();
-				}
+				while (this.run) {
 
-
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						// Sleep was interrupted for some reason
+						e.printStackTrace();
+					}
 
 					// If the robot has completed a job and now has no assigned
 					// job, give it a new one
@@ -147,7 +147,7 @@ public class JobAssignerSingle extends Thread {
 							}
 						}
 
-						if(gotList) {
+						if (gotList) {
 
 							try {
 								Thread.sleep(100);
@@ -202,10 +202,7 @@ public class JobAssignerSingle extends Thread {
 					}
 
 
-
-
-
-
+				}
 			}
 		}
 
