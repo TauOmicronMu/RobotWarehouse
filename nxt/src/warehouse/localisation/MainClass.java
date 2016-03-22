@@ -11,7 +11,7 @@ import rp.robotics.navigation.GridPose;
 
 public class MainClass {
 
-	public static void main(String[] args) {
+	public void beginLocalise() {
 		// Work on this map
 		GridMap map = MapUtils.createMarkingWarehouseMap();
 
