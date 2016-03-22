@@ -5,11 +5,13 @@ public class Robot {
     public String robotName;
     public Location position;
     public Direction rotation;
+    public int id;
 
-    public Robot(String robotName, Location position, Direction rotation) {
+    public Robot(String robotName, Location position, Direction rotation, int id) {
         this.robotName = robotName;
         this.position = position;
         this.rotation =  rotation;
+        this.id = id;s
     }
 
     @Override
