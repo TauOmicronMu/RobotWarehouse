@@ -73,7 +73,6 @@ public class CancellationMachineTester {
 
         for(int i = 0; i < jobs.size(); i++){
 
-            assert(false);
         }
 
         for(int i = 0; i < (int)(jobs.size()*percentage); i++){
