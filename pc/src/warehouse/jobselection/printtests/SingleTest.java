@@ -1,11 +1,14 @@
 package warehouse.jobselection.printtests;
 
+import com.sun.xml.internal.bind.v2.runtime.*;
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader;
+import warehouse.event.BeginAssigningEvent;
+import warehouse.event.Event;
+import warehouse.event.JobCompleteEvent;
 import warehouse.job.Job;
 import warehouse.jobselection.JobAssignerSingle;
-import warehouse.util.Direction;
-import warehouse.util.ItemPickup;
+import warehouse.util.*;
 import warehouse.util.Location;
-import warehouse.util.Robot;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,51 +20,55 @@ import java.util.stream.Collectors;
 /**
  * Created by Owen on 22/03/2016.
  */
-public class SingleTest {
+public class SingleTest  extends Thread{
+
+    private ArrayList<List<Job>> jobSet;
 
     public static void main(String[] args) throws IOException{
 
         ArrayList<List<Job>> jobSet = new ArrayList<>();
         ArrayList<String[]> fileSet = new ArrayList<>();
 
+        String filePath = "TODO";
+
         String[] files1 = new String[5];
-        files1[0] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\1\\locations.csv";
-        files1[1] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\1\\items.csv";
-        files1[2] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\1\\jobs.csv";
-        files1[3] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\1\\cancellations.csv";
-        files1[4] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\1\\drops.csv";
+        files1[0] = filePath + "\\1\\locations.csv";
+        files1[1] = filePath + "\\1\\items.csv";
+        files1[2] = filePath + "\\1\\jobs.csv";
+        files1[3] = filePath + "\\1\\cancellations.csv";
+        files1[4] = filePath + "\\1\\drops.csv";
         fileSet.add(files1);
 
         String[] files2 = new String[5];
-        files2[0] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\2\\locations.csv";
-        files2[1] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\2\\items.csv";
-        files2[2] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\2\\jobs.csv";
-        files2[3] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\2\\cancellations.csv";
-        files2[4] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\2\\drops.csv";
+        files2[0] = filePath + "\\2\\locations.csv";
+        files2[1] = filePath + "\\2\\items.csv";
+        files2[2] = filePath + "\\2\\jobs.csv";
+        files2[3] = filePath + "\\2\\cancellations.csv";
+        files2[4] = filePath + "\\2\\drops.csv";
         fileSet.add(files2);
 
         String[] files3 = new String[5];
-        files3[0] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\3\\locations.csv";
-        files3[1] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\3\\items.csv";
-        files3[2] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\3\\jobs.csv";
-        files3[3] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\3\\cancellations.csv";
-        files3[4] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\3\\drops.csv";
+        files3[0] = filePath + "\\3\\locations.csv";
+        files3[1] = filePath + "\\3\\items.csv";
+        files3[2] = filePath + "\\3\\jobs.csv";
+        files3[3] = filePath + "\\3\\cancellations.csv";
+        files3[4] = filePath + "\\3\\drops.csv";
         fileSet.add(files3);
 
         String[] files4 = new String[5];
-        files4[0] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\4\\locations.csv";
-        files4[1] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\4\\items.csv";
-        files4[2] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\4\\jobs.csv";
-        files4[3] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\4\\cancellations.csv";
-        files4[4] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\4\\drops.csv";
+        files4[0] = filePath + "\\4\\locations.csv";
+        files4[1] = filePath + "\\4\\items.csv";
+        files4[2] = filePath + "\\4\\jobs.csv";
+        files4[3] = filePath + "\\4\\cancellations.csv";
+        files4[4] = filePath + "\\4\\drops.csv";
         fileSet.add(files4);
 
         String[] files5 = new String[5];
-        files5[0] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\5\\locations.csv";
-        files5[1] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\5\\items.csv";
-        files5[2] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\5\\jobs.csv";
-        files5[3] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\5\\cancellations.csv";
-        files5[4] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\5\\drops.csv";
+        files5[0] = filePath + "\\5\\locations.csv";
+        files5[1] = filePath + "\\5\\items.csv";
+        files5[2] = filePath + "\\5\\jobs.csv";
+        files5[3] = filePath + "\\5\\cancellations.csv";
+        files5[4] = filePath + "\\5\\drops.csv";
         fileSet.add(files5);
 
         for(String[] fileNameArray : fileSet) {
@@ -92,10 +99,7 @@ public class SingleTest {
             parseFile(fileNameArray[3], values -> jobs.get(values[0]).cancelledInTrainingSet = values[1].equals("0") ? false : true);
 
             List<Location> dropLocations = new ArrayList<>();
-            parseFile(fileNameArray[4], values -> {
-                if (values.length < 2) return;
-                dropLocations.add(new Location(Integer.parseInt(values[0]), Integer.parseInt(values[1])));
-            });
+            parseFile(fileNameArray[4], values -> jobs.values().forEach(job -> job.dropLocation = new Location(Integer.parseInt(values[0]), Integer.parseInt(values[1]))));
 
             // Convert the job map to a list
 
@@ -104,11 +108,41 @@ public class SingleTest {
             jobSet.add(jobList);
         }
 
-        for(List<Job> jobs : jobSet){
+        SingleTest tester = new SingleTest(jobSet);
+    }
+
+    public SingleTest(ArrayList<List<Job>> jobSet){
+
+        this.jobSet = jobSet;
+        this.start();
+    }
+
+    @Override
+    public void run(){
+
+        for(List<Job> jobs : this.jobSet){
 
             Robot robot = new Robot("testRobot", new Location(0, 0), Direction.NORTH);
 
-            JobAssignerSingle assigner = new JobAssignerSingle(robot, jobs);
+            EventDispatcher.subscribe2(this);
+
+            JobAssignerSingle assigner = new JobAssignerSingle(robot);
+
+            //EventDispatcher.onEvent2(new BeginAssigningEvent(jobs));
+
+            for(int i = 0; i < 10; i++) {
+
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    // Sleep was interrupted for some reason
+                    e.printStackTrace();
+                }
+
+                EventDispatcher.onEvent2(new JobCompleteEvent(assigner.getCurrentJob()));
+            }
+
+            assigner.stopAssigning();
         }
     }
 

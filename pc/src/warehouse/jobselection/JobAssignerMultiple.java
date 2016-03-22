@@ -1,9 +1,6 @@
 package warehouse.jobselection;
 
-import warehouse.event.BeginAssigningEvent;
-import warehouse.event.JobAssignedEvent;
-import warehouse.event.JobCancellationEvent;
-import warehouse.event.JobCompleteEvent;
+import warehouse.event.*;
 import warehouse.job.AssignedJob;
 import warehouse.job.Job;
 import warehouse.jobselection.cancellation.Backup;
@@ -72,13 +69,12 @@ public class JobAssignerMultiple extends Thread {
 	 * @param jobs
 	 *            the list of jobs
 	 */
-	public JobAssignerMultiple(Robot robot1, Robot robot2, Robot robot3, LinkedList<Job> jobs) {
+	public JobAssignerMultiple(Robot robot1, Robot robot2, Robot robot3) {
 
 		// Set the variables and create the selector
 		this.robot1 = robot1;
 		this.robot2 = robot2;
 		this.robot3 = robot3;
-		this.jobs = jobs;
 
 		this.readyToStart = false;
 
@@ -181,7 +177,7 @@ public class JobAssignerMultiple extends Thread {
 						this.currentJob1 = this.assign(this.robot1, jobToBeAssigned);
 
 						// Tell subscribers
-						JobAssignedEvent e = new JobAssignedEvent(this.currentJob1, this.robot1);
+						JobAssignedEvent e = new JobAssignedEvent(this.currentJob1);
 						EventDispatcher.onEvent2(e);
 
 						this.jobComplete1 = false;
@@ -221,7 +217,7 @@ public class JobAssignerMultiple extends Thread {
 						this.currentJob2 = this.assign(this.robot2, jobToBeAssigned);
 
 						// Tell subscribers
-						JobAssignedEvent e = new JobAssignedEvent(this.currentJob2, this.robot2);
+						JobAssignedEvent e = new JobAssignedEvent(this.currentJob2);
 						EventDispatcher.onEvent2(e);
 
 						this.jobComplete2 = false;
@@ -261,7 +257,7 @@ public class JobAssignerMultiple extends Thread {
 						this.currentJob3 = this.assign(this.robot3, jobToBeAssigned);
 
 						// Tell subscribers
-						JobAssignedEvent e = new JobAssignedEvent(this.currentJob3, this.robot3);
+						JobAssignedEvent e = new JobAssignedEvent(this.currentJob3);
 						EventDispatcher.onEvent2(e);
 
 						this.jobComplete3 = false;
@@ -332,6 +328,7 @@ public class JobAssignerMultiple extends Thread {
 	@Subscriber
 	public void onBeginAssigningEvent(BeginAssigningEvent e) {
 
+		this.jobs = new LinkedList<>(e.jobs);
 		this.readyToStart = true;
 	}
 
@@ -342,7 +339,7 @@ public class JobAssignerMultiple extends Thread {
 	 *            the new location
 	 */
 	@Subscriber
-	public void onRobotGotLostEvent(RobotGotLostEvent e) {
+	public void onRobotGotLostEvent(RobotLostEvent e) {
 
 		if (e.robot.equals(this.robot1)) {
 
