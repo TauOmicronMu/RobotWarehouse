@@ -57,6 +57,7 @@ public class JobAssignerSingle extends Thread {
 
 		// Set the variables and create the selector
 		this.robot = robot;
+		this.assignJobs = new LinkedList<>();
 		this.readyToStart = false;
 
 		this.jobCancelled = false;
