@@ -1027,9 +1027,9 @@ class Field extends AccessibleObject implements Member {
         return declaredAnnotations().values().toArray(EMPTY_ANNOTATION_ARRAY);
     }
 
-    private transient Map<Class, Annotation> declaredAnnotations;
+    private transient Map<Class<? extends Annotation>, Annotation> declaredAnnotations;
 
-    private synchronized  Map<Class, Annotation> declaredAnnotations() {
+    private synchronized Map<Class<? extends Annotation>, Annotation> declaredAnnotations() {
         if (declaredAnnotations == null) {
             declaredAnnotations = AnnotationParser.parseAnnotations(
                 annotations, sun.misc.SharedSecrets.getJavaLangAccess().
