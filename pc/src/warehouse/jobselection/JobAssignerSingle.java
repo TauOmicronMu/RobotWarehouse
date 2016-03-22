@@ -203,6 +203,7 @@ public class JobAssignerSingle extends Thread {
 				// it has been told to stop.
 
 				System.out.println("\nReached end of job list, or was told to stop - Finished");
+				this.run = false;
 			}
 		}
 	}
@@ -245,7 +246,6 @@ public class JobAssignerSingle extends Thread {
 	@Subscriber
 	public void onAddedToSelectedListEvent(AddedToSelectedListEvent e){
 
-		System.out.println("\nReceived the event!");
 		this.gotList = true;
 	}
 
