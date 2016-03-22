@@ -122,11 +122,13 @@ public class JobAssignerSingle extends Thread {
 					// job, give it a new one
 					if (this.jobComplete || this.jobCancelled) {
 
+						System.out.println("\nJob was completed, assigning another");
+
 						// If the robot is not going to start its next job from
 						// the drop location as it got lost or the job was cancelled
 						if (this.robotGotLost || this.jobCancelled) {
 
-							System.out.println("\nRobot got lost");
+							System.out.println("\nRobot got lost or job was cancelled");
 
 							this.selector = new JobSelectorSingle(this.robot, this.jobs, this.cancellationMachine);
 
