@@ -73,12 +73,12 @@ public class SingleTest  extends Thread{
 //        files5[4] = filePath + "\\5\\drops.csv";
 //        fileSet.add(files5);
 
-        String[] actualFiles = new String[4];
+        String[] actualFiles = new String[5];
         actualFiles[0] = filePath + "\\actual\\locations.csv";
         actualFiles[1] = filePath + "\\actual\\items.csv";
         actualFiles[2] = filePath + "\\actual\\jobs.csv";
-//        actualFiles[3] = filePath + "\\actual\\cancellations.csv";
-        actualFiles[3] = filePath + "\\actual\\drops.csv";
+        actualFiles[3] = filePath + "\\actual\\cancellations.csv";
+        actualFiles[4] = filePath + "\\actual\\drops.csv";
         fileSet.add(actualFiles);
 
         String[] trainingFiles = new String[5];
@@ -91,7 +91,7 @@ public class SingleTest  extends Thread{
 
         for(String[] fileNameArray : fileSet) {
 
-            assert (fileNameArray.length == 4);
+            assert (fileNameArray.length == 5);
 
             // Parse locations
             HashMap<String, Location> itemLocations = new HashMap<>();
@@ -113,12 +113,12 @@ public class SingleTest  extends Thread{
                 jobs.put(values[0], new Job(null, jobPickups, values[0]));
             });
             // Parse cancellations file (I'm not sure of the actual file name)
-//            assert(jobs != null);
-//            
-//            parseFile(fileNameArray[3], values -> {
-//            	assert(jobs.containsKey(values[0]));
-//            	jobs.get(values[0]).cancelledInTrainingSet = values[1].equals("0") ? false : true;
-//            });
+            assert(jobs != null);
+            
+            parseFile(fileNameArray[3], values -> {
+            	assert(jobs.containsKey(values[0]));
+            	jobs.get(values[0]).cancelledInTrainingSet = values[1].equals("0") ? false : true;
+            });
             List<Location> dropLocations = new ArrayList<>();
             parseFile(fileNameArray[4], values -> jobs.values().forEach(job -> job.dropLocation = new Location(Integer.parseInt(values[0]), Integer.parseInt(values[1].trim()))));
 
