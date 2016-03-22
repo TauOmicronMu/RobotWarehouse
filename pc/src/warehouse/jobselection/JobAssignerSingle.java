@@ -56,19 +56,10 @@ public class JobAssignerSingle extends Thread {
 	 * @param jobs
 	 *            the list of jobs
 	 */
-<<<<<<< HEAD
-	public JobAssignerSingle(Robot robot, List<Job> jobs) {
-
-		// Set the variables and create the selector
-		this.robot = robot;
-		this.jobs = new LinkedList<>(jobs);
-=======
 	public JobAssignerSingle(Robot robot) {
 
 		// Set the variables and create the selector
 		this.robot = robot;
-
->>>>>>> origin/job-selection
 		this.readyToStart = false;
 
 		this.jobCancelled = false;
