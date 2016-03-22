@@ -151,7 +151,9 @@ public class SingleTest  extends Thread{
             for(int i = 0; i < 10; i++) {
 
                 try {
+                	System.out.println("sleeping");
                     Thread.sleep(5000);
+                    System.out.println("woke up");
                 } catch (InterruptedException e) {
                     // Sleep was interrupted for some reason
                     e.printStackTrace();
