@@ -78,6 +78,8 @@ public class JobSelectorSingle extends Thread {
 		while (run && (this.jobs.size() > 0)) {
 
 			// convert it into a list of jobworths
+
+			System.out.println("\nConverting list NOW");
 			this.convertedList = this.convertList(this.robotStartLocation, this.robotFacing);
 
 			System.out.println("\nConverted list, sending event...");
