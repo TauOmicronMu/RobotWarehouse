@@ -189,8 +189,6 @@ public class JobAssignerSingle extends Thread {
 							System.out.println("\nWaiting for JobCompleteEvent");
 						}
 
-						System.out.println("Waiting for ConvertedListCompleteEvent...");
-
 						try {
 							Thread.sleep(100);
 						} catch (InterruptedException e) {

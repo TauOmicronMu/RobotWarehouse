@@ -111,6 +111,8 @@ public class JobSelectorSingle extends Thread {
 	 */
 	public LinkedList<JobWorth> convertList(Location startLocation, Direction startFacing) {
 
+		System.out.println("\nInside convert method...");
+
 		// make an empty list of jobworths
 		LinkedList<JobWorth> jobworths = new LinkedList<JobWorth>();
 

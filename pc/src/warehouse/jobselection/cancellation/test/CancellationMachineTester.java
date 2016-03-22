@@ -71,40 +71,41 @@ public class CancellationMachineTester {
         List<Job> knownJobsList = new LinkedList<>();
         List<Job> jobList = jobs.values().stream().collect(Collectors.toList());
 
-        for(int i = 0; i < jobs.size(); i++){
+        for(int i = 0; i < jobs.size(); i++) {
 
-        }
 
-        for(int i = 0; i < (int)(jobs.size()*percentage); i++){
+            for (int i = 0; i < (int) (jobs.size() * percentage); i++) {
 
-            trainingJobsList.add(jobList.get(i));
-        }
+                trainingJobsList.add(jobList.get(i));
+            }
 
-        for(int i = (int)(jobs.size()*percentage); i < jobs.size(); i++){
+            for (int i = (int) (jobs.size() * percentage); i < jobs.size(); i++) {
 
-            knownJobsList.add(jobList.get(i));
-        }
+                knownJobsList.add(jobList.get(i));
+            }
 
-        CancellationMachine testMachine = new NaiveBayes(trainingJobsList);
+            CancellationMachine testMachine = new NaiveBayes(trainingJobsList);
 
-        System.out.println(testMachine);
-        double percentageCorrect = 0;
-        int numberJobsCancelled = 0;
+            System.out.println(testMachine);
+            double percentageCorrect = 0;
+            int numberJobsCancelled = 0;
 
-        for(Job job : knownJobsList){
+            for (Job job : knownJobsList) {
 
-            double generatedProbability = testMachine.getProbability(job);
+                double generatedProbability = testMachine.getProbability(job);
 
-            //System.out.println("p = " + generatedProbability + " cancelled: " + job.cancelledInTrainingSet);
+                //System.out.println("p = " + generatedProbability + " cancelled: " + job.cancelledInTrainingSet);
 
-            if(job.cancelledInTrainingSet){
+                if (job.cancelledInTrainingSet) {
 
-                numberJobsCancelled++;
+                    numberJobsCancelled++;
 
-             if (generatedProbability > 0.5) {
+                    if (generatedProbability > 0.5) {
 
-                 percentageCorrect++;
-             }
+                        percentageCorrect++;
+                    }
+                }
+
             }
         }
 
