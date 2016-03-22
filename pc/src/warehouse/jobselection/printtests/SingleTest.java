@@ -33,45 +33,45 @@ public class SingleTest  extends Thread{
 
         String filePath = "C:\\Users\\Aidan\\workspace\\RobotWarehouse\\out\\production\\RobotWarehouse\\warehouse\\jobselection\\cancellation\\test";
 
-        String[] files1 = new String[5];
-        files1[0] = filePath + "\\1\\locations.csv";
-        files1[1] = filePath + "\\1\\items.csv";
-        files1[2] = filePath + "\\1\\jobs.csv";
-        files1[3] = filePath + "\\1\\cancellations.csv";
-        files1[4] = filePath + "\\1\\drops.csv";
-        fileSet.add(files1);
-
-        String[] files2 = new String[5];
-        files2[0] = filePath + "\\2\\locations.csv";
-        files2[1] = filePath + "\\2\\items.csv";
-        files2[2] = filePath + "\\2\\jobs.csv";
-        files2[3] = filePath + "\\2\\cancellations.csv";
-        files2[4] = filePath + "\\2\\drops.csv";
-        fileSet.add(files2);
-
-        String[] files3 = new String[5];
-        files3[0] = filePath + "\\3\\locations.csv";
-        files3[1] = filePath + "\\3\\items.csv";
-        files3[2] = filePath + "\\3\\jobs.csv";
-        files3[3] = filePath + "\\3\\cancellations.csv";
-        files3[4] = filePath + "\\3\\drops.csv";
-        fileSet.add(files3);
-
-        String[] files4 = new String[5];
-        files4[0] = filePath + "\\4\\locations.csv";
-        files4[1] = filePath + "\\4\\items.csv";
-        files4[2] = filePath + "\\4\\jobs.csv";
-        files4[3] = filePath + "\\4\\cancellations.csv";
-        files4[4] = filePath + "\\4\\drops.csv";
-        fileSet.add(files4);
-
-        String[] files5 = new String[5];
-        files5[0] = filePath + "\\5\\locations.csv";
-        files5[1] = filePath + "\\5\\items.csv";
-        files5[2] = filePath + "\\5\\jobs.csv";
-        files5[3] = filePath + "\\5\\cancellations.csv";
-        files5[4] = filePath + "\\5\\drops.csv";
-        fileSet.add(files5);
+//        String[] files1 = new String[5];
+//        files1[0] = filePath + "\\1\\locations.csv";
+//        files1[1] = filePath + "\\1\\items.csv";
+//        files1[2] = filePath + "\\1\\jobs.csv";
+//        files1[3] = filePath + "\\1\\cancellations.csv";
+//        files1[4] = filePath + "\\1\\drops.csv";
+//        fileSet.add(files1);
+//
+//        String[] files2 = new String[5];
+//        files2[0] = filePath + "\\2\\locations.csv";
+//        files2[1] = filePath + "\\2\\items.csv";
+//        files2[2] = filePath + "\\2\\jobs.csv";
+//        files2[3] = filePath + "\\2\\cancellations.csv";
+//        files2[4] = filePath + "\\2\\drops.csv";
+//        fileSet.add(files2);
+//
+//        String[] files3 = new String[5];
+//        files3[0] = filePath + "\\3\\locations.csv";
+//        files3[1] = filePath + "\\3\\items.csv";
+//        files3[2] = filePath + "\\3\\jobs.csv";
+//        files3[3] = filePath + "\\3\\cancellations.csv";
+//        files3[4] = filePath + "\\3\\drops.csv";
+//        fileSet.add(files3);
+//
+//        String[] files4 = new String[5];
+//        files4[0] = filePath + "\\4\\locations.csv";
+//        files4[1] = filePath + "\\4\\items.csv";
+//        files4[2] = filePath + "\\4\\jobs.csv";
+//        files4[3] = filePath + "\\4\\cancellations.csv";
+//        files4[4] = filePath + "\\4\\drops.csv";
+//        fileSet.add(files4);
+//
+//        String[] files5 = new String[5];
+//        files5[0] = filePath + "\\5\\locations.csv";
+//        files5[1] = filePath + "\\5\\items.csv";
+//        files5[2] = filePath + "\\5\\jobs.csv";
+//        files5[3] = filePath + "\\5\\cancellations.csv";
+//        files5[4] = filePath + "\\5\\drops.csv";
+//        fileSet.add(files5);
 
         String[] actualFiles = new String[5];
         actualFiles[0] = filePath + "\\actual\\locations.csv";
@@ -104,9 +104,6 @@ public class SingleTest  extends Thread{
                 }
                 jobs.put(values[0], new Job(null, jobPickups, values[0]));
             });
-
-            // Parse cancellations file (I'm not sure of the actual file name)
-            parseFile(fileNameArray[3], values -> jobs.get(values[0]).cancelledInTrainingSet = values[1].equals("0") ? false : true);
 
             List<Location> dropLocations = new ArrayList<>();
             parseFile(fileNameArray[4], values -> jobs.values().forEach(job -> job.dropLocation = new Location(Integer.parseInt(values[0]), Integer.parseInt(values[1]))));
