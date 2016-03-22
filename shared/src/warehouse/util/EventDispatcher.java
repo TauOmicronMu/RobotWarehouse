@@ -2,6 +2,7 @@ package warehouse.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +14,8 @@ import java.util.stream.Collectors;
 public class EventDispatcher {
 
     public static final EventDispatcher INSTANCE = new EventDispatcher();
-    private HashMap<Object, HashMap<Class, Method>> subscribers = new HashMap<>();
+    private final HashMap<Class, List<Pair<Object, List<Method>>>> subscribers = new HashMap<>();
+    private final List<Pair<Object, List<Method>>> multiSubscribers = new ArrayList<>();
 
     /**
      * Static wrapper for INSTANCE.onEvent()
@@ -38,19 +40,22 @@ public class EventDispatcher {
      * @param obj - The event object
      **/
     public void onEvent(Object obj) {
-        // Look through the subscribed objects and check if they have a method that accepts the packet's class
-        for (Object subscriber : subscribers.keySet()) {
-            HashMap<Class, Method> subscriberMethods = subscribers.get(subscriber);
-            if (subscriberMethods.containsKey(obj.getClass())) {
-                try {
-                    // Invoke the method from the subscriber object with the obj as the argument
-                    subscriberMethods.get(obj.getClass()).invoke(subscriber, obj);
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
-                }
-            }
+        if(subscribers.containsKey(obj.getClass())) {
+            List<Pair<Object, List<Method>>> subscriberObjects = subscribers.get(obj.getClass());
+            subscriberObjects.forEach(pair -> {
+                pair.e.forEach(method -> invoke(method, pair.t, obj));
+            });
+        }
+        multiSubscribers.forEach(pair -> pair.e.forEach(mth -> invoke(mth, pair.t, obj)));
+    }
+
+    private void invoke(Method method, Object subscriber, Object obj) {
+        try {
+            method.invoke(subscriber, obj);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
         }
     }
 
@@ -60,12 +65,37 @@ public class EventDispatcher {
      * @param obj - Object of the class that has the subscriber methods
      */
     public void subscribe(Object obj) {
-        Class cls = obj.getClass();
-        HashMap<Class, Method> map = new HashMap<>();
-        subscribers.put(obj, map);
-        // Filter class' methods for those that have one parameter and have the subscriber annotation
-        List<Method> methods = Arrays.stream(cls.getMethods()).filter(mth -> mth.getParameters().length == 0 && mth.getAnnotationsByType(Subscriber.class).length > 0).collect(Collectors.toList());
-        methods.forEach(mth -> map.put(mth.getParameters()[0].getType(), mth));
+        Class cls;
+        if(obj.getClass() == Class.class) cls = (Class) obj;
+        else cls = obj.getClass();
+
+        HashMap<Class, List<Method>> clsMethodMap = new HashMap<>();
+        List<Method> methods = getMethods(Subscriber.class, cls.getMethods());
+        methods.forEach(method -> {
+            Class methodParam = method.getParameters()[0].getType();
+            if(clsMethodMap.containsKey(methodParam)) clsMethodMap.get(methodParam).add(method);
+            else {
+                ArrayList<Method> list = new ArrayList<Method>();
+                clsMethodMap.put(methodParam, list);
+                list.add(method);
+            }
+        });
+        clsMethodMap.keySet().forEach(key -> {
+            if(subscribers.containsKey(key)) subscribers.get(key).add(new Pair(obj, clsMethodMap.get(key)));
+            else {
+                ArrayList<Pair<Object, List<Method>>> list = new ArrayList<Pair<Object, List<Method>>>();
+                subscribers.put(key, list);
+                list.add(new Pair(obj, clsMethodMap.get(key)));
+            }
+        });
+
+        // Add the multi subscriber methods
+        List<Method> multiMethods = getMethods(MultiSubscriber.class, cls.getMethods());
+        if(multiMethods.size() > 0) multiSubscribers.add(new Pair(obj, multiMethods));
+    }
+
+    private List<Method> getMethods(Class annotationClass, Method[] methods) {
+        return (List<Method>) Arrays.stream(methods).filter(mth -> mth.getParameters().length == 1 && mth.getAnnotationsByType(annotationClass).length > 0).collect(Collectors.toList());
     }
 
 }
