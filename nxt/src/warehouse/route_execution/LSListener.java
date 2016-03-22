@@ -1,6 +1,5 @@
 package warehouse.route_execution;
 
-	import lejos.nxt.Button;
 	import lejos.nxt.LightSensor;
 
 	public class LSListener extends Thread {
