@@ -72,13 +72,12 @@ public class JobAssignerMultiple extends Thread {
 	 * @param jobs
 	 *            the list of jobs
 	 */
-	public JobAssignerMultiple(Robot robot1, Robot robot2, Robot robot3, LinkedList<Job> jobs) {
+	public JobAssignerMultiple(Robot robot1, Robot robot2, Robot robot3) {
 
 		// Set the variables and create the selector
 		this.robot1 = robot1;
 		this.robot2 = robot2;
 		this.robot3 = robot3;
-		this.jobs = jobs;
 
 		this.readyToStart = false;
 
@@ -332,6 +331,7 @@ public class JobAssignerMultiple extends Thread {
 	@Subscriber
 	public void onBeginAssigningEvent(BeginAssigningEvent e) {
 
+		this.jobs = new LinkedList<>(e.jobs);
 		this.readyToStart = true;
 	}
 

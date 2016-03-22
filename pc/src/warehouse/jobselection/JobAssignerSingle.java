@@ -55,15 +55,17 @@ public class JobAssignerSingle extends Thread {
 	 * @param jobs
 	 *            the list of jobs
 	 */
-	public JobAssignerSingle(Robot robot, List<Job> jobs) {
+	public JobAssignerSingle(Robot robot) {
 
 		// Set the variables and create the selector
 		this.robot = robot;
-		this.jobs = new LinkedList<>(jobs);
+
 		this.readyToStart = false;
-		this.jobComplete = false;
+
 		this.jobCancelled = false;
 		this.robotGotLost = false;
+
+		this.jobComplete = true;
 
 		try{
 			
@@ -89,17 +91,25 @@ public class JobAssignerSingle extends Thread {
 	@Override
 	public void run() {
 
+		System.out.println("\nStarting Single Robot Assigner");
+
 		this.run = true;
 
 		EventDispatcher.subscribe2(this);
 
 		JobWorth jobToBeAssigned;
 
+		System.out.println("\nWaiting for BeginAssigningEvent");
+
 		while (this.run) {
 
 			if (this.readyToStart) {
 
+				System.out.println("\nReceived BeginAssigningEvent, sorting jobs");
+
 				this.selector = new JobSelectorSingle(this.robot, this.jobs, this.cancellationMachine);
+
+				System.out.println("\nCreated Single Robot Selector, assigning jobs");
 
 				try {
 					Thread.sleep(100);
@@ -114,6 +124,9 @@ public class JobAssignerSingle extends Thread {
 					// job, give it a new one
 					if (this.jobComplete || this.jobCancelled) {
 
+						System.out.println("\n-------------------------------");
+						System.out.println("\nJob Complete, assigning new job");
+
 						// If the robot is not going to start its next job from
 						// the drop location as it got lost or the job was cancelled
 						if (this.robotGotLost || this.jobCancelled) {
@@ -121,6 +134,9 @@ public class JobAssignerSingle extends Thread {
 							System.out.println("\nRobot got lost");
 
 							this.selector = new JobSelectorSingle(this.robot, this.jobs, this.cancellationMachine);
+
+							System.out.println("\nCreated new Single Robot Selector, assigning jobs");
+
 							this.robotGotLost = false;
 							this.jobCancelled = false;
 
@@ -137,18 +153,28 @@ public class JobAssignerSingle extends Thread {
 						// Get the next job to be assigned
 						jobToBeAssigned = this.assignJobs.removeFirst();
 
+						System.out.println("\nThe chosen best job is: " + jobToBeAssigned);
+
 						// Remove it from the list of jobs
 						this.jobs.remove(jobToBeAssigned.getJob());
 
 						// Create a new assigned job and set it as current
 						this.currentJob = this.assign(this.robot, jobToBeAssigned);
 
+						System.out.println("\nThe current job is: " + this.currentJob);
+
 						// Tell subscribers
 						JobAssignedEvent e = new JobAssignedEvent(this.currentJob, this.robot);
+
+						System.out.println("\nDispatched Event");
+
 						EventDispatcher.onEvent2(e);
 
 						this.jobComplete = false;
+
+						System.out.println("\nWaiting for JobCompleteEvent");
 					}
+
 					try {
 						Thread.sleep(100);
 					} catch (InterruptedException e) {
@@ -159,6 +185,8 @@ public class JobAssignerSingle extends Thread {
 
 				// If it reaches this point, the jobs have all been exhausted or
 				// it has been told to stop.
+
+				System.out.println("\nReached end of job list, or was told to stop - Finished");
 
 				try {
 					Thread.sleep(100);
@@ -175,8 +203,6 @@ public class JobAssignerSingle extends Thread {
 	 * 
 	 * @param robot
 	 *            the robot
-	 * @param job
-	 *            the job to be assigned
 	 * @return an AssignedJob object
 	 */
 	private AssignedJob assign(Robot robot, JobWorth jobWorth) {
@@ -203,6 +229,7 @@ public class JobAssignerSingle extends Thread {
 	@Subscriber
 	public void onBeginAssigningEvent(BeginAssigningEvent e) {
 
+		this.jobs = new LinkedList<>(e.jobs);
 		this.readyToStart = true;
 	}
 
