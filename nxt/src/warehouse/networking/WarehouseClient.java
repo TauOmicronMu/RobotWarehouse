@@ -5,7 +5,9 @@ import java.io.IOException;
 import samtebbs33.net.event.SocketEvent;
 import samtebbs33.net.event.SocketEvent.SocketExceptionEvent;
 import samtebbs33.net.event.SocketEvent.SocketPacketEvent;
+import warehouse.event.Event;
 import warehouse.util.EventDispatcher;
+import warehouse.util.MultiSubscriber;
 
 public class WarehouseClient extends Client {
 
@@ -46,7 +48,7 @@ public class WarehouseClient extends Client {
 	}
 	
 	@MultiSubscriber
-	public void onEvent(Object event) {
+	public void onEvent(Event event) throws IOException {
 		send(event);
 	}
 	

@@ -9,7 +9,9 @@ import lejos.pc.comm.NXTCommException;
 import samtebbs33.net.SocketStream;
 
 import samtebbs33.net.event.SocketEvent;
+import warehouse.event.Event;
 import warehouse.util.EventDispatcher;
+import warehouse.util.MultiSubscriber;
 
 public class WarehouseServer extends Server {
 	
@@ -76,7 +78,13 @@ public class WarehouseServer extends Server {
 	
 	@MultiSubscriber
 	public void onEvent(Event event) {
-		broadcast(event);
+		if(event.robot.isPresent()) {
+			send(event.robot.get().id, event);
+		}
+		else {
+			broadcast(event);
+		}
+
 	}
 
 }
