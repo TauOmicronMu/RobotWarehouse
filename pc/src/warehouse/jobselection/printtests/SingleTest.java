@@ -125,7 +125,9 @@ public class SingleTest  extends Thread{
     @Override
     public void run(){
 
-        for(List<Job> jobs : this.jobSet){
+        //for(List<Job> jobs : this.jobSet){
+
+            List<Job> jobs = this.jobSet.get(0);
 
             Robot robot = new Robot("testRobot", new Location(0, 0), Direction.NORTH);
 
@@ -148,7 +150,7 @@ public class SingleTest  extends Thread{
 //            }
 //
 //            assigner.stopAssigning();
-        }
+        //}
     }
 
     @Subscriber
