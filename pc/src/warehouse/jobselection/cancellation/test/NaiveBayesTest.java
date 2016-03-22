@@ -1,5 +1,7 @@
 package warehouse.jobselection.cancellation.test;
 
+import warehouse.jobselection.cancellation.CancellationMachine;
+
 import java.io.IOException;
 
 /**
@@ -44,9 +46,25 @@ public class NaiveBayesTest {
         files5[3] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\5\\cancellations.csv";
         files5[4] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\5\\drops.csv";
 
+        String[] trainingSet = new String[5];
+        trainingSet[0] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\actual\\locations.csv"
+        trainingSet[1] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\actual\\items.csv";
+        trainingSet[2] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\actual\\training_jobs.csv";
+        trainingSet[3] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\actual\\cancellations.csv";
+        trainingSet[4] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\actual\\drops.csv";
+
+        String[] testSet = new String[5];
+        testSet[0] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\actual\\locations.csv"
+        testSet[1] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\actual\\items.csv";
+        testSet[2] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\actual\\jobs.csv";
+        testSet[3] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\actual\\marking_file.csv";
+        testSet[4] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\actual\\drops.csv";
+        
         try {
             CancellationMachineTester tester1 = new CancellationMachineTester(0.95, files1, files3, files4, files5);
             CancellationMachineTester tester2 = new CancellationMachineTester(0.95, files2);
+
+            CancellationActualTester actualTester = new CancellationActualTester(trainingSet, testSet);
         } catch (IOException e) {
             e.printStackTrace();
         }
