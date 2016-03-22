@@ -81,6 +81,14 @@ public class SingleTest  extends Thread{
         actualFiles[4] = filePath + "\\actual\\drops.csv";
         fileSet.add(actualFiles);
 
+        String[] trainingFiles = new String[5];
+        actualFiles[0] = filePath + "\\actual\\locations.csv";
+        actualFiles[1] = filePath + "\\actual\\items.csv";
+        actualFiles[2] = filePath + "\\actual\\training_jobs.csv";
+        actualFiles[3] = filePath + "\\actual\\cancellations.csv";
+        actualFiles[4] = filePath + "\\actual\\drops.csv";
+        fileSet.add(actualFiles);
+
         for(String[] fileNameArray : fileSet) {
 
             assert (fileNameArray.length == 5);
@@ -106,7 +114,7 @@ public class SingleTest  extends Thread{
             });
 
             List<Location> dropLocations = new ArrayList<>();
-            parseFile(fileNameArray[4], values -> jobs.values().forEach(job -> job.dropLocation = new Location(Integer.parseInt(values[0]), Integer.parseInt(values[1]))));
+            parseFile(fileNameArray[4], values -> jobs.values().forEach(job -> job.dropLocation = new Location(Integer.parseInt(values[0]), Integer.parseInt(values[1].trim()))));
 
             // Convert the job map to a list
 
@@ -130,33 +138,17 @@ public class SingleTest  extends Thread{
     @Override
     public void run() {
 
-        for (List<Job> jobs : this.jobSet) {
 
-            System.out.println("\n+++++++++++++++++");
-            System.out.println("+++NEW+JOB+SET+++");
-            System.out.println("+++++++++++++++++");
-
-            List<Job> trainingJobs = new LinkedList<>();
-            List<Job> trimmedJobs = new LinkedList<>();
-
-            for (int i = 0; i < jobs.size(); i++) {
-
-                if (i < 100) {
-
-                    trimmedJobs.add(jobs.get(i));
-                } else {
-
-                    trainingJobs.add(jobs.get(i));
-                }
-            }
+            List<Job> trainingJobs = jobSet.get(0);
+            List<Job> actualJobs = jobSet.get(1);
 
             Robot robot = new Robot("testRobot", new Location(0, 0), Direction.NORTH);
 
-            JobAssignerSingle assigner = new JobAssignerSingle(robot, new LinkedList<>(jobs));
+            JobAssignerSingle assigner = new JobAssignerSingle(robot, new LinkedList<>(trainingJobs));
 
-            EventDispatcher.onEvent2(new BeginAssigningEvent(trimmedJobs, new LinkedList<Location>()));
+            EventDispatcher.onEvent2(new BeginAssigningEvent(actualJobs, new LinkedList<Location>()));
 
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < actualJobs.size(); i++) {
 
                 try {
 
@@ -178,7 +170,7 @@ public class SingleTest  extends Thread{
             System.out.println("\nTEST THREAD: Telling assigner to stop");
             assigner.stopAssigning();
 
-        }
+
     }
 
     @Subscriber
