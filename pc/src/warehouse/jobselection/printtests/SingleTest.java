@@ -163,7 +163,6 @@ public class SingleTest  extends Thread{
             }
 
             assigner.stopAssigning();
-
     }
 
     @Subscriber
