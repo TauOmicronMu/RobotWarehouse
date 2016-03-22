@@ -73,6 +73,15 @@ public class SingleTest  extends Thread{
 //        files5[4] = filePath + "\\5\\drops.csv";
 //        fileSet.add(files5);
 
+        
+        String[] trainingFiles = new String[5];
+        trainingFiles[0] = filePath + "\\actual\\locations.csv";
+        trainingFiles[1] = filePath + "\\actual\\items.csv";
+        trainingFiles[2] = filePath + "\\actual\\training_jobs.csv";
+        trainingFiles[3] = filePath + "\\actual\\cancellations.csv";
+        trainingFiles[4] = filePath + "\\actual\\drops.csv";
+        fileSet.add(trainingFiles);
+
         String[] actualFiles = new String[5];
         actualFiles[0] = filePath + "\\actual\\locations.csv";
         actualFiles[1] = filePath + "\\actual\\items.csv";
@@ -81,13 +90,6 @@ public class SingleTest  extends Thread{
         actualFiles[4] = filePath + "\\actual\\drops.csv";
         fileSet.add(actualFiles);
 
-        String[] trainingFiles = new String[5];
-        actualFiles[0] = filePath + "\\actual\\locations.csv";
-        actualFiles[1] = filePath + "\\actual\\items.csv";
-        actualFiles[2] = filePath + "\\actual\\training_jobs.csv";
-        actualFiles[3] = filePath + "\\actual\\cancellations.csv";
-        actualFiles[4] = filePath + "\\actual\\drops.csv";
-        fileSet.add(actualFiles);
 
         for(String[] fileNameArray : fileSet) {
 
@@ -160,21 +162,26 @@ public class SingleTest  extends Thread{
 
             for (int i = 0; i < actualJobs.size(); i++) {
 
-                try {
+                while(!this.hasCurrentJob) {
 
-                    //System.out.println("\nTEST THREAD: Sleeping");
-                    Thread.sleep(10000);
-                    //System.out.println("\nTEST THREAD: Woke up");
-                } catch (InterruptedException e) {
-                    // Sleep was interrupted for some reason
-                    e.printStackTrace();
+                    try {
+
+                        //System.out.println("\nTEST THREAD: Sleeping");
+                        Thread.sleep(3000);
+                        //System.out.println("\nTEST THREAD: Woke up");
+                    } catch (InterruptedException e) {
+                        // Sleep was interrupted for some reason
+                        e.printStackTrace();
+                    }
                 }
+                
+                    assert (this.hasCurrentJob == true);
+                    assert (assigner.getCurrentJob() != null);
 
-                assert (this.hasCurrentJob == true);
-                assert (assigner.getCurrentJob() != null);
-
-                System.out.println("\nTEST THREAD: Sending Job Complete Event");
-                EventDispatcher.onEvent2(new JobCompleteEvent(assigner.getCurrentJob()));
+                    System.out.println("\nTEST THREAD: Sending Job Complete Event");
+                    EventDispatcher.onEvent2(new JobCompleteEvent(assigner.getCurrentJob()));
+                
+                this.hasCurrentJob = false;
             }
 
             System.out.println("\nTEST THREAD: Telling assigner to stop");
