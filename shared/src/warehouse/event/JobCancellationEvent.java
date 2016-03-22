@@ -1,5 +1,7 @@
 package warehouse.event;
 
-public class JobCancellationEvent {
+import warehouse.job.*;
 
+public class JobCancellationEvent {
+    public Job job;
 }
