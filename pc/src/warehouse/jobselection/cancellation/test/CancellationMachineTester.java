@@ -73,7 +73,7 @@ public class CancellationMachineTester {
 
         double totalPercentages = 0;
 
-        for(int j = 0; j < jobs.size()/100; j++) {
+        for(int j = 0; j < jobs.size(); j+= jobs.size()/100) {
 
             for (int i = j; i < (int) ((jobs.size() * percentage) + j); i++) {
 

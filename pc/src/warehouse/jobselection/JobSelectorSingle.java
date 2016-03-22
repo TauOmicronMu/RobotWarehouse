@@ -101,6 +101,9 @@ public class JobSelectorSingle extends Thread {
 			// add it to the list of selected jobs
 			this.selectedList.add(bestJob);
 
+			System.out.println("\nAdding : " + bestJob + " to the list");
+			System.out.println("\nCurrent list of selected jobs: " + this.selectedList);
+
 			this.robotStartLocation = bestJob.getRoute().end;
 
 			this.robotFacing = bestJob.getRoute().finalFacing;
