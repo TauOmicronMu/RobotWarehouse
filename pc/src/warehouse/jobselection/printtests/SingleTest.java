@@ -192,7 +192,10 @@ public class SingleTest  extends Thread{
     
     public static void parseFile(String filePath, Consumer<String[]> consumer) throws FileNotFoundException {
         Scanner in = new Scanner(new File(filePath));
-        while(in.hasNextLine()) consumer.accept(in.nextLine().trim().split(","));
+        while(in.hasNextLine()){
+            String line = in.nextLine();
+            if(!line.isEmpty()) consumer.accept(line.trim().split(","));
+        }
     }
 
     public static void print(Object o){
