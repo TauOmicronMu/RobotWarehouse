@@ -106,8 +106,12 @@ public class SingleTest  extends Thread{
             });
 
             // Parse cancellations file (I'm not sure of the actual file name)
-            parseFile(fileNameArray[3], values -> jobs.get(values[0]).cancelledInTrainingSet = values[1].equals("0") ? false : true);
-
+            assert(jobs != null);
+            
+            parseFile(fileNameArray[3], values -> {
+            	assert(jobs.containsKey(values[0]));
+            	jobs.get(values[0]).cancelledInTrainingSet = values[1].equals("0") ? false : true;
+            });
             List<Location> dropLocations = new ArrayList<>();
             parseFile(fileNameArray[4], values -> jobs.values().forEach(job -> job.dropLocation = new Location(Integer.parseInt(values[0]), Integer.parseInt(values[1]))));
 
