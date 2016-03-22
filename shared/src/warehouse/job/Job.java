@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Job {
 
-    public final Location dropLocation;
+    public Location dropLocation;
     public final List<ItemPickup> pickups;
     public final String id;
     public boolean cancelledInTrainingSet;
