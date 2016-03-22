@@ -23,9 +23,9 @@ public class RobotInterface extends Thread
 	 */
 	public RobotInterface()
 	{
-		interfaceRun = new Boolean(true);
-		hasJob = new Boolean(false);
-		jobRun = new Boolean(false);
+		interfaceRun = true;
+		hasJob = false;
+		jobRun = false;
 		comm = new Communication();
 		message = comm.getMessage();
 
@@ -35,10 +35,10 @@ public class RobotInterface extends Thread
 			@Override
 			public void buttonReleased(Button b)
 			{
-				if (!hasJob.get())
+				if (!hasJob)
 				{
 					comm.robotOff();
-					interfaceRun.set(false);
+					interfaceRun = false;
 				}
 			}
 
@@ -58,21 +58,21 @@ public class RobotInterface extends Thread
 	{
 		LCD.clearDisplay();
 		LCD.drawString("Moving around!", 0, 0);
-		hasJob.set(false);
+		hasJob = false;
 		message = null;
 	}
 
 	@Override
 	public void run()
 	{
-		while (interfaceRun.get())
+		while (interfaceRun)
 		{
 			if (comm.hasJob())
 			{
 				// Start a new job
 
-				hasJob.set(true);
-				jobRun.set(true);
+				hasJob = true;
+				jobRun = true;
 
 				PickupJob pj = new PickupJob(comm, jobRun);
 				pj.run();
