@@ -71,8 +71,9 @@ public class CancellationMachineTester {
         List<Job> knownJobsList = new LinkedList<>();
         List<Job> jobList = jobs.values().stream().collect(Collectors.toList());
 
-        for(int i = 0; i < jobs.size(); i++) {
+        double totalPercentages = 0;
 
+        for(int j = 0; j < jobs.size()/100; j++) {
 
             for (int i = 0; i < (int) (jobs.size() * percentage); i++) {
 

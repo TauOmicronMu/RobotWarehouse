@@ -82,6 +82,8 @@ public class JobSelectorSingle extends Thread {
 			System.out.println("\nConverting list NOW");
 			this.convertedList = this.convertList(this.robotStartLocation, this.robotFacing);
 
+			assert(this.convertedList != null);
+
 			System.out.println("\nConverted list, sending event...");
 
 			ConvertedListCompleteEvent e = new ConvertedListCompleteEvent();
@@ -90,6 +92,8 @@ public class JobSelectorSingle extends Thread {
 
 			// get the best one
 			bestJob = this.selectBestJob(this.convertedList);
+
+			System.out.println("\nThe best Job is: " + bestJob);
 
 			// remove it from the reference job list
 			this.jobs.remove(bestJob.getJob());

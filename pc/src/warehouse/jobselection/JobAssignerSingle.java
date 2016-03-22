@@ -53,8 +53,6 @@ public class JobAssignerSingle extends Thread {
 	 * 
 	 * @param robot
 	 *            the robot
-	 * @param jobs
-	 *            the list of jobs
 	 */
 	public JobAssignerSingle(Robot robot) {
 
@@ -251,6 +249,7 @@ public class JobAssignerSingle extends Thread {
 	@Subscriber
 	public void onConvertedListCompleteEvent(ConvertedListCompleteEvent e){
 
+		System.out.println("\nReceived the event!");
 		this.gotList = true;
 	}
 
