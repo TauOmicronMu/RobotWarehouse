@@ -9,7 +9,9 @@ import lejos.pc.comm.NXTCommException;
 import samtebbs33.net.SocketStream;
 
 import samtebbs33.net.event.SocketEvent;
+import warehouse.event.Event;
 import warehouse.util.EventDispatcher;
+import warehouse.util.MultiSubscriber;
 
 public class WarehouseServer extends Server {
 	
@@ -18,11 +20,13 @@ public class WarehouseServer extends Server {
 
 	public WarehouseServer() throws IOException, NXTCommException {
 		super();
+		EventDispatcher.subscribe2(this);
 		// TODO Auto-generated constructor stub
 	}
 	
 	@Override
-	public void onClientConnected(SocketStream stream) {
+	public void onClientConnected(SocketStream stream) throws IOException {
+		super.onClientConnected(stream);
 		robotConnections[numRobots++] = stream;  
 	}
 
@@ -72,4 +76,14 @@ public class WarehouseServer extends Server {
 		
 	}
 
+	@MultiSubscriber
+	public void onEvent(Event event) {
+		if(event.robot.isPresent()) {
+			send(event.robot.get().id, event);
+		}
+		else {
+			broadcast(event);
+		}
+
+	}
 }
