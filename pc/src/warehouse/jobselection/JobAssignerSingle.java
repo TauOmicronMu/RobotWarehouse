@@ -1,7 +1,6 @@
 package warehouse.jobselection;
 
 import java.util.LinkedList;
-import java.util.List;
 
 import warehouse.event.BeginAssigningEvent;
 import warehouse.event.JobAssignedEvent;
@@ -9,8 +8,6 @@ import warehouse.event.JobCancellationEvent;
 import warehouse.event.JobCompleteEvent;
 import warehouse.job.AssignedJob;
 import warehouse.job.Job;
-import warehouse.jobselection.JobSelectorSingle;
-import warehouse.jobselection.JobWorth;
 import warehouse.jobselection.cancellation.Backup;
 import warehouse.jobselection.cancellation.CancellationMachine;
 import warehouse.jobselection.cancellation.NaiveBayes;
@@ -247,7 +244,7 @@ public class JobAssignerSingle extends Thread {
 	}
 
 	@Subscriber
-	public void onConvertedListCompleteEvent(ConvertedListCompleteEvent e){
+	public void onAddedToSelectedListEvent(AddedToSelectedListEvent e){
 
 		System.out.println("\nReceived the event!");
 		this.gotList = true;

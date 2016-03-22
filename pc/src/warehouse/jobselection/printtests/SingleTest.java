@@ -31,7 +31,7 @@ public class SingleTest  extends Thread{
         ArrayList<List<Job>> jobSet = new ArrayList<>();
         ArrayList<String[]> fileSet = new ArrayList<>();
 
-        String filePath = "C:\\\\Users\\\\Aidan\\\\workspace\\\\RobotWarehouse\\\\out\\\\production\\\\RobotWarehouse\\\\warehouse\\\\jobselection\\\\cancellation\\\\test";
+        String filePath = "C:\\Users\\Aidan\\workspace\\RobotWarehouse\\out\\production\\RobotWarehouse\\warehouse\\jobselection\\cancellation\\test";
 
         String[] files1 = new String[5];
         files1[0] = filePath + "\\1\\locations.csv";

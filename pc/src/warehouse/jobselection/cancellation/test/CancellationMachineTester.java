@@ -71,56 +71,45 @@ public class CancellationMachineTester {
         List<Job> knownJobsList = new LinkedList<>();
         List<Job> jobList = jobs.values().stream().collect(Collectors.toList());
 
-        double totalPercentages = 0;
+        for(int i = 0; i < (int)(jobs.size()*percentage); i++){
 
-        int j = 0;
-
-        while(j < jobs.size()) {
-
-            for (int i = j; i < (int) ((jobs.size() * percentage) + j); i++) {
-
-                trainingJobsList.add(jobList.get(i));
-            }
-
-            for (int i = (int) ((jobs.size() * percentage) + j); i < jobs.size(); i++) {
-
-                knownJobsList.add(jobList.get(i));
-            }
-
-            CancellationMachine testMachine = new NaiveBayes(trainingJobsList);
-
-            System.out.println(testMachine);
-            double percentageCorrect = 0;
-            int numberJobsCancelled = 0;
-
-            for (Job job : knownJobsList) {
-
-                double generatedProbability = testMachine.getProbability(job);
-
-                //System.out.println("p = " + generatedProbability + " cancelled: " + job.cancelledInTrainingSet);
-
-                if (job.cancelledInTrainingSet) {
-
-                    numberJobsCancelled++;
-
-                    if (generatedProbability > 0.5) {
-
-                        percentageCorrect++;
-                    }
-                }
-            }
-
-            j += jobs.size()/100;
+            trainingJobsList.add(jobList.get(i));
         }
 
-        double averagePercentage = totalPercentages/jobs.size();
+        for(int i = (int)(jobs.size()*percentage); i < jobs.size(); i++){
 
-//        System.out.println("Total Jobs:         " + jobList.size());
-//        System.out.println("Training with:      " + trainingJobsList.size());
-//        System.out.println("Checking with:      " + knownJobsList.size());
-//        System.out.println("Number Cancelled:   " + numberJobsCancelled);
-//        System.out.println("Number Predicted:   " + percentageCorrect);
-        return averagePercentage;
+            knownJobsList.add(jobList.get(i));
+        }
+
+        CancellationMachine testMachine = new NaiveBayes(trainingJobsList);
+
+        System.out.println(testMachine);
+        double percentageCorrect = 0;
+        int numberJobsCancelled = 0;
+
+        for(Job job : knownJobsList){
+
+            double generatedProbability = testMachine.getProbability(job);
+
+            //System.out.println("p = " + generatedProbability + " cancelled: " + job.cancelledInTrainingSet);
+
+            if(job.cancelledInTrainingSet){
+
+                numberJobsCancelled++;
+
+             if (generatedProbability > 0.5) {
+
+                 percentageCorrect++;
+             }
+            }
+        }
+
+        System.out.println("Total Jobs:         " + jobList.size());
+        System.out.println("Training with:      " + trainingJobsList.size());
+        System.out.println("Checking with:      " + knownJobsList.size());
+        System.out.println("Number Cancelled:   " + numberJobsCancelled);
+        System.out.println("Number Predicted:   " + percentageCorrect);
+        return (percentageCorrect/numberJobsCancelled)*100;
     }
 
     public static void parseFile(String filePath, Consumer<String[]> consumer) throws FileNotFoundException {
