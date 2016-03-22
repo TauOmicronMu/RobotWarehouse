@@ -1,8 +1,6 @@
 package warehouse.event;
 
-import warehouse.util.Location;
-import warehouse.job.*;
-
+import warehouse.job.AssignedJob;
 
 /**
  * Event to send to subscribers when a job is completed.
@@ -10,28 +8,13 @@ import warehouse.job.*;
  * @author Owen
  *
  */
-public class JobCompleteEvent {
+public class JobCompleteEvent extends Event {
 
-	private Location currentLocation;
-	public Job job;
-	
-	/**
-	 * Create a new JobCompleteEvent which contains a location
-	 * 
-	 * @param l the location
-	 */
-	public JobCompleteEvent(Location l){
-		
-		this.currentLocation = l;
+	public final AssignedJob job;
+
+	public JobCompleteEvent(AssignedJob job){
+		super(job.robot);
+		this.job = job;
 	}
-	
-	/**
-	 * Get the location this event contains
-	 * 
-	 * @return the location
-	 */
-	public Location getLocation(){
-		
-		return this.currentLocation;
-	}
+
 }

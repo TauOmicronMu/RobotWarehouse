@@ -40,14 +40,15 @@ public class JobWorth implements Comparable<JobWorth>{
 		this.job = job;
 		this.facing = facing;
 		
-		//TODO Integrate with route planning
+
 		//TSP tsp = new TSP();
-		//this.route = tsp.getShortestRoute(job , robot, startLocation, this.facing);
+
+		//this.route = tsp.getShortestRoute(job, startLocation, facing).get();
 		//this.facing = this.route.finalFacing;
 		
 		this.rewardTime = rewardPerTimeStep(job);
 	
-		this.metric = rewardTime; //TODO focus on timestep for now, deal with weight later
+		this.metric = rewardTime;
 	}
 	
 	/**

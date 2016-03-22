@@ -1,7 +1,6 @@
 package warehouse.event;
 
 import warehouse.job.AssignedJob;
-import warehouse.util.Robot;
 
 /**
  * Event to send to subscribers when a job is assigned
@@ -9,39 +8,19 @@ import warehouse.util.Robot;
  * @author Owen
  *
  */
-public class JobAssignedEvent {
+public class JobAssignedEvent extends Event {
 
-	private AssignedJob assignedJob;
-	private Robot robot;
-	
+	public final AssignedJob assignedJob;
+
 	/**
 	 * Create a new event
 	 * 
 	 * @param assigned the assigned job
 	 */
-	public JobAssignedEvent(AssignedJob assigned, Robot robot) {
-		
-		this.robot = robot;
+	public JobAssignedEvent(AssignedJob assigned) {
+		super(assigned.robot);
 		this.assignedJob = assigned;
 	}
 
-	/**
-	 * Get the assigned job object
-	 * 
-	 * @return the assigned job object
-	 */
-	public AssignedJob getAssignedJob(){
-		
-		return this.assignedJob;
-	}
-	
-	/**
-	 * Get the robot the job was assigned to
-	 * 
-	 * @return the robot object
-	 */
-	public Robot getRobot(){
-		
-		return this.robot;
-	}
+
 }

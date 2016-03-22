@@ -88,8 +88,7 @@ public class JobSelectorSingle extends Thread {
 
 			this.robotStartLocation = bestJob.getRoute().end;
 
-			// FIXME add endFacing field in route
-			// this.robotFacing = bestJob.getRoute().endFacing;
+			this.robotFacing = bestJob.getRoute().finalFacing;
 		}
 	}
 
@@ -97,8 +96,6 @@ public class JobSelectorSingle extends Thread {
 	 * Convert the list of jobs (that this selector contains) into a list of jobworth objects based on the
 	 * location given
 	 * 
-	 * @param the
-	 *            location the worth is based on
 	 * @return the converted list
 	 */
 	public LinkedList<JobWorth> convertList(Location startLocation, Direction startFacing) {

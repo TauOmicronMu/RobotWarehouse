@@ -1,9 +1,9 @@
 package warehouse.event;
 
 import warehouse.job.Job;
-import warehouse.util.*;
+import warehouse.util.Location;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * Event to be passed when the robot is ready to be assigned jobs
@@ -11,7 +11,7 @@ import java.util.*;
  * @author Owen
  *
  */
-public class BeginAssigningEvent {
+public class BeginAssigningEvent extends Event {
 	
 	public List<Job> jobs;
 	public List<Location> dropLocations;
@@ -20,6 +20,7 @@ public class BeginAssigningEvent {
 	 * Create a new event
 	 */
 	public BeginAssigningEvent(List<Job> jobs, List<Location> dropLocations){
+		super(null);
 		this.jobs = jobs;
 		this.dropLocations = dropLocations;
 	}
