@@ -22,7 +22,7 @@ public class TSP {
 	double lowestWeight;
 
 	public TSP() {
-		GridMap providedMap = MapUtils.createRealWarehouse();
+		GridMap providedMap = MapUtils.createMarkingWarehouseMap();
 		m = new Map(providedMap);
 	}
 
