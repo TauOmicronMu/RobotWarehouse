@@ -7,7 +7,7 @@ import warehouse.util.Robot;
  */
 public class WrongPlaceEvent extends Event {
 
-    protected WrongPlaceEvent(Robot robot) {
+    public WrongPlaceEvent(Robot robot) {
         super(robot);
     }
 }
