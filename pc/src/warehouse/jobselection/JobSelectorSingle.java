@@ -74,6 +74,7 @@ public class JobSelectorSingle extends Thread {
 		this.run = true;
 
 		JobWorth bestJob;
+		this.selectedList = new LinkedList<>();
 
 		while (run && (this.jobs.size() > 0)) {
 
