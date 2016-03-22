@@ -77,7 +77,7 @@ public class TSP {
 		LinkedList<Edge> route = new LinkedList<Edge>();
 
 		// creates the initial branch
-		Branch initial = new Branch(adjacencyMatrix, route, edgesLeft, edgesConnected, 0, 1, currentGroups);
+		Branch initial = new Branch(adjacencyMatrix, route, edgesLeft, edgesConnected, 0, 1, currentGroups, 0);
 
 		// starts the first call of the route finding algorithm
 		getRoute(initial);
@@ -189,7 +189,7 @@ public class TSP {
 		for (int i = 0; i < 2; i++) {
 			branches[i] = new Branch(currentBranch.getAdjacencyMatrix(), currentBranch.getRoute(),
 					currentBranch.getEdgesLeft(), currentBranch.getEdgesConnected(), currentNode, connectedNode,
-					currentBranch.getCurrentGroups());
+					currentBranch.getCurrentGroups(), currentBranch.getCurrentWeight());
 		}
 
 		// one branch adds a node, the other removes it
@@ -272,33 +272,33 @@ public class TSP {
 			}
 		}
 	}
-	
+
 	private LinkedList<Location> createLocationList(Location start) {
 		LinkedList<Location> path = new LinkedList<Location>();
-		
-		Location [][] positions = new Location[bestRoute.size()][2];
-		for(int x = 0; x < bestRoute.size(); x++){
+
+		Location[][] positions = new Location[bestRoute.size()][2];
+		for (int x = 0; x < bestRoute.size(); x++) {
 			positions[x][0] = bestRoute.get(x).getStart();
 			positions[x][1] = bestRoute.get(x).getEnd();
 		}
 		return addNext(start, positions, path);
 	}
-	
-	private LinkedList<Location> addNext(Location toFind, Location[][] positions, LinkedList<Location> path){
-		System.out.println("To Find: " +toFind.x +", " + toFind.y);
+
+	private LinkedList<Location> addNext(Location toFind, Location[][] positions, LinkedList<Location> path) {
+		System.out.println("To Find: " + toFind.x + ", " + toFind.y);
 		path.add(toFind);
-		for(int x = 0; x < positions.length; x++){
+		for (int x = 0; x < positions.length; x++) {
 			for (int y = 0; y < 2; y++) {
-                if (positions[x][y].x == toFind.x && positions[x][y].y == toFind.y) {
-                	
-                	Location next = new Location (positions[x][1 - y].x, positions[x][1 - y].y) ;
-                	System.out.println("next: " + next.x +", " + next.y);
-                	positions[x][0] = new Location(-1, -1);
-                	positions[x][1] = new Location(-1, -1);
-       
-                	addNext(next, positions, path);
-                }
-            }
+				if (positions[x][y].x == toFind.x && positions[x][y].y == toFind.y) {
+
+					Location next = new Location(positions[x][1 - y].x, positions[x][1 - y].y);
+					System.out.println("next: " + next.x + ", " + next.y);
+					positions[x][0] = new Location(-1, -1);
+					positions[x][1] = new Location(-1, -1);
+
+					addNext(next, positions, path);
+				}
+			}
 		}
 		return path;
 	}

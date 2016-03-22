@@ -14,6 +14,7 @@ public class Branch {
 	private int connectedNode;
 	private LinkedList<LinkedList<Edge>> currentGroups;
 	private double lowerBound;
+	private int currentWeight;
 
 	/**
 	 * Constructor which creates a branch given the branch information
@@ -34,7 +35,7 @@ public class Branch {
 	 *            the list of groups for this branch
 	 */
 	public Branch(double[][] adjacencyMatrix, LinkedList<Edge> route, int[] edgesLeft, int[] edgesConnected,
-			int currentNode, int connectedNode, LinkedList<LinkedList<Edge>> currentGroups) {
+			int currentNode, int connectedNode, LinkedList<LinkedList<Edge>> currentGroups, int currentWeight) {
 		setAdjacencyMatrix(adjacencyMatrix);
 		setRoute(route);
 		setEdgesLeft(edgesLeft);
@@ -42,6 +43,7 @@ public class Branch {
 		setCurrentNode(currentNode);
 		setConnectedNode(connectedNode);
 		setCurrentGroups(currentGroups);
+		setCurrentWeight(currentWeight);
 	}
 
 	/**
@@ -567,5 +569,39 @@ public class Branch {
 			System.out.println();
 		}
 		System.out.println();
+	}
+
+	/**
+	 * @return the currentWeight
+	 */
+	public int getCurrentWeight() {
+		return currentWeight;
+	}
+
+	/**
+	 * @param currentWeight
+	 *            the currentWeight to set
+	 */
+	private void setCurrentWeight(int currentWeight) {
+		this.currentWeight = currentWeight;
+	}
+
+	/**
+	 * Adds a weight to current the current weight and returns a boolean
+	 * representing whether the robot needs to return to the drop off location
+	 * before continuing
+	 * 
+	 * @param weightToAdd
+	 *            the weight to add
+	 * @return boolean representing whether the robot must go to the drop
+	 *         location
+	 */
+	public boolean addWeight(int weightToAdd) {
+		currentWeight += weightToAdd;
+		if (currentWeight >= 50) {
+			currentWeight = currentWeight - 50;
+			return true;
+		}
+		return false;
 	}
 }

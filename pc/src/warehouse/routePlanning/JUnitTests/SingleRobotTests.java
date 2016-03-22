@@ -54,33 +54,48 @@ public class SingleRobotTests {
 		// These tests should all pass at the moment
 		Optional<Route> o;
 		Route returnedRoute;
+		LinkedList<Location> toVisit = new LinkedList<Location>();
 
 		// first test
-		o = s.getRoute(new Location(0, 0), new Location(0, 7), Direction.NORTH);
+		toVisit.add(new Location(0, 0));
+		toVisit.add(new Location(0, 7));
+		o = s.getRoute(toVisit, Direction.NORTH);
 		assertEquals(o.isPresent(), true);
 		returnedRoute = o.get();
 		assertEquals(returnedRoute.totalDistance, 7);
 
 		// second test
-		o = s.getRoute(new Location(0, 0), new Location(11, 0), Direction.NORTH);
+		toVisit.clear();
+		toVisit.add(new Location(0,0));
+		toVisit.add(new Location (11,0));
+		o = s.getRoute(toVisit, Direction.NORTH);
 		assertEquals(o.isPresent(), true);
 		returnedRoute = o.get();
 		assertEquals(returnedRoute.totalDistance, 12);
 
 		// third test
-		o = s.getRoute(new Location(0, 0), new Location(2, 3), Direction.NORTH);
+		toVisit.clear();
+		toVisit.add(new Location(0,0));
+		toVisit.add(new Location (2,3));
+		o = s.getRoute(toVisit, Direction.NORTH);
 		assertEquals(o.isPresent(), true);
 		returnedRoute = o.get();
 		assertEquals(returnedRoute.totalDistance, 7);
 
 		// fourth test
-		o = s.getRoute(new Location(2, 3), new Location(0, 0), Direction.NORTH);
+		toVisit.clear();
+		toVisit.add(new Location(2,3));
+		toVisit.add(new Location (0,0));
+		o = s.getRoute(toVisit, Direction.NORTH);
 		assertEquals(o.isPresent(), true);
 		returnedRoute = o.get();
 		assertEquals(returnedRoute.totalDistance, 8);
 
 		// fifth test
-		o = s.getRoute(new Location(3, 5), new Location(4, 0), Direction.NORTH);
+		toVisit.clear();
+		toVisit.add(new Location(3,5));
+		toVisit.add(new Location (4,0));
+		o = s.getRoute(toVisit, Direction.NORTH);
 		assertEquals(o.isPresent(), true);
 		returnedRoute = o.get();
 		assertEquals(returnedRoute.totalDistance, 9);
@@ -92,27 +107,39 @@ public class SingleRobotTests {
 		// These tests should all pass at the moment
 		Optional<Route> o;
 		Route returnedRoute;
+		LinkedList<Location> toVisit = new LinkedList<Location>();
 
 		// first test
-		o = s.getRoute(new Location(0, 3), new Location(5, 5), Direction.NORTH);
+		toVisit.add(new Location(0,3));
+		toVisit.add(new Location(5,5));
+		o = s.getRoute(toVisit, Direction.NORTH);
 		assertEquals(o.isPresent(), true);
 		returnedRoute = o.get();
 		assertEquals(returnedRoute.totalDistance, 11);
 
 		// second test
-		o = s.getRoute(new Location(2, 3), new Location(8, 6), Direction.SOUTH);
+		toVisit.clear();
+		toVisit.add(new Location(2,3));
+		toVisit.add(new Location(8,6));
+		o = s.getRoute(toVisit, Direction.SOUTH);
 		assertEquals(o.isPresent(), true);
 		returnedRoute = o.get();
 		assertEquals(returnedRoute.totalDistance, 12);
 
 		// third test
-		o = s.getRoute(new Location(8, 6), new Location(3, 3), Direction.EAST);
+		toVisit.clear();
+		toVisit.add(new Location(8,6));
+		toVisit.add(new Location(3,3));
+		o = s.getRoute(toVisit, Direction.EAST);
 		assertEquals(o.isPresent(), true);
 		returnedRoute = o.get();
 		assertEquals(returnedRoute.totalDistance, 11);
 
 		// fourth test
-		o = s.getRoute(new Location(0, 1), new Location(5, 7), Direction.WEST);
+		toVisit.clear();
+		toVisit.add(new Location(0,1));
+		toVisit.add(new Location(5,7));
+		o = s.getRoute(toVisit, Direction.WEST);
 		assertEquals(o.isPresent(), true);
 		returnedRoute = o.get();
 		assertEquals(returnedRoute.totalDistance, 13);
@@ -126,24 +153,39 @@ public class SingleRobotTests {
 
 		// tests trying to get to location inside obstacle
 		Optional<Route> o;
+		LinkedList<Location> toVisit = new LinkedList<Location>();
 
-		o = s.getRoute(new Location(0, 0), new Location(1, 1), Direction.NORTH);
+		toVisit.add(new Location(0,0));
+		toVisit.add(new Location(1,1));
+		o = s.getRoute(toVisit, Direction.NORTH);
 		assertEquals(o.isPresent(), false);
 
 		// tests trying to get to location outside of map
-		o = s.getRoute(new Location(0, 0), new Location(0, -1), Direction.NORTH);
+		toVisit.clear();
+		toVisit.add(new Location(0,0));
+		toVisit.add(new Location(0,-1));
+		o = s.getRoute(toVisit, Direction.NORTH);
 		assertEquals(o.isPresent(), false);
 
 		// tests starting outside of map
-		o = s.getRoute(new Location(0, -2), new Location(0, 0), Direction.NORTH);
+		toVisit.clear();
+		toVisit.add(new Location(0,-2));
+		toVisit.add(new Location(0,0));
+		o = s.getRoute(toVisit, Direction.NORTH);
 		assertEquals(o.isPresent(), false);
 
 		// tests starting outside of map by 1 space
-		o = s.getRoute(new Location(0, -1), new Location(0, 0), Direction.NORTH);
+		toVisit.clear();
+		toVisit.add(new Location(0,-1));
+		toVisit.add(new Location(0,0));
+		o = s.getRoute(toVisit, Direction.NORTH);
 		assertEquals(o.isPresent(), false);
 
 		// tests starting inside obstacle
-		o = s.getRoute(new Location(1, 1), new Location(0, 0), Direction.NORTH);
+		toVisit.clear();
+		toVisit.add(new Location(1,1));
+		toVisit.add(new Location(0,0));
+		o = s.getRoute(toVisit, Direction.NORTH);
 		assertEquals(o.isPresent(), false);
 
 	}
