@@ -8,7 +8,7 @@ import warehouse.util.Robot;
  */
 public class PickupReachedEvent extends Event {
     public final ItemPickup pickup;
-    public PickupReachedEvent(ItemPickup pickup, Robot robot) {
+    protected PickupReachedEvent(ItemPickup pickup, Robot robot) {
         super(robot);
         this.pickup = pickup;
     }
