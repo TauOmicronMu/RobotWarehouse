@@ -30,6 +30,8 @@ public class CancellationActualTester {
         assert(trainingSet.length == 5);
         assert(testSet.length == 5);
 
+        //TRAINING SET
+
         // Parse locations
         HashMap<String, Location> itemLocations = new HashMap<>();
         parseFile(trainingSet[0], values -> itemLocations.put(values[2], new Location(Integer.parseInt(values[0]), Integer.parseInt(values[1]))));
@@ -64,6 +66,37 @@ public class CancellationActualTester {
         List<Job> trainingJobsList = new LinkedList<>();
         List<Job> knownJobsList = new LinkedList<>();
         List<Job> jobList = jobs.values().stream().collect(Collectors.toList());
+
+        //TEST SET
+
+        // Parse locations
+        HashMap<String, Location> itemLocations2 = new HashMap<>();
+        parseFile(trainingSet[0], values -> itemLocations.put(values[2], new Location(Integer.parseInt(values[0]), Integer.parseInt(values[1]))));
+
+        // Parse items file
+        HashMap<String, ItemPickup> itemPickups2 = new HashMap<>();
+        parseFile(trainingSet[1], values -> itemPickups.put(values[0], new ItemPickup(values[0], itemLocations.get(values[0]), 0, Double.parseDouble(values[1]), Double.parseDouble(values[2]))));
+
+        // Parse jobs file
+        HashMap<String, Job> jobs2 = new HashMap<>();
+        parseFile(trainingSet[2], values -> {
+            List<ItemPickup> jobPickups = new LinkedList<>();
+            for(int i = 1; i < values.length; i += 2) {
+                ItemPickup p = (ItemPickup) itemPickups.get(values[i]).clone();
+                p.itemCount = Integer.parseInt(values[i+1]);
+                jobPickups.add(p);
+            }
+            jobs.put(values[0], new Job(null, jobPickups, values[0]));
+        });
+
+        // Parse cancellations file (I'm not sure of the actual file name)
+        parseFile(trainingSet[3], values -> jobs.get(values[0]).cancelledInTrainingSet = values[1].equals("0") ? false : true);
+
+        List<Location> dropLocations2 = new ArrayList<>();
+        parseFile(trainingSet[4], values -> {
+            if(values.length < 2) return;
+            dropLocations.add(new Location(Integer.parseInt(values[0]), Integer.parseInt(values[1])));
+        });
 
         for(int i = 0; i < (int)(jobs.size()*percentage); i++){
 
