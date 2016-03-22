@@ -28,7 +28,7 @@ public class CancellationMachineTester {
                 s += " '" + string + "' ";
             }
 
-            System.out.println("\nFor set: " + s + "\nProbability machine is correct = " + testMachine(fileNameArray, percentage));
+            System.out.println("\nFor set: " + s + "\nProbability machine is correct on average = " + testMachine(fileNameArray, percentage));
         }
     }
 
@@ -71,6 +71,11 @@ public class CancellationMachineTester {
         List<Job> knownJobsList = new LinkedList<>();
         List<Job> jobList = jobs.values().stream().collect(Collectors.toList());
 
+        for(int i = 0; i < jobs.size(); i++){
+
+            assert(false);
+        }
+
         for(int i = 0; i < (int)(jobs.size()*percentage); i++){
 
             trainingJobsList.add(jobList.get(i));
@@ -104,11 +109,11 @@ public class CancellationMachineTester {
             }
         }
 
-        System.out.println("Total Jobs:         " + jobList.size());
-        System.out.println("Training with:      " + trainingJobsList.size());
-        System.out.println("Checking with:      " + knownJobsList.size());
-        System.out.println("Number Cancelled:   " + numberJobsCancelled);
-        System.out.println("Number Predicted:   " + percentageCorrect);
+//        System.out.println("Total Jobs:         " + jobList.size());
+//        System.out.println("Training with:      " + trainingJobsList.size());
+//        System.out.println("Checking with:      " + knownJobsList.size());
+//        System.out.println("Number Cancelled:   " + numberJobsCancelled);
+//        System.out.println("Number Predicted:   " + percentageCorrect);
         return (percentageCorrect/numberJobsCancelled)*100;
     }
 
