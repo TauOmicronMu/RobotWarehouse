@@ -9,7 +9,6 @@ import warehouse.job.Job;
 import warehouse.jobselection.cancellation.Backup;
 import warehouse.jobselection.cancellation.CancellationMachine;
 import warehouse.jobselection.cancellation.NaiveBayes;
-import warehouse.jobselection.test.RobotGotLostEvent;
 import warehouse.util.*;
 
 import java.util.LinkedList;
@@ -292,6 +291,8 @@ public class JobAssignerMultiple extends Thread {
 	 */
 	private AssignedJob assign(Robot robot, JobWorth jobWorth) {
 
+		Route improvedRoute = null;
+
 		//Route improvedRoute = robot.equals(this.robot1) ? TODO.getImprovedRoute(robot, jobWorth.getJob(),
 		// 													this.currentJob2, this.currentJob3) :
 		// 					    (robot.equals(this.robot2) ? TODO.getImprovedRoute(robot, jobWorth.getJob(),
@@ -383,7 +384,7 @@ public class JobAssignerMultiple extends Thread {
 	 *            the job cancel event
 	 */
 	@Subscriber
-	public void onJobCancelllationEvent(JobCancellationEvent e) {
+	public void onJobCancellationEvent(JobCancellationEvent e) {
 
 		if(e.robot.equals(this.robot1)) {
 

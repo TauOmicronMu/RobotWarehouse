@@ -1,6 +1,7 @@
 package warehouse.jobselection;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import warehouse.event.BeginAssigningEvent;
 import warehouse.event.JobAssignedEvent;
@@ -54,11 +55,11 @@ public class JobAssignerSingle extends Thread {
 	 * @param jobs
 	 *            the list of jobs
 	 */
-	public JobAssignerSingle(Robot robot, LinkedList<Job> jobs) {
+	public JobAssignerSingle(Robot robot, List<Job> jobs) {
 
 		// Set the variables and create the selector
 		this.robot = robot;
-		this.jobs = jobs;
+		this.jobs = new LinkedList<>(jobs);
 		this.readyToStart = false;
 		this.jobComplete = false;
 		this.jobCancelled = false;
@@ -116,6 +117,8 @@ public class JobAssignerSingle extends Thread {
 						// If the robot is not going to start its next job from
 						// the drop location as it got lost or the job was cancelled
 						if (this.robotGotLost || this.jobCancelled) {
+
+							System.out.println("\nRobot got lost");
 
 							this.selector = new JobSelectorSingle(this.robot, this.jobs, this.cancellationMachine);
 							this.robotGotLost = false;

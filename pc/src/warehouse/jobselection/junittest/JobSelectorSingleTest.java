@@ -1,4 +1,4 @@
-package warehouse.jobselection.test;
+package warehouse.jobselection.junittest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
