@@ -51,8 +51,9 @@ public class JobInput {
 
 		// Convert the job map to a list
 		List<Job> jobList = jobs.values().stream().collect(Collectors.toList());
-        System.out.println(jobList);
-        EventDispatcher.onEvent2(new BeginAssigningEvent(jobList, dropLocations));
+		Location lastDropLocation = dropLocations.get(dropLocations.size() - 1);
+        jobList.forEach(job -> job.dropLocation = lastDropLocation);
+        EventDispatcher.onEvent2(new BeginAssigningEvent(jobList, new LinkedList<>()));
 	}
 
 	public static void parseFile(String filePath, Consumer<String[]> consumer) throws FileNotFoundException {
