@@ -58,6 +58,8 @@ public class JobAssignerSingle extends Thread {
 	 */
 	public JobAssignerSingle(Robot robot) {
 
+		EventDispatcher.subscribe2(this);
+
 		// Set the variables and create the selector
 		this.robot = robot;
 		this.readyToStart = false;
@@ -97,8 +99,6 @@ public class JobAssignerSingle extends Thread {
 
 		this.run = true;
 
-		EventDispatcher.subscribe2(this);
-
 		JobWorth jobToBeAssigned;
 
 		System.out.println("\nWaiting for BeginAssigningEvent");
@@ -125,9 +125,6 @@ public class JobAssignerSingle extends Thread {
 					// If the robot has completed a job and now has no assigned
 					// job, give it a new one
 					if (this.jobComplete || this.jobCancelled) {
-
-						System.out.println("\n-------------------------------");
-						System.out.println("\nJob Complete, assigning new job");
 
 						// If the robot is not going to start its next job from
 						// the drop location as it got lost or the job was cancelled
@@ -162,7 +159,7 @@ public class JobAssignerSingle extends Thread {
 							}
 
 							System.out.println("\nGot Converted List");
-							
+
 							this.assignJobs = this.selector.getSelectedList();
 
 							// Get the next job to be assigned
@@ -175,6 +172,7 @@ public class JobAssignerSingle extends Thread {
 
 							// Create a new assigned job and set it as current
 							this.currentJob = this.assign(this.robot, jobToBeAssigned);
+							EventDispatcher.onEvent2(new HasCurrentJobEvent());
 
 							System.out.println("\nThe current job is: " + this.currentJob);
 
@@ -190,7 +188,7 @@ public class JobAssignerSingle extends Thread {
 							System.out.println("\nWaiting for JobCompleteEvent");
 						}
 
-						System.out.println("\nWaiting for ConvertedListCompleteEvent");
+						System.out.println("Waiting for ConvertedListCompleteEvent...");
 
 						try {
 							Thread.sleep(100);
@@ -277,6 +275,9 @@ public class JobAssignerSingle extends Thread {
 	 */
 	@Subscriber
 	public void onJobCompleteevent(JobCompleteEvent e) {
+
+		System.out.println("\n-------------------------------");
+		System.out.println("\nJob Complete, assigning new job");
 
 		this.jobComplete = true;
 	}

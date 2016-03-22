@@ -6,6 +6,7 @@ import warehouse.event.BeginAssigningEvent;
 import warehouse.event.Event;
 import warehouse.event.JobCompleteEvent;
 import warehouse.job.Job;
+import warehouse.jobselection.HasCurrentJobEvent;
 import warehouse.jobselection.JobAssignerSingle;
 import warehouse.util.*;
 import warehouse.util.Location;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 public class SingleTest  extends Thread{
 
     private ArrayList<List<Job>> jobSet;
+    private boolean hasCurrentJob;
 
     public static void main(String[] args) throws IOException{
 
@@ -114,39 +116,49 @@ public class SingleTest  extends Thread{
     public SingleTest(ArrayList<List<Job>> jobSet){
 
         this.jobSet = jobSet;
+
+        EventDispatcher.subscribe2(this);
+        
         this.start();
     }
 
     @Override
     public void run(){
 
-        for(List<Job> jobs : this.jobSet){
+        //for(List<Job> jobs : this.jobSet){
+
+            List<Job> jobs = this.jobSet.get(0);
 
             Robot robot = new Robot("testRobot", new Location(0, 0), Direction.NORTH);
-
-            EventDispatcher.subscribe2(this);
 
             JobAssignerSingle assigner = new JobAssignerSingle(robot);
 
             EventDispatcher.onEvent2(new BeginAssigningEvent(jobs, new LinkedList<Location>()));
 
-            for(int i = 0; i < 10; i++) {
-
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    // Sleep was interrupted for some reason
-                    e.printStackTrace();
-                }
-
-                assert(assigner.getCurrentJob() != null);
-                EventDispatcher.onEvent2(new JobCompleteEvent(assigner.getCurrentJob()));
-            }
-
-            assigner.stopAssigning();
-        }
+//            for(int i = 0; i < 10; i++) {
+//
+//                try {
+//                    Thread.sleep(5000);
+//                } catch (InterruptedException e) {
+//                    // Sleep was interrupted for some reason
+//                    e.printStackTrace();
+//                }
+//
+//                assert(this.hasCurrentJob == true);
+//                assert(assigner.getCurrentJob() != null);
+//                EventDispatcher.onEvent2(new JobCompleteEvent(assigner.getCurrentJob()));
+//            }
+//
+//            assigner.stopAssigning();
+        //}
     }
 
+    @Subscriber
+    public void onHasCurrentJobEvent(HasCurrentJobEvent e){
+        
+        this.hasCurrentJob = true;
+    }
+    
     public static void parseFile(String filePath, Consumer<String[]> consumer) throws FileNotFoundException {
         Scanner in = new Scanner(new File(filePath));
         while(in.hasNextLine()) consumer.accept(in.nextLine().trim().split(","));
