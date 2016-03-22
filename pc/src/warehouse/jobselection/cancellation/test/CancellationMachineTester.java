@@ -91,7 +91,7 @@ public class CancellationMachineTester {
 
             double generatedProbability = testMachine.getProbability(job);
 
-            System.out.println("p = " + generatedProbability + " cancelled: " + job.cancelledInTrainingSet);
+            //System.out.println("p = " + generatedProbability + " cancelled: " + job.cancelledInTrainingSet);
 
             if(job.cancelledInTrainingSet){
 
@@ -108,8 +108,7 @@ public class CancellationMachineTester {
         System.out.println("Training with:      " + trainingJobsList.size());
         System.out.println("Checking with:      " + knownJobsList.size());
         System.out.println("Number Cancelled:   " + numberJobsCancelled);
-        System.out.println("Percentage correct: " + percentageCorrect);
-        System.out.println("Number correct:     " + numberJobsCancelled*percentageCorrect);
+        System.out.println("Number Predicted:   " + percentageCorrect);
         return (percentageCorrect/numberJobsCancelled)*100;
     }
 

@@ -49,6 +49,8 @@ public class JobSelectorSingle extends Thread {
 	 */
 	public JobSelectorSingle(Robot robot, LinkedList<Job> jobs, CancellationMachine cancellationMachine) {
 
+		EventDispatcher.subscribe2(this);
+
 		// Set the fields
 		this.robot = robot;
 		this.robotStartLocation = this.robot.position;
@@ -77,6 +79,12 @@ public class JobSelectorSingle extends Thread {
 
 			// convert it into a list of jobworths
 			this.convertedList = this.convertList(this.robotStartLocation, this.robotFacing);
+
+			System.out.println("\nConverted list, sending event...");
+
+			ConvertedListCompleteEvent e = new ConvertedListCompleteEvent();
+
+			EventDispatcher.onEvent2(e);
 
 			// get the best one
 			bestJob = this.selectBestJob(this.convertedList);
@@ -116,8 +124,6 @@ public class JobSelectorSingle extends Thread {
 			
 			jobworths.add(jobworth);
 		}
-
-		EventDispatcher.onEvent2(new ConvertedListCompleteEvent());
 
 		return jobworths;
 	}

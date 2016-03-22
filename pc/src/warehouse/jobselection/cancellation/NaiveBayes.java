@@ -97,14 +97,14 @@ public class NaiveBayes implements CancellationMachine {
 
 		// total reward
 		ArrayList<DPair> totalRewardList1 = new ArrayList<DPair>();
-		totalRewardList1.add(new DPair(RewardRange.ZeroToForty, 0));
-		totalRewardList1.add(new DPair(RewardRange.FortyOneToEighty, 0));
-		totalRewardList1.add(new DPair(RewardRange.EightyOnePlus, 0));
+		totalRewardList1.add(new DPair(RewardRange.ZeroToThirty, 0));
+		totalRewardList1.add(new DPair(RewardRange.ThirtyOneToSixty, 0));
+		totalRewardList1.add(new DPair(RewardRange.SixtyOnePlus, 0));
 
 		ArrayList<DPair> totalRewardList2 = new ArrayList<DPair>();
-		totalRewardList2.add(new DPair(RewardRange.ZeroToForty, 0));
-		totalRewardList2.add(new DPair(RewardRange.FortyOneToEighty, 0));
-		totalRewardList2.add(new DPair(RewardRange.EightyOnePlus, 0));
+		totalRewardList2.add(new DPair(RewardRange.ZeroToThirty, 0));
+		totalRewardList2.add(new DPair(RewardRange.ThirtyOneToSixty, 0));
+		totalRewardList2.add(new DPair(RewardRange.SixtyOnePlus, 0));
 
 		this.TotalRewardGivenCancelled = new Distribution(totalRewardList1, 0);
 		this.TotalRewardGivenNotCancelled = new Distribution(totalRewardList2, 0);
@@ -113,14 +113,14 @@ public class NaiveBayes implements CancellationMachine {
 
 		// total weight
 		ArrayList<DPair> totalWeightList1 = new ArrayList<DPair>();
-		totalWeightList1.add(new DPair(WeightRange.ZeroToForty, 0));
-		totalWeightList1.add(new DPair(WeightRange.FortyOneToEighty, 0));
-		totalWeightList1.add(new DPair(WeightRange.EightyOnePlus, 0));
+		totalWeightList1.add(new DPair(WeightRange.ZeroToThirty, 0));
+		totalWeightList1.add(new DPair(WeightRange.ThirtyOneToSixty, 0));
+		totalWeightList1.add(new DPair(WeightRange.SixtyOnePlus, 0));
 
 		ArrayList<DPair> totalWeightList2 = new ArrayList<DPair>();
-		totalWeightList2.add(new DPair(WeightRange.ZeroToForty, 0));
-		totalWeightList2.add(new DPair(WeightRange.FortyOneToEighty, 0));
-		totalWeightList2.add(new DPair(WeightRange.EightyOnePlus, 0));
+		totalWeightList2.add(new DPair(WeightRange.ZeroToThirty, 0));
+		totalWeightList2.add(new DPair(WeightRange.ThirtyOneToSixty, 0));
+		totalWeightList2.add(new DPair(WeightRange.SixtyOnePlus, 0));
 
 		this.TotalWeightGivenCancelled = new Distribution(totalWeightList1, 0);
 		this.TotalWeightGivenNotCancelled = new Distribution(totalWeightList2, 0);
@@ -278,15 +278,15 @@ public class NaiveBayes implements CancellationMachine {
 		// cancellation machine anyway)
 		RewardRange totalReward = RewardRange.Error;
 
-		if ((0 <= doubleReward) && (doubleReward <= 40)) {
+		if ((0 <= doubleReward) && (doubleReward <= 30)) {
 
-			totalReward = RewardRange.ZeroToForty;
-		} else if ((40 < doubleReward) && (doubleReward <= 80)) {
+			totalReward = RewardRange.ZeroToThirty;
+		} else if ((30 < doubleReward) && (doubleReward <= 60)) {
 
-			totalReward = RewardRange.FortyOneToEighty;
-		} else if (80 < doubleReward) {
+			totalReward = RewardRange.ThirtyOneToSixty;
+		} else if (60 < doubleReward) {
 
-			totalReward = RewardRange.EightyOnePlus;
+			totalReward = RewardRange.SixtyOnePlus;
 		}
 
 		return totalReward;
@@ -305,15 +305,15 @@ public class NaiveBayes implements CancellationMachine {
 		// cancellation machine anyway)
 		WeightRange totalWeight = WeightRange.Error;
 
-		if ((0 <= doubleWeight) && (doubleWeight <= 40)) {
+		if ((0 <= doubleWeight) && (doubleWeight <= 30)) {
 
-			totalWeight = WeightRange.ZeroToForty;
-		} else if ((40 < doubleWeight) && (doubleWeight <= 80)) {
+			totalWeight = WeightRange.ZeroToThirty;
+		} else if ((30 < doubleWeight) && (doubleWeight <= 60)) {
 
-			totalWeight = WeightRange.FortyOneToEighty;
-		} else if (80 < doubleWeight) {
+			totalWeight = WeightRange.ThirtyOneToSixty;
+		} else if (60 < doubleWeight) {
 
-			totalWeight = WeightRange.EightyOnePlus;
+			totalWeight = WeightRange.SixtyOnePlus;
 		}
 
 		return totalWeight;
