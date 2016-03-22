@@ -31,7 +31,7 @@ public class SingleTest  extends Thread{
         ArrayList<List<Job>> jobSet = new ArrayList<>();
         ArrayList<String[]> fileSet = new ArrayList<>();
 
-        String filePath = "C:\\Users\\Aidan\\workspace\\RobotWarehouse\\out\\production\\RobotWarehouse\\warehouse\\jobselection\\cancellation\\test";
+        String filePath = "C:\\Users\\Aidan\\workspace\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test";
 
         String[] files1 = new String[5];
         files1[0] = filePath + "\\1\\locations.csv";
@@ -192,7 +192,10 @@ public class SingleTest  extends Thread{
     
     public static void parseFile(String filePath, Consumer<String[]> consumer) throws FileNotFoundException {
         Scanner in = new Scanner(new File(filePath));
-        while(in.hasNextLine()) consumer.accept(in.nextLine().trim().split(","));
+        while(in.hasNextLine()){
+            String line = in.nextLine();
+            if(!line.isEmpty()) consumer.accept(line.trim().split(","));
+        }
     }
 
     public static void print(Object o){
