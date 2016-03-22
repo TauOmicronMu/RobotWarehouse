@@ -1,6 +1,5 @@
 package warehouse.event;
 
-<<<<<<< HEAD
 /**
  * Event called when a robot is in the wrong place
  * @author txs
@@ -9,7 +8,6 @@ package warehouse.event;
 public class WrongPlaceEvent
 {
 
-=======
 import warehouse.util.Robot;
 
 /**
@@ -20,5 +18,4 @@ public class WrongPlaceEvent extends Event {
     public WrongPlaceEvent(Robot robot) {
         super(robot);
     }
->>>>>>> job-selection
 }

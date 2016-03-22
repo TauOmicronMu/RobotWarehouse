@@ -73,7 +73,7 @@ public class PickupJob
 	{
 		updateScreen();
 
-		while (jobRun.get() && itemNumber > 0)
+		while (jobRun && itemNumber > 0)
 		{
 			if (enterPressed)
 			{

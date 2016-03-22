@@ -2,6 +2,7 @@ package warehouse.robot_interface;
 
 import lejos.nxt.Button;
 import lejos.nxt.LCD;
+import warehouse.robot_interface.Communication;
 
 /**
  * The cancellation menu
@@ -48,11 +49,11 @@ public class CancelMenu
 				if (selected == 0)
 				{
 					comm.jobCancelled();
-					jobRun.set(false);
+					jobRun = false;
 				} else if (selected == 1)
 				{
 					comm.wrongPlace();
-					jobRun.set(false);
+					jobRun = false;
 				}
 				running = false;
 			}
