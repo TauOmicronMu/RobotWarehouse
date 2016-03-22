@@ -69,7 +69,7 @@ public class JobAssignerSingle extends Thread {
 		try{
 
 			this.cancellationMachine = new NaiveBayes(trainingJobs);
-			System.out.println("\nMade a Naive Bayes!");
+			System.out.println("\nASSIGNER THREAD: Made a Naive Bayes!");
 		}
 		catch(NullPointerException e){
 
@@ -90,23 +90,23 @@ public class JobAssignerSingle extends Thread {
 	@Override
 	public void run() {
 
-		System.out.println("\nStarting Single Robot Assigner");
+		System.out.println("\nASSIGNER THREAD: Starting Single Robot Assigner");
 
 		this.run = true;
 
 		JobWorth jobToBeAssigned;
 
-		System.out.println("\nWaiting for BeginAssigningEvent");
+		System.out.println("\nASSIGNER THREAD: Waiting for BeginAssigningEvent");
 
 		while (this.run) {
 
 			if (this.readyToStart) {
 
-				System.out.println("\nReceived BeginAssigningEvent, sorting jobs");
+				System.out.println("\nASSIGNER THREAD: Received BeginAssigningEvent, sorting jobs");
 
 				this.selector = new JobSelectorSingle(this.robot, this.jobs, this.cancellationMachine);
 
-				System.out.println("\nCreated Single Robot Selector, assigning jobs");
+				System.out.println("\nASSIGNER THREAD: Created Single Robot Selector, assigning jobs");
 
 				try {
 					Thread.sleep(100);
@@ -121,19 +121,19 @@ public class JobAssignerSingle extends Thread {
 					// job, give it a new one
 					if (this.jobComplete || this.jobCancelled) {
 
-						System.out.println("\nJob was completed, assigning another");
+						System.out.println("\nASSIGNER THREAD: Job was completed, assigning another");
 
 						// If the robot is not going to start its next job from
 						// the drop location as it got lost or the job was cancelled
 						if (this.robotGotLost || this.jobCancelled) {
 
-							System.out.println("\nRobot got lost or job was cancelled");
+							System.out.println("\nASSIGNER THREAD: Robot got lost or job was cancelled");
 
 							this.selector = new JobSelectorSingle(this.robot, this.jobs, this.cancellationMachine);
 
 							this.gotList = false;
 
-							System.out.println("\nCreated new Single Robot Selector, assigning jobs");
+							System.out.println("\nASSIGNER THREAD: Created new Single Robot Selector, assigning jobs");
 
 							this.robotGotLost = false;
 							this.jobCancelled = false;
@@ -155,14 +155,14 @@ public class JobAssignerSingle extends Thread {
 								e.printStackTrace();
 							}
 
-							System.out.println("\nGot Converted List");
+							System.out.println("\nASSIGNER THREAD: Got Converted List");
 
 							this.assignJobs = this.selector.getSelectedList();
 
 							// Get the next job to be assigned
 							jobToBeAssigned = this.assignJobs.removeFirst();
 
-							System.out.println("\nThe chosen best job is: " + jobToBeAssigned);
+							System.out.println("\nASSIGNER THREAD: The chosen best job is: " + jobToBeAssigned);
 
 							// Remove it from the list of jobs
 							this.jobs.remove(jobToBeAssigned.getJob());
@@ -171,18 +171,18 @@ public class JobAssignerSingle extends Thread {
 							this.currentJob = this.assign(this.robot, jobToBeAssigned);
 							EventDispatcher.onEvent2(new HasCurrentJobEvent());
 
-							System.out.println("\nThe current job is: " + this.currentJob);
+							System.out.println("\nASSIGNER THREAD: The current job is: " + this.currentJob);
 
 							// Tell subscribers
 							JobAssignedEvent e = new JobAssignedEvent(this.currentJob);
 
-							System.out.println("\nDispatched Event");
+							System.out.println("\nASSIGNER THREAD: Dispatched JobAssignedEvent");
 
 							EventDispatcher.onEvent2(e);
 
 							this.jobComplete = false;
 
-							System.out.println("\nWaiting for JobCompleteEvent");
+							System.out.println("\nASSIGNER THREAD: Waiting for JobCompleteEvent");
 						}
 
 						try {
@@ -210,7 +210,7 @@ public class JobAssignerSingle extends Thread {
 
 		// If it reaches this point,
 		// it has been told to stop.
-		System.out.println("\nReached end of job list, or was told to stop - Finished");
+		System.out.println("\nASSIGNER THREAD: Reached end of job list, or was told to stop - Finished");
 	}
 
 	/**
@@ -275,8 +275,8 @@ public class JobAssignerSingle extends Thread {
 	@Subscriber
 	public void onJobCompleteevent(JobCompleteEvent e) {
 
-		System.out.println("\n-------------------------------");
-		System.out.println("\nJob Complete, assigning new job");
+		System.out.println("\nASSIGNER THREAD: -------------------------------");
+		System.out.println("\nASSIGNER THREAD: Job Complete, assigning new job");
 
 		this.jobComplete = true;
 	}
