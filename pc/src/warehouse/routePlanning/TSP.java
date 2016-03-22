@@ -16,14 +16,14 @@ public class TSP {
 	private Search s;
 	private int numberOfLocations;
 	private ArrayList<Location> allLocations;
+	private Map m;
 	LinkedList<Edge> bestRoute = new LinkedList<Edge>();
 	LinkedList<Location> finalRoute = new LinkedList<Location>();
 	double lowestWeight;
 
 	public TSP() {
 		GridMap providedMap = MapUtils.createRealWarehouse();
-		Map m = new Map(providedMap);
-		this.s = new Search(m);
+		m = new Map(providedMap);
 	}
 
 	/**
@@ -42,6 +42,7 @@ public class TSP {
 	 * @return optional type which should contain the optimal route
 	 */
 	public Optional<Route> getShortestRoute(Job job, Location start, Direction facing) {
+		this.s = new Search(m, job.dropLocation);
 		// builds full list of locations
 		allLocations = makeListLocations(job, start);
 
@@ -91,7 +92,7 @@ public class TSP {
 		}
 		bestRoute.remove(pos);
 
-		LinkedList<Location> path = createLocationList(start);
+		LinkedList<Location> path = createLocationList(start, job);
 
 		return s.getRoute(path, facing);
 	}
@@ -133,6 +134,8 @@ public class TSP {
 		}
 		return adjacencyMatrix;
 	}
+	
+	
 
 	/**
 	 * Places initial values into the adjacency matrix
@@ -164,7 +167,6 @@ public class TSP {
 						adjacencyMatrix[Node1][Node2] = foundDistance.get();
 						adjacencyMatrix[Node2][Node1] = foundDistance.get();
 					} else {
-						System.err.println("Could not find a route in adjMatrix between: " + Node1 + " and " + Node2);
 					}
 				}
 			}
@@ -273,7 +275,7 @@ public class TSP {
 		}
 	}
 
-	private LinkedList<Location> createLocationList(Location start) {
+	private LinkedList<Location> createLocationList(Location start, Job j) {
 		LinkedList<Location> path = new LinkedList<Location>();
 
 		Location[][] positions = new Location[bestRoute.size()][2];
@@ -281,22 +283,36 @@ public class TSP {
 			positions[x][0] = bestRoute.get(x).getStart();
 			positions[x][1] = bestRoute.get(x).getEnd();
 		}
-		return addNext(start, positions, path);
+		
+		path = addNext(start, positions, path, j);
+		
+		LinkedList<Location> finalPath = new LinkedList<Location>();
+		int totalWeight = 0;
+		for(Location l: path){
+			for(ItemPickup item: j.pickups){
+				if(item.location.x == l.x && item.location.y == l.y){
+					totalWeight += item.weight;
+				}
+			}
+			if(totalWeight >= 50){
+				finalPath.add(j.dropLocation);
+			}
+			finalPath.add(l);
+		}
+		return finalPath;
 	}
 
-	private LinkedList<Location> addNext(Location toFind, Location[][] positions, LinkedList<Location> path) {
-		System.out.println("To Find: " + toFind.x + ", " + toFind.y);
+	private LinkedList<Location> addNext(Location toFind, Location[][] positions, LinkedList<Location> path, Job j) {
 		path.add(toFind);
 		for (int x = 0; x < positions.length; x++) {
 			for (int y = 0; y < 2; y++) {
 				if (positions[x][y].x == toFind.x && positions[x][y].y == toFind.y) {
 
 					Location next = new Location(positions[x][1 - y].x, positions[x][1 - y].y);
-					System.out.println("next: " + next.x + ", " + next.y);
 					positions[x][0] = new Location(-1, -1);
 					positions[x][1] = new Location(-1, -1);
 
-					addNext(next, positions, path);
+					addNext(next, positions, path, j);
 				}
 			}
 		}
