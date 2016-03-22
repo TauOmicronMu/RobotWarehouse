@@ -14,8 +14,7 @@ import rp.util.Rate;
  * @author txs
  *
  */
-public class PickupJob
-{
+public class PickupJob {
 
 	private Communication comm;
 	private Boolean jobRun;
@@ -29,8 +28,7 @@ public class PickupJob
 	 * @param comm
 	 * @param jobRun
 	 */
-	public PickupJob(Communication comm, Boolean jobRun)
-	{
+	public PickupJob(Communication comm, Boolean jobRun) {
 		this.comm = comm;
 		this.jobRun = jobRun;
 		itemName = comm.getItemName();
@@ -38,45 +36,38 @@ public class PickupJob
 		enterPressed = false;
 		escapePressed = false;
 
-		Button.ENTER.addButtonListener(new ButtonListener()
-		{
+		Button.ENTER.addButtonListener(new ButtonListener() {
 
 			@Override
-			public void buttonReleased(Button b)
-			{
+			public void buttonReleased(Button b) {
 				enterPressed = true;
 			}
 
 			@Override
-			public void buttonPressed(Button b)
-			{
+			public void buttonPressed(Button b) {
+			    //TODO : ???
 			}
 		});
 		
-		Button.ESCAPE.addButtonListener(new ButtonListener()
-		{
+		Button.ESCAPE.addButtonListener(new ButtonListener() {
 
 			@Override
-			public void buttonReleased(Button b)
-			{
+			public void buttonReleased(Button b) {
 				escapePressed = true;
 			}
 
 			@Override
-			public void buttonPressed(Button b)
-			{
+			public void buttonPressed(Button b) {
+				//TODO : ???
 			}
 		});
 	}
 
-	public void run()
-	{
+	public void run() {
 		updateScreen();
 
-		while (jobRun && itemNumber > 0)
-		{
-			if (enterPressed)
-			{
+		while (jobRun && itemNumber > 0) {
+			if (enterPressed) {
 				itemNumber--;
 				enterPressed = false;
 
@@ -86,11 +77,12 @@ public class PickupJob
 				Delay.msDelay(30);
 			}
 
-			if (escapePressed)
-			{
+			if (escapePressed) {
 				itemNumber++;
+
 				CancelMenu cancelMenu = new CancelMenu(comm, jobRun);
 				cancelMenu.run();
+
 				escapePressed = false;
 			}
 
@@ -98,13 +90,12 @@ public class PickupJob
 			rate.sleep();
 		}
 
-		if (itemNumber == 0)
-		{
+		if (itemNumber == 0) {
 			Sound.playTone(440, 30);
 			Delay.msDelay(30);
 			comm.jobDone();
-		} else
-		{
+		}
+		else {
 			Sound.playTone(200, 30);
 			Delay.msDelay(30);
 		}
@@ -113,11 +104,9 @@ public class PickupJob
 	/**
 	 * Updating the screen with the remaining number of items
 	 */
-	private void updateScreen()
-	{
+	private void updateScreen() {
 		LCD.clearDisplay();
 		LCD.drawString("Item: " + itemName, 0, 0);
 		LCD.drawString("Remaining: " + itemNumber, 0, 1);
 	}
-
 }

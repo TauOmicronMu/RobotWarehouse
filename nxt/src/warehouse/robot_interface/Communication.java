@@ -15,34 +15,29 @@ import warehouse.util.Subscriber;
  * private field in RobotInterface, and it's instantiated inside the
  * constructor.
  */
-public class Communication
-{
+public class Communication {
 
-	ItemPickup pickup;
-	String message;
+	public ItemPickup pickup;
+	public String message;
 
-	static 
-	{
+	static {
         EventDispatcher.subscribe2(Communication.class);
     }
 	
-	public Communication()
-	{
+	public Communication() {
 		EventDispatcher.subscribe2(this);
 		pickup = null;
 		message = null;
 	}
 	
 	@Subscriber
-	public void onDropOff(DropOffEvent e)
-	{
+	public void onDropOff(DropOffEvent e) {
 		message = e.getMessage();
 		EventDispatcher.onEvent2(new JobCompleteEvent(e.getJob()));
 	}
 	
 	@Subscriber
-	public void onPickup(PickupEvent e)
-	{
+	public void onPickup(PickupEvent e) {
 		pickup = e.getPickup();
 	}
 	
@@ -69,8 +64,7 @@ public class Communication
 	/**
 	 * Tells the server that the robot was turned off
 	 */
-	public void robotOff()
-	{
+	public void robotOff() {
 		EventDispatcher.onEvent2(new RobotOffEvent());
 		pickup = null;
 	}
@@ -78,8 +72,7 @@ public class Communication
 	/**
 	 * Tells the server that the current job was cancelled
 	 */
-	public void jobCancelled()
-	{
+	public void jobCancelled() {
 		EventDispatcher.onEvent2(new JobCancellationEvent());
 		pickup = null;
 	}
@@ -87,8 +80,7 @@ public class Communication
 	/**
 	 * Tells the server that the robot is in the wrong place
 	 */
-	public void wrongPlace()
-	{
+	public void wrongPlace() {
 		EventDispatcher.onEvent2(new WrongPlaceEvent());
 		pickup = null;
 	}
@@ -98,8 +90,7 @@ public class Communication
 	 * 
 	 * @return The name of the item
 	 */
-	public String getItemName()
-	{
+	public String getItemName() {
 		return pickup.itemName;
 	}
 
@@ -108,18 +99,15 @@ public class Communication
 	 * 
 	 * @return The number of items
 	 */
-	public int getItemNumber()
-	{
+	public int getItemNumber() {
 		return pickup.itemCount;
 	}
 
 	/**
 	 * Tells the server that the job is done
 	 */
-	public void jobDone()
-	{
+	public void jobDone() {
 		pickup = null;
 		EventDispatcher.onEvent2(new PickupCompleteEvent());
 	}
-
 }

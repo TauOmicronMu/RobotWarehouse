@@ -10,11 +10,9 @@ import warehouse.robot_interface.Communication;
  * @author txs
  *
  */
-public class CancelMenu
-{
+public class CancelMenu {
 
-	private final String[] menu =
-	{ "Cancel Job", "Wrong Place", "Back" };
+	private final String[] menu = { "Cancel Job", "Wrong Place", "Back" };
 
 	private Communication comm;
 	private Boolean jobRun;
@@ -22,12 +20,11 @@ public class CancelMenu
 	private boolean running;
 
 	/**
-	 * Constructor
+	 * Creates a new instance of the CancelMenu class.
 	 * @param comm
 	 * @param jobRun
 	 */
-	public CancelMenu(Communication comm, Boolean jobRun)
-	{
+	public CancelMenu(Communication comm, Boolean jobRun) {
 		this.comm = comm;
 		this.jobRun = jobRun;
 
@@ -35,46 +32,39 @@ public class CancelMenu
 		selected = 0;
 	}
 
-	public void run()
-	{
-		while (running)
-		{
+	public void run() {
+		while (running) {
 			update(selected);
 			int button = Button.waitForAnyPress();
 
-			switch (button)
-			{
-			case Button.ID_ENTER:
-			{
-				if (selected == 0)
-				{
-					comm.jobCancelled();
-					jobRun = false;
-				} else if (selected == 1)
-				{
-					comm.wrongPlace();
-					jobRun = false;
-				}
-				running = false;
-			}
-				break;
+			switch (button) {
+			    case Button.ID_ENTER:
+				    if (selected == 0) {
+				    	comm.jobCancelled();
+				    	jobRun = false;
+					}
+					else if (selected == 1) {
+						comm.wrongPlace();
+						jobRun = false;
+					}
 
-			case Button.ID_ESCAPE:
-				running = false;
-				break;
+					running = false;
+					break;
 
-			case Button.ID_LEFT:
-				if (selected > 0)
-					selected--;
-				break;
+				case Button.ID_ESCAPE:
+					running = false;
+					break;
 
-			case Button.ID_RIGHT:
-				if (selected < 2)
-					selected++;
-				break;
+				case Button.ID_LEFT:
+					if (selected > 0) { selected-- }
+				    break;
+
+				case Button.ID_RIGHT:
+					if (selected < 2) { selected++ }
+				    break;
 				
-			default:
-				break;
+			    default:
+			    	break;
 			}
 		}
 	}
@@ -83,16 +73,16 @@ public class CancelMenu
 	 * Re-write the menu on the screen
 	 * @param selected
 	 */
-	private void update(int selected)
-	{
+	private void update(int selected) {
 		LCD.clearDisplay();
 
-		for (int i = 0; i < 3; i++)
-		{
-			if (i == selected)
-				LCD.drawString("-> " + menu[i], 0, i + 1);
-			else
-				LCD.drawString("   " + menu[i], 0, i + 1);
+		for (int i = 0; i < 3; i++) {
+			if (i == selected) {
+				LCD.drawString("-> " + menu[i], 0, i + 1)
+			}
+			else {
+				LCD.drawString("   " + menu[i], 0, i + 1)
+			}
 		}
 	}
 }

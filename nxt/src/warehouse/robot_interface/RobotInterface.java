@@ -21,30 +21,27 @@ public class RobotInterface extends Thread
 	/**
 	 * Constructor
 	 */
-	public RobotInterface()
-	{
+	public RobotInterface() {
+
 		interfaceRun = new Boolean(true);
 		hasJob = new Boolean(false);
 		jobRun = new Boolean(false);
 		comm = new Communication();
 		message = comm.getMessage();
 
-		Button.ESCAPE.addButtonListener(new ButtonListener()
-		{
+		Button.ESCAPE.addButtonListener(new ButtonListener() {
 
 			@Override
-			public void buttonReleased(Button b)
-			{
-				if (!hasJob.get())
-				{
+			public void buttonReleased(Button b) {
+				if (!hasJob.get()) {
 					comm.robotOff();
 					interfaceRun.set(false);
 				}
 			}
 
 			@Override
-			public void buttonPressed(Button b)
-			{
+			public void buttonPressed(Button b) {
+				//TODO : ???
 			}
 		});
 
@@ -54,21 +51,18 @@ public class RobotInterface extends Thread
 	/**
 	 * When finishing a job
 	 */
-	public void reset()
-	{
+	public void reset() {
 		LCD.clearDisplay();
 		LCD.drawString("Moving around!", 0, 0);
+
 		hasJob.set(false);
 		message = null;
 	}
 
 	@Override
-	public void run()
-	{
-		while (interfaceRun.get())
-		{
-			if (comm.hasJob())
-			{
+	public void run() {
+		while (interfaceRun.get()) {
+			if (comm.hasJob()) {
 				// Start a new job
 
 				hasJob.set(true);
@@ -81,8 +75,7 @@ public class RobotInterface extends Thread
 				reset();
 			}
 			
-			if (message != null)
-			{
+			if (message != null) {
 				LCD.clearDisplay();
 				LCD.drawString(message, 1, 1);
 			}
@@ -93,9 +86,7 @@ public class RobotInterface extends Thread
 		}
 	}
 
-	public static void main(String[] args)
-	{
+	public static void main(String[] args) {
 		new RobotInterface().run();
 	}
-
 }
