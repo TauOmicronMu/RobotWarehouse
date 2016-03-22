@@ -105,16 +105,17 @@ public class CancellationMachineTester {
                         percentageCorrect++;
                     }
                 }
-
             }
         }
+
+        double averagePercentage = totalPercentages/jobs.size();
 
 //        System.out.println("Total Jobs:         " + jobList.size());
 //        System.out.println("Training with:      " + trainingJobsList.size());
 //        System.out.println("Checking with:      " + knownJobsList.size());
 //        System.out.println("Number Cancelled:   " + numberJobsCancelled);
 //        System.out.println("Number Predicted:   " + percentageCorrect);
-        return (percentageCorrect/numberJobsCancelled)*100;
+        return averagePercentage;
     }
 
     public static void parseFile(String filePath, Consumer<String[]> consumer) throws FileNotFoundException {
