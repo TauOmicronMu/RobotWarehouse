@@ -5,8 +5,10 @@ import warehouse.action.IdleAction;
 import warehouse.action.MoveAction;
 import warehouse.action.PickupAction;
 import warehouse.action.TurnAction;
+import warehouse.event.ActionCompleteEvent;
 import warehouse.event.JobAssignedEvent;
 import warehouse.util.EventDispatcher;
+import warehouse.util.Robot;
 import warehouse.util.Route;
 import warehouse.util.Subscriber;
 
@@ -14,10 +16,6 @@ public class RouteExecution {
 
 	private Route route;
 	private LineFollow lineFollower;
-	
-	  static {
-	        EventDispatcher.subscribe2(RouteExecution.class);
-	    }
 
 	    public RouteExecution() {
 	        EventDispatcher.subscribe2(this);
@@ -27,18 +25,24 @@ public class RouteExecution {
 	@Subscriber
 	public void onJobAssignment(JobAssignedEvent jobEvent)
 	{
-		route = jobEvent.getAssignedJob().route;
+		route = jobEvent.assignedJob.route;
+		Robot robot = jobEvent.assignedJob.robot;
 		for(warehouse.action.Action a: route.actions){
 			if(a instanceof MoveAction){
-				lineFollower.moveAction(((MoveAction) a).distance, jobEvent.getAssignedJob().robot.robotName);
+				lineFollower.moveAction(((MoveAction) a).distance);
+				EventDispatcher.onEvent2(new ActionCompleteEvent(robot,a));
 			}else if(a instanceof TurnAction){
-				lineFollower.turnAction(((TurnAction) a).angle,jobEvent.getAssignedJob().robot.robotName);
+				lineFollower.turnAction(((TurnAction) a).angle);
+				EventDispatcher.onEvent2(new ActionCompleteEvent(robot,a));
 			}else if(a instanceof PickupAction){
-				lineFollower.pickupAction(((PickupAction) a).pickup,jobEvent.getAssignedJob().robot.robotName);
+				lineFollower.pickupAction(((PickupAction) a).pickup,robot);
+				EventDispatcher.onEvent2(new ActionCompleteEvent(robot,a));
 			}else if(a instanceof DropoffAction){
-				lineFollower.dropoffAction(jobEvent.getAssignedJob());
+				lineFollower.dropoffAction(jobEvent.assignedJob);
+				EventDispatcher.onEvent2(new ActionCompleteEvent(robot,a));
 			}else{
-				lineFollower.idleAction(((IdleAction)a).time,jobEvent.getAssignedJob().robot.robotName);
+				lineFollower.idleAction(((IdleAction)a).time);
+				EventDispatcher.onEvent2(new ActionCompleteEvent(robot,a));
 			}
 		}
 	}

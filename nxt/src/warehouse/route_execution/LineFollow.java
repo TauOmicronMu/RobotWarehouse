@@ -7,10 +7,14 @@ import lejos.nxt.Motor;
 import lejos.nxt.SensorPort;
 import lejos.robotics.navigation.DifferentialPilot;
 import lejos.util.Delay;
+import warehouse.action.MoveAction;
+import warehouse.event.ActionCompleteEvent;
 import warehouse.event.JobCompleteEvent;
+import warehouse.event.PickupReachedEvent;
 import warehouse.job.AssignedJob;
 import warehouse.util.EventDispatcher;
 import warehouse.util.ItemPickup;
+import warehouse.util.Robot;
 import warehouse.util.Subscriber;
 
 /**
@@ -59,7 +63,7 @@ public class LineFollow {
 	        EventDispatcher.subscribe2(LineFollow.class);
 	 }
 	
-	public void moveAction(int distance, String robotname){
+	public void moveAction(int distance){
 		while (distance > 0) {
 			if (goLeft) {
 				Delay.msDelay(delay);
@@ -80,29 +84,19 @@ public class LineFollow {
 					}
 			}
 			pilot.forward();
-			EventDispatcher.onEvent2(new MoveAheadEvent(robotname,travelSpeed));
+			
 		}
 	}
 	
-	public void turnAction(double angle,String robotname){
+	public void turnAction(double angle){
 		//distance to travel before turning
 		pilot.travel(0.05);
 		
 		pilot.stop();
 		pilot.rotate(angle);
-		if(angle>0)
-		{
-			EventDispatcher.onEvent2(new TurnRightEvent(robotname));
-		}
-		else
-		{
-			EventDispatcher.onEvent2(new TurnLeftEvent(robotname));
-		}
 	}
 
-	public void idleAction(int time,String robotname) {
-		
-		EventDispatcher.onEvent2(new RobotStoppedEvent(robotname));
+	public void idleAction(int time) {
 		while(time > 0)
 		{
 			Delay.msDelay(lengthOfMovement);
@@ -111,7 +105,6 @@ public class LineFollow {
 	}
 	
 	public void dropoffAction(AssignedJob job) {
-		EventDispatcher.onEvent2(new RobotStoppedEvent(job.robot.robotName));
 		EventDispatcher.onEvent2(new DropOffEvent("Robot at drop-off location.", job));
 		dropOff =true;
 		while(dropOff)
@@ -126,9 +119,8 @@ public class LineFollow {
 		dropOff = false;
 	}
 	
-	public void pickupAction(ItemPickup pickup, String robotname) {
-		EventDispatcher.onEvent2(new RobotStoppedEvent(robotname));
-		EventDispatcher.onEvent2(new PickupEvent(pickup));
+	public void pickupAction(ItemPickup pickup, Robot robot) {
+		EventDispatcher.onEvent2(new PickupReachedEvent(pickup,robot));
 		pickUp =true;
 		while(pickUp)
 		{
