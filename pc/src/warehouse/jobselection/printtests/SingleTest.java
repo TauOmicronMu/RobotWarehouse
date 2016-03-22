@@ -151,9 +151,10 @@ public class SingleTest  extends Thread{
             for(int i = 0; i < 10; i++) {
 
                 try {
-                	System.out.println("sleeping");
+
+                    System.out.println("\nTEST THREAD: Sleeping");
                     Thread.sleep(5000);
-                    System.out.println("woke up");
+                    System.out.println("\nTEST THREAD: Woke up");
                 } catch (InterruptedException e) {
                     // Sleep was interrupted for some reason
                     e.printStackTrace();
@@ -161,6 +162,8 @@ public class SingleTest  extends Thread{
 
                 assert(this.hasCurrentJob == true);
                 assert(assigner.getCurrentJob() != null);
+
+                System.out.println("\nTEST THREAD: Sending Job Complete Event");
                 EventDispatcher.onEvent2(new JobCompleteEvent(assigner.getCurrentJob()));
             }
 
