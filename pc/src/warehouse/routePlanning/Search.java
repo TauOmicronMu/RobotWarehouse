@@ -66,7 +66,7 @@ public class Search {
 	 */
 	public Optional<Route> getRoute(LinkedList<Location> toVisit, Direction facing) {
 		// makes the final route variable
-		Route finalRoute = new Route(new LinkedList<Action>(), toVisit.getFirst(), toVisit.getFirst());
+		Route finalRoute = new Route(new LinkedList<Action>(), toVisit.getFirst(), toVisit.getFirst(), facing);
 
 		// sets the initial route to be the first edge in the search
 		Optional<LinkedList<State>> currentEdge = getEdge(toVisit.get(0), toVisit.get(1), facing);
@@ -441,9 +441,8 @@ public class Search {
 			}
 		}
 
-		Route route = new Route(path, allStates.getFirst().getLocation(), allStates.getLast().getLocation());
+		Route route = new Route(path, allStates.getFirst().getLocation(), allStates.getLast().getLocation(), allStates.getLast().getFacing());
 		route.totalDistance = path.size();
-		route.finalFacing = allStates.getLast().getFacing();
 		return route;
 	}
 
@@ -461,9 +460,8 @@ public class Search {
 		totalPath = r1.actions;
 		totalPath.add(new PickupAction());
 		totalPath.addAll(r2.actions);
-		Route route = new Route(totalPath, r1.start, r2.end);
+		Route route = new Route(totalPath, r1.start, r2.end, r2.finalFacing);
 		route.totalDistance = r1.totalDistance + r2.totalDistance + pickUpTime;
-		route.finalFacing = r2.finalFacing;
 		return route;
 	}
 
