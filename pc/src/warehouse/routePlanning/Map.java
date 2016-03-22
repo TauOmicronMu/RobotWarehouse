@@ -24,7 +24,6 @@ public class Map {
 					available.put(temp, true);
 				}
 			}
-			System.out.println();
 		}
 	}
 
