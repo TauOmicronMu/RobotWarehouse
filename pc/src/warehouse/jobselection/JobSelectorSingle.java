@@ -78,12 +78,12 @@ public class JobSelectorSingle extends Thread {
 
 			// convert it into a list of jobworths
 
-//			System.out.println("\nConverting list NOW");
+//			System.out.println("\nSELECTOR THREAD: Converting list NOW");
 			this.convertedList = this.convertList(this.robotStartLocation, this.robotFacing);
 
 			assert(this.convertedList != null);
 
-//			System.out.println("\nConverted list, sending event...");
+//			System.out.println("\nSELECTOR THREAD: Converted list, sending event...");
 
 			AddedToSelectedListEvent e = new AddedToSelectedListEvent();
 
@@ -92,7 +92,7 @@ public class JobSelectorSingle extends Thread {
 			// get the best one
 			bestJob = this.selectBestJob(this.convertedList);
 
-//			System.out.println("\nThe best Job is: " + bestJob);
+//			System.out.println("\nSELECTOR THREAD: The best Job is: " + bestJob);
 
 			// remove it from the reference job list
 			this.jobs.remove(bestJob.getJob());
@@ -100,8 +100,8 @@ public class JobSelectorSingle extends Thread {
 			// add it to the list of selected jobs
 			this.selectedList.add(bestJob);
 
-//			System.out.println("\nAdding : " + bestJob + " to the list");
-//			System.out.println("\nCurrent list of selected jobs: " + this.selectedList);
+//			System.out.println("\nSELECTOR THREAD: Adding : " + bestJob + " to the list");
+//			System.out.println("\nSELECTOR THREAD: Current list of selected jobs: " + this.selectedList);
 
 			this.robotStartLocation = bestJob.getRoute().end;
 
