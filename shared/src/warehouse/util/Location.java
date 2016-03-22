@@ -12,5 +12,12 @@ public class Location {
     public int manhattanDistance(Location loc) {
         return Math.abs(loc.x - x) + Math.abs(loc.y - y);
     }
-    
+
+    @Override
+    public String toString() {
+        return "{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
+    }
 }
