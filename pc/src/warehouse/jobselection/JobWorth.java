@@ -1,6 +1,7 @@
 package warehouse.jobselection;
 
 import warehouse.job.Job;
+import warehouse.routePlanning.TSP;
 import warehouse.util.Direction;
 import warehouse.util.ItemPickup;
 import warehouse.util.Location;
@@ -41,10 +42,10 @@ public class JobWorth implements Comparable<JobWorth>{
 		this.facing = facing;
 		
 
-		//TSP tsp = new TSP();
+		TSP tsp = new TSP();
 
-		//this.route = tsp.getShortestRoute(job, startLocation, facing).get();
-		//this.facing = this.route.finalFacing;
+		this.route = tsp.getShortestRoute(job, startLocation, facing).get();
+		this.facing = this.route.finalFacing;
 		
 		this.rewardTime = rewardPerTimeStep(job);
 	
