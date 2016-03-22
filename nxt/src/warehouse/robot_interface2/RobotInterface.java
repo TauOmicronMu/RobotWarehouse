@@ -47,6 +47,10 @@ public class RobotInterface {
         }
     };
 
+    public static void launch() {
+        Button.addListener(listener);
+    }
+
     private static void executeMenuItem() {
         switch(menuItems[selectionIndex]) {
             case "Lost":
