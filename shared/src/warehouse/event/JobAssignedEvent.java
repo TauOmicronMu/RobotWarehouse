@@ -1,7 +1,6 @@
 package warehouse.event;
 
 import warehouse.job.AssignedJob;
-import warehouse.util.Robot;
 
 /**
  * Event to send to subscribers when a job is assigned

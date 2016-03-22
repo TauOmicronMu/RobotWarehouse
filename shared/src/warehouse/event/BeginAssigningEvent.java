@@ -1,9 +1,9 @@
 package warehouse.event;
 
 import warehouse.job.Job;
-import warehouse.util.*;
+import warehouse.util.Location;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * Event to be passed when the robot is ready to be assigned jobs
