@@ -128,7 +128,7 @@ public class SingleTest  extends Thread{
 
             JobAssignerSingle assigner = new JobAssignerSingle(robot);
 
-            //EventDispatcher.onEvent2(new BeginAssigningEvent(jobs));
+            EventDispatcher.onEvent2(new BeginAssigningEvent(jobs, new LinkedList<Location>()));
 
             for(int i = 0; i < 10; i++) {
 
