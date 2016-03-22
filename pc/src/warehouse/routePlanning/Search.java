@@ -23,16 +23,17 @@ public class Search {
 	private Location[][] map;
 	private final int pickUpTime = 10;
 	private final int dropOffTime = 8;
+	private Location dropLocation;
 	ArrayList<State> states;
 
 	/**
 	 * Constructor which sets up the map and obstacles
 	 */
-	public Search(Map m) {
+	public Search(Map m, Location dropLocation) {
 		map = m.getMap();
 		available = m.getAvailable();
 		states = generateStates();
-
+		this.dropLocation = dropLocation;
 	}
 
 	/**
@@ -88,9 +89,6 @@ public class Search {
 				return Optional.empty();
 			}
 		}
-
-		finalRoute.actions.add(new DropoffAction());
-		finalRoute.totalDistance += dropOffTime;
 		return Optional.of(finalRoute);
 	}
 
@@ -457,11 +455,17 @@ public class Search {
 	 */
 	private Route appendRoute(Route r1, Route r2) {
 		LinkedList<Action> totalPath = new LinkedList<Action>();
-		totalPath = r1.actions;
-		totalPath.add(new PickupAction());
+		totalPath = r1.actions; 
+		if(r1.end.x == dropLocation.x && r1.end.y == dropLocation.y){
+			totalPath.add(new DropoffAction());
+			r1.totalDistance += dropOffTime;
+		}else{
+			totalPath.add(new PickupAction());
+			r1.totalDistance += pickUpTime;
+		}
 		totalPath.addAll(r2.actions);
 		Route route = new Route(totalPath, r1.start, r2.end, r2.finalFacing);
-		route.totalDistance = r1.totalDistance + r2.totalDistance + pickUpTime;
+		route.totalDistance = r1.totalDistance + r2.totalDistance;
 		return route;
 	}
 
