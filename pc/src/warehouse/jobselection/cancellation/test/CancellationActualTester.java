@@ -20,19 +20,9 @@ public class CancellationActualTester {
 
     public CancellationActualTester(String[] trainingSet, String[] testSet) throws IOException {
 
-        assert((percentage >= 0) && (percentage <= 1.0));
 
-        for(String[] fileNameArray : fileNames){
+        System.out.println("Percentage correct: " + testMachine(trainingSet, testSet);
 
-            String s = "";
-
-            for(String string : fileNameArray){
-
-                s += " '" + string + "' ";
-            }
-
-            System.out.println("\nFor set: " + s + "\nProbability machine is correct on average = " + testMachine(fileNameArray, percentage));
-        }
     }
 
     public double testMachine(String[] fileNameArray, double percentage) throws IOException{

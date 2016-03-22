@@ -109,7 +109,7 @@ public class JobAssignerSingle extends Thread {
 
 				System.out.println("\nASSIGNER THREAD: Created Single Robot Selector, assigning jobs");
 
-				while (this.run && (this.assignJobs.size() > 0)) {
+				while (this.run) {
 
 					try {
 						Thread.sleep(100);
@@ -201,6 +201,10 @@ public class JobAssignerSingle extends Thread {
 						e.printStackTrace();
 					}
 
+					if(this.assignJobs.size() <= 0){
+
+						this.run = false;
+					}
 
 				}
 			}
