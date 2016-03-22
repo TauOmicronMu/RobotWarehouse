@@ -23,6 +23,8 @@ import java.util.stream.Collectors;
  */
 public class SingleTest  extends Thread{
 
+    private List<Job> trainingJobs;
+    private List<Job> actualJobs;
     private ArrayList<List<Job>> jobSet;
     private boolean hasCurrentJob;
 
@@ -92,6 +94,9 @@ public class SingleTest  extends Thread{
 
         int counter = 0;
 
+        List<Job> trainingJobs = new LinkedList<>();
+        List<Job> actualJobs = new LinkedList<>();
+
         for(String[] fileNameArray : fileSet) {
 
             assert (fileNameArray.length == 5);
@@ -132,17 +137,24 @@ public class SingleTest  extends Thread{
 
             List<Job> jobList = jobs.values().stream().collect(Collectors.toList());
 
-            jobSet.add(jobList);
+            if(counter == 0) {
+
+                trainingJobs = jobList;
+            } else{
+
+                actualJobs = jobList;
+            }
 
             counter++;
         }
 
-        SingleTest tester = new SingleTest(jobSet);
+        SingleTest tester = new SingleTest(trainingJobs, actualJobs);
     }
 
-    public SingleTest(ArrayList<List<Job>> jobSet){
+    public SingleTest(List<Job> trainingJobs, List<Job> actualJobs){
 
-        this.jobSet = jobSet;
+        this.trainingJobs = trainingJobs;
+        this.actualJobs = actualJobs;
 
         EventDispatcher.subscribe2(this);
         
@@ -152,15 +164,11 @@ public class SingleTest  extends Thread{
     @Override
     public void run() {
 
-
-            List<Job> trainingJobs = jobSet.get(0);
-            List<Job> actualJobs = jobSet.get(1);
-
             Robot robot = new Robot("testRobot", new Location(0, 0), Direction.NORTH);
 
-            JobAssignerSingle assigner = new JobAssignerSingle(robot, new LinkedList<>(trainingJobs));
+            JobAssignerSingle assigner = new JobAssignerSingle(robot, new LinkedList<>(this.trainingJobs));
 
-            EventDispatcher.onEvent2(new BeginAssigningEvent(actualJobs, new LinkedList<Location>()));
+            EventDispatcher.onEvent2(new BeginAssigningEvent(this.actualJobs, new LinkedList<Location>()));
 
             for (int i = 0; i < actualJobs.size(); i++) {
 
