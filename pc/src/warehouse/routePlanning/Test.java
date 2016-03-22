@@ -15,18 +15,17 @@ import warehouse.util.Route;
 public class Test {
 
 	public static void main(String[] args) {
-		GridMap providedMap = MapUtils.createRealWarehouse();
-		Map m = new Map(providedMap);
 		TSP tsp = new TSP();
 
 		LinkedList<ItemPickup> pickups = new LinkedList<ItemPickup>();
-		pickups.add(new ItemPickup("test", new Location(5, 3), 1, 0, 15));
-		pickups.add(new ItemPickup("test", new Location(2, 2), 1, 0, 15));
-		pickups.add(new ItemPickup("test", new Location(5, 1), 1, 0, 15));
-		pickups.add(new ItemPickup("test", new Location(9, 5), 1, 0, 15));
-		pickups.add(new ItemPickup("test", new Location(8, 2), 1, 0, 15));		
+		pickups.add(new ItemPickup("aa", new Location(4,4), 1, 0, 15));
+		pickups.add(new ItemPickup("ab", new Location(3,0), 1, 0, 15));
+		pickups.add(new ItemPickup("bj", new Location(7,4), 1, 0, 15));
+		pickups.add(new ItemPickup("bh", new Location(3,3), 1, 0, 15));
+		pickups.add(new ItemPickup("af", new Location(4,0), 1, 0, 15));		
+		pickups.add(new ItemPickup("cf", new Location(6,2), 1, 0, 15));		
 		
-		Optional<Route> chosenRoute = tsp.getShortestRoute(new Job(new Location(4, 7), pickups), new Location(0, 1), Direction.NORTH);
+		Optional<Route> chosenRoute = tsp.getShortestRoute(new Job(new Location(2, 7), pickups), new Location(0,0), Direction.NORTH);
 		if(chosenRoute.isPresent()){
 			Route r = chosenRoute.get();
 			System.out.println(r.totalDistance);

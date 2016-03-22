@@ -19,11 +19,14 @@ public class Map {
 				Location temp = new Location(x, y);
 				map[y][x] = temp;
 				if (providedMap.isObstructed(x, y)) {
+					System.out.print("X");
 					available.put(temp, false);
 				} else {
+					System.out.print("-");
 					available.put(temp, true);
 				}
 			}
+			System.out.println();
 		}
 	}
 
