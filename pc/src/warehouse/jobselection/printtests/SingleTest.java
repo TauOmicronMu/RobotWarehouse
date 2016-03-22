@@ -148,22 +148,22 @@ public class SingleTest  extends Thread{
 
             EventDispatcher.onEvent2(new BeginAssigningEvent(trimmedJobs, new LinkedList<Location>()));
 
-//            for(int i = 0; i < 10; i++) {
-//
-//                try {
-//                    Thread.sleep(5000);
-//                } catch (InterruptedException e) {
-//                    // Sleep was interrupted for some reason
-//                    e.printStackTrace();
-//                }
-//
-//                assert(this.hasCurrentJob == true);
-//                assert(assigner.getCurrentJob() != null);
-//                EventDispatcher.onEvent2(new JobCompleteEvent(assigner.getCurrentJob()));
-//            }
-//
-//            assigner.stopAssigning();
-        //}
+            for(int i = 0; i < 10; i++) {
+
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    // Sleep was interrupted for some reason
+                    e.printStackTrace();
+                }
+
+                assert(this.hasCurrentJob == true);
+                assert(assigner.getCurrentJob() != null);
+                EventDispatcher.onEvent2(new JobCompleteEvent(assigner.getCurrentJob()));
+            }
+
+            assigner.stopAssigning();
+
     }
 
     @Subscriber

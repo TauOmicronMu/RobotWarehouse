@@ -115,7 +115,7 @@ public class JobAssignerSingle extends Thread {
 					e.printStackTrace();
 				}
 
-				while (this.run && (this.jobs.size() > 0)) {
+
 
 					// If the robot has completed a job and now has no assigned
 					// job, give it a new one
@@ -197,15 +197,18 @@ public class JobAssignerSingle extends Thread {
 						// sleep was interrupted for some reason
 						e.printStackTrace();
 					}
-				}
 
-				// If it reaches this point, the jobs have all been exhausted or
-				// it has been told to stop.
 
-				System.out.println("\nReached end of job list, or was told to stop - Finished");
-				this.run = false;
+
+
+
+
 			}
 		}
+
+		// If it reaches this point,
+		// it has been told to stop.
+		System.out.println("\nReached end of job list, or was told to stop - Finished");
 	}
 
 	/**
