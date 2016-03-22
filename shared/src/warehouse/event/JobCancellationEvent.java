@@ -1,6 +1,6 @@
 package warehouse.event;
 
-import warehouse.job.*;
+import warehouse.job.AssignedJob;
 
 public class JobCancellationEvent extends Event {
 
