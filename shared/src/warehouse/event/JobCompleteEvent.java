@@ -1,6 +1,6 @@
 package warehouse.event;
 
-import warehouse.job.*;
+import warehouse.job.AssignedJob;
 
 /**
  * Event to send to subscribers when a job is completed.
