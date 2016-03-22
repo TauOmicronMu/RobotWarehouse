@@ -68,7 +68,6 @@ public class Distances {
 	
 	public float getPlusY(int x, int y)
 	{
-		System.out.println(mapDistancesPlusY[map.getXSize()-1][y]);
 		return mapDistancesPlusY[x][y];
 	}
 	

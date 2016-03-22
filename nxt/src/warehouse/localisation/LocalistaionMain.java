@@ -243,7 +243,7 @@ public class LocalistaionMain implements StoppableRunnable {
 					case MINUS_Y:
 						d = Direction.SOUTH;
 					}
-					EventDispatcher.onEvent2(new StartingCoordinatesEvent(x, y, d));
+//					EventDispatcher.onEvent2(new StartingCoordinatesEvent(x, y, d));
 					// System.out.println("x: " + x + " // y: " + y);
 					// Button.waitForAnyPress();
 					m_running = false;
