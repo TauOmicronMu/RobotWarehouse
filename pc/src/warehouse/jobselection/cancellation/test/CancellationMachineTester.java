@@ -73,7 +73,9 @@ public class CancellationMachineTester {
 
         double totalPercentages = 0;
 
-        while((int j  = 0) < jobs.size()) {
+        int j = 0;
+
+        while(j < jobs.size()) {
 
             for (int i = j; i < (int) ((jobs.size() * percentage) + j); i++) {
 
@@ -107,6 +109,8 @@ public class CancellationMachineTester {
                     }
                 }
             }
+
+            j += jobs.size()/100;
         }
 
         double averagePercentage = totalPercentages/jobs.size();
