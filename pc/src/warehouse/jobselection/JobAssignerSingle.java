@@ -127,9 +127,6 @@ public class JobAssignerSingle extends Thread {
 					// job, give it a new one
 					if (this.jobComplete || this.jobCancelled) {
 
-						System.out.println("\n-------------------------------");
-						System.out.println("\nJob Complete, assigning new job");
-
 						// If the robot is not going to start its next job from
 						// the drop location as it got lost or the job was cancelled
 						if (this.robotGotLost || this.jobCancelled) {
@@ -192,7 +189,7 @@ public class JobAssignerSingle extends Thread {
 							System.out.println("\nWaiting for JobCompleteEvent");
 						}
 
-						System.out.println("\nWaiting for ConvertedListCompleteEvent");
+						System.out.println("Waiting for ConvertedListCompleteEvent...");
 
 						try {
 							Thread.sleep(100);
@@ -279,6 +276,9 @@ public class JobAssignerSingle extends Thread {
 	 */
 	@Subscriber
 	public void onJobCompleteevent(JobCompleteEvent e) {
+
+		System.out.println("\n-------------------------------");
+		System.out.println("\nJob Complete, assigning new job");
 
 		this.jobComplete = true;
 	}
