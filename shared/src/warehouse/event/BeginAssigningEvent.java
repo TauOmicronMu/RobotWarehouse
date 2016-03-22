@@ -11,7 +11,7 @@ import java.util.*;
  * @author Owen
  *
  */
-public class BeginAssigningEvent {
+public class BeginAssigningEvent extends Event {
 	
 	public List<Job> jobs;
 	public List<Location> dropLocations;
@@ -20,6 +20,7 @@ public class BeginAssigningEvent {
 	 * Create a new event
 	 */
 	public BeginAssigningEvent(List<Job> jobs, List<Location> dropLocations){
+		super(null);
 		this.jobs = jobs;
 		this.dropLocations = dropLocations;
 	}
