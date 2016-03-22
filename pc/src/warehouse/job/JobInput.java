@@ -14,7 +14,7 @@ public class JobInput {
 		EventDispatcher.subscribe2(JobInput.class);
 	}
 	
-	public static void main(String[] args) throws IOException {
+	public static void launch() throws IOException {
 		// Parse locations
 		HashMap<String, Location> itemLocations = new HashMap<>();
 		parseFile("locations.csv", values -> itemLocations.put(values[2], new Location(Integer.parseInt(values[0]), Integer.parseInt(values[1]))));
@@ -51,8 +51,9 @@ public class JobInput {
 
 		// Convert the job map to a list
 		List<Job> jobList = jobs.values().stream().collect(Collectors.toList());
-        System.out.println(jobList);
-        EventDispatcher.onEvent2(new BeginAssigningEvent(jobList, dropLocations));
+		Location lastDropLocation = dropLocations.get(dropLocations.size() - 1);
+        	jobList.forEach(job -> job.dropLocation = lastDropLocation);
+        	EventDispatcher.onEvent2(new BeginAssigningEvent(jobList, new LinkedList<>()));
 	}
 
 	public static void parseFile(String filePath, Consumer<String[]> consumer) throws FileNotFoundException {
