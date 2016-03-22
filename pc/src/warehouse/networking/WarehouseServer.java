@@ -75,7 +75,7 @@ public class WarehouseServer extends Server {
 	}
 	
 	@MultiSubscriber
-	public void onEvent(Object event) {
+	public void onEvent(Event event) {
 		broadcast(event);
 	}
 
