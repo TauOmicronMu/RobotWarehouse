@@ -123,20 +123,23 @@ public class SingleTest  extends Thread{
     }
 
     @Override
-    public void run(){
+    public void run() {
 
-        //for(List<Job> jobs : this.jobSet){
+        for (List<Job> jobs : this.jobSet) {
 
-            List<Job> jobs = this.jobSet.get(0);
+            System.out.println("\n+++++++++++++++++");
+            System.out.println("+++NEW+JOB+SET+++");
+            System.out.println("+++++++++++++++++");
+
             List<Job> trainingJobs = new LinkedList<>();
             List<Job> trimmedJobs = new LinkedList<>();
 
-            for(int i = 0; i < jobs.size(); i++){
+            for (int i = 0; i < jobs.size(); i++) {
 
-                if(i < 100) {
+                if (i < 100) {
 
                     trimmedJobs.add(jobs.get(i));
-                } else{
+                } else {
 
                     trainingJobs.add(jobs.get(i));
                 }
@@ -148,26 +151,29 @@ public class SingleTest  extends Thread{
 
             EventDispatcher.onEvent2(new BeginAssigningEvent(trimmedJobs, new LinkedList<Location>()));
 
-            for(int i = 0; i < 10; i++) {
+            for (int i = 0; i < 10; i++) {
 
                 try {
 
-                    System.out.println("\nTEST THREAD: Sleeping");
-                    Thread.sleep(5000);
-                    System.out.println("\nTEST THREAD: Woke up");
+                    //System.out.println("\nTEST THREAD: Sleeping");
+                    Thread.sleep(1000);
+                    //System.out.println("\nTEST THREAD: Woke up");
                 } catch (InterruptedException e) {
                     // Sleep was interrupted for some reason
                     e.printStackTrace();
                 }
 
-                assert(this.hasCurrentJob == true);
-                assert(assigner.getCurrentJob() != null);
+                assert (this.hasCurrentJob == true);
+                assert (assigner.getCurrentJob() != null);
 
                 System.out.println("\nTEST THREAD: Sending Job Complete Event");
                 EventDispatcher.onEvent2(new JobCompleteEvent(assigner.getCurrentJob()));
             }
 
+            System.out.println("\nTEST THREAD: Telling assigner to stop");
             assigner.stopAssigning();
+
+        }
     }
 
     @Subscriber

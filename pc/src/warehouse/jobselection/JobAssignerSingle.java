@@ -109,7 +109,7 @@ public class JobAssignerSingle extends Thread {
 
 				System.out.println("\nASSIGNER THREAD: Created Single Robot Selector, assigning jobs");
 
-				while (this.run) {
+				while (this.run && (this.assignJobs.size() > 0)) {
 
 					try {
 						Thread.sleep(100);
@@ -156,14 +156,14 @@ public class JobAssignerSingle extends Thread {
 								e.printStackTrace();
 							}
 
-							System.out.println("\nASSIGNER THREAD: Got Converted List");
+							//System.out.println("\nASSIGNER THREAD: Got Converted List");
 
 							this.assignJobs = this.selector.getSelectedList();
 
 							// Get the next job to be assigned
 							jobToBeAssigned = this.assignJobs.removeFirst();
 
-							System.out.println("\nASSIGNER THREAD: The chosen best job is: " + jobToBeAssigned);
+							//System.out.println("\nASSIGNER THREAD: The chosen best job is: " + jobToBeAssigned);
 
 							// Remove it from the list of jobs
 							this.jobs.remove(jobToBeAssigned.getJob());
@@ -177,13 +177,13 @@ public class JobAssignerSingle extends Thread {
 							// Tell subscribers
 							JobAssignedEvent e = new JobAssignedEvent(this.currentJob);
 
-							System.out.println("\nASSIGNER THREAD: Dispatched JobAssignedEvent");
+							//System.out.println("\nASSIGNER THREAD: Dispatched JobAssignedEvent");
 
 							EventDispatcher.onEvent2(e);
 
 							this.jobComplete = false;
 
-							System.out.println("\nASSIGNER THREAD: Waiting for JobCompleteEvent");
+							//System.out.println("\nASSIGNER THREAD: Waiting for JobCompleteEvent");
 						}
 
 						try {
