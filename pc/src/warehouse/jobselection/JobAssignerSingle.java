@@ -34,6 +34,7 @@ import warehouse.util.Subscriber;
  */
 public class JobAssignerSingle extends Thread {
 
+	private boolean gotList;
 	private Robot robot;
 	private JobSelectorSingle selector;
 	private boolean run;
@@ -74,6 +75,8 @@ public class JobAssignerSingle extends Thread {
 		this.robotGotLost = false;
 
 		this.jobComplete = true;
+
+		this.gotList = false;
 
 		try{
 			
@@ -143,6 +146,8 @@ public class JobAssignerSingle extends Thread {
 
 							this.selector = new JobSelectorSingle(this.robot, this.jobs, this.cancellationMachine);
 
+							this.gotList = false;
+
 							System.out.println("\nCreated new Single Robot Selector, assigning jobs");
 
 							this.robotGotLost = false;
@@ -156,31 +161,52 @@ public class JobAssignerSingle extends Thread {
 							}
 						}
 
-						this.assignJobs = this.selector.getSelectedList();
+						if(gotList) {
 
-						// Get the next job to be assigned
-						jobToBeAssigned = this.assignJobs.removeFirst();
+							try {
+								Thread.sleep(100);
+							} catch (InterruptedException e) {
+								// Sleep was interrupted for some reason
+								e.printStackTrace();
+							}
 
-						System.out.println("\nThe chosen best job is: " + jobToBeAssigned);
+							System.out.println("\nGot Converted List");
+							
+							this.assignJobs = this.selector.getSelectedList();
 
-						// Remove it from the list of jobs
-						this.jobs.remove(jobToBeAssigned.getJob());
+							// Get the next job to be assigned
+							jobToBeAssigned = this.assignJobs.removeFirst();
 
-						// Create a new assigned job and set it as current
-						this.currentJob = this.assign(this.robot, jobToBeAssigned);
+							System.out.println("\nThe chosen best job is: " + jobToBeAssigned);
 
-						System.out.println("\nThe current job is: " + this.currentJob);
+							// Remove it from the list of jobs
+							this.jobs.remove(jobToBeAssigned.getJob());
 
-						// Tell subscribers
-						JobAssignedEvent e = new JobAssignedEvent(this.currentJob);
+							// Create a new assigned job and set it as current
+							this.currentJob = this.assign(this.robot, jobToBeAssigned);
 
-						System.out.println("\nDispatched Event");
+							System.out.println("\nThe current job is: " + this.currentJob);
 
-						EventDispatcher.onEvent2(e);
+							// Tell subscribers
+							JobAssignedEvent e = new JobAssignedEvent(this.currentJob);
 
-						this.jobComplete = false;
+							System.out.println("\nDispatched Event");
 
-						System.out.println("\nWaiting for JobCompleteEvent");
+							EventDispatcher.onEvent2(e);
+
+							this.jobComplete = false;
+
+							System.out.println("\nWaiting for JobCompleteEvent");
+						}
+
+						System.out.println("\nWaiting for ConvertedListCompleteEvent");
+
+						try {
+							Thread.sleep(100);
+						} catch (InterruptedException e) {
+							// sleep was interrupted for some reason
+							e.printStackTrace();
+						}
 					}
 
 					try {
@@ -195,13 +221,6 @@ public class JobAssignerSingle extends Thread {
 				// it has been told to stop.
 
 				System.out.println("\nReached end of job list, or was told to stop - Finished");
-
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					// sleep was interrupted for some reason
-					e.printStackTrace();
-				}
 			}
 		}
 	}
@@ -239,6 +258,12 @@ public class JobAssignerSingle extends Thread {
 
 		this.jobs = new LinkedList<>(e.jobs);
 		this.readyToStart = true;
+	}
+
+	@Subscriber
+	public void onConvertedListCompleteEvent(ConvertedListCompleteEvent e){
+
+		this.gotList = true;
 	}
 
 	/**

@@ -3,6 +3,7 @@ package warehouse.jobselection;
 import java.util.Collections;
 import java.util.LinkedList;
 
+import warehouse.event.Event;
 import warehouse.job.Job;
 import warehouse.jobselection.JobWorth;
 import warehouse.jobselection.cancellation.CancellationMachine;
@@ -115,6 +116,8 @@ public class JobSelectorSingle extends Thread {
 			
 			jobworths.add(jobworth);
 		}
+
+		EventDispatcher.onEvent2(new ConvertedListCompleteEvent());
 
 		return jobworths;
 	}
