@@ -49,6 +49,8 @@ public class JobSelectorSingle extends Thread {
 	 */
 	public JobSelectorSingle(Robot robot, LinkedList<Job> jobs, CancellationMachine cancellationMachine) {
 
+		EventDispatcher.subscribe2(this);
+
 		// Set the fields
 		this.robot = robot;
 		this.robotStartLocation = this.robot.position;
@@ -72,20 +74,36 @@ public class JobSelectorSingle extends Thread {
 		this.run = true;
 
 		JobWorth bestJob;
+		this.selectedList = new LinkedList<>();
 
 		while (run && (this.jobs.size() > 0)) {
 
 			// convert it into a list of jobworths
+
+			System.out.println("\nConverting list NOW");
 			this.convertedList = this.convertList(this.robotStartLocation, this.robotFacing);
+
+			assert(this.convertedList != null);
+
+			System.out.println("\nConverted list, sending event...");
+
+			ConvertedListCompleteEvent e = new ConvertedListCompleteEvent();
+
+			EventDispatcher.onEvent2(e);
 
 			// get the best one
 			bestJob = this.selectBestJob(this.convertedList);
+
+			System.out.println("\nThe best Job is: " + bestJob);
 
 			// remove it from the reference job list
 			this.jobs.remove(bestJob.getJob());
 
 			// add it to the list of selected jobs
 			this.selectedList.add(bestJob);
+
+			System.out.println("\nAdding : " + bestJob + " to the list");
+			System.out.println("\nCurrent list of selected jobs: " + this.selectedList);
 
 			this.robotStartLocation = bestJob.getRoute().end;
 
@@ -101,23 +119,30 @@ public class JobSelectorSingle extends Thread {
 	 */
 	public LinkedList<JobWorth> convertList(Location startLocation, Direction startFacing) {
 
+		System.out.println("\nInside convert method...");
+
 		// make an empty list of jobworths
 		LinkedList<JobWorth> jobworths = new LinkedList<JobWorth>();
 
 		// Calculate the worth of each job and add them to the list
 		for (Job job : this.jobs) {
 
+			System.out.println("\nCalculating new JobWorth for job: " + job);
 			JobWorth jobworth = new JobWorth(job, this.robot, startLocation, startFacing);
 			
 			double metric = jobworth.getMetric();
 			double p = 1 - this.cancellationMachine.getProbability(jobworth.getJob());
 			
 			jobworth.setMetric(p * metric);
-			
+
+			System.out.println("CALCULATION FINISHED value = " + jobworth);
+
 			jobworths.add(jobworth);
 		}
 
-		EventDispatcher.onEvent2(new ConvertedListCompleteEvent());
+		System.out.println("+++++++++++++++++++++++++");
+		System.out.println("    COMPLETED LIST");
+		System.out.println("+++++++++++++++++++++++++");
 
 		return jobworths;
 	}

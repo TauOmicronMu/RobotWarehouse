@@ -53,10 +53,8 @@ public class JobAssignerSingle extends Thread {
 	 * 
 	 * @param robot
 	 *            the robot
-	 * @param jobs
-	 *            the list of jobs
 	 */
-	public JobAssignerSingle(Robot robot) {
+	public JobAssignerSingle(Robot robot, LinkedList<Job> trainingJobs) {
 
 		EventDispatcher.subscribe2(this);
 
@@ -72,18 +70,18 @@ public class JobAssignerSingle extends Thread {
 		this.gotList = false;
 
 		try{
-			
-			this.cancellationMachine = new NaiveBayes(jobs);
+
+			this.cancellationMachine = new NaiveBayes(trainingJobs);
+			System.out.println("\nMade a Naive Bayes!");
 		}
 		catch(NullPointerException e){
-			
+
 			this.cancellationMachine = new Backup();
 		}
 		catch(AssertionError e){
-			
+
 			this.cancellationMachine = new Backup();
 		}
-			
 			
 		// Begin the thread
 		this.start();
@@ -188,8 +186,6 @@ public class JobAssignerSingle extends Thread {
 							System.out.println("\nWaiting for JobCompleteEvent");
 						}
 
-						System.out.println("Waiting for ConvertedListCompleteEvent...");
-
 						try {
 							Thread.sleep(100);
 						} catch (InterruptedException e) {
@@ -252,6 +248,7 @@ public class JobAssignerSingle extends Thread {
 	@Subscriber
 	public void onConvertedListCompleteEvent(ConvertedListCompleteEvent e){
 
+		System.out.println("\nReceived the event!");
 		this.gotList = true;
 	}
 

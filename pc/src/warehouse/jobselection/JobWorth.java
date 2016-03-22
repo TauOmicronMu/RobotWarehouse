@@ -24,7 +24,6 @@ public class JobWorth implements Comparable<JobWorth>{
 
 	private Job job;
 	private double rewardTime;
-	private double rewardWeight;
 	private double metric;
 	
 	private Route route;
@@ -125,7 +124,7 @@ public class JobWorth implements Comparable<JobWorth>{
 	 */
 	public String toString(){
 		
-		return "Job of time reward: " + this.rewardTime + " and weight reward: " + this.rewardWeight + " metric of: " + this.metric;
+		return "Job of time reward: " + this.rewardTime + " and metric of: " + this.metric;
 	}
 
 	/**

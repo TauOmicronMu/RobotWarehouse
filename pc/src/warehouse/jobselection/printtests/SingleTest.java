@@ -128,12 +128,25 @@ public class SingleTest  extends Thread{
         //for(List<Job> jobs : this.jobSet){
 
             List<Job> jobs = this.jobSet.get(0);
+            List<Job> trainingJobs = new LinkedList<>();
+            List<Job> trimmedJobs = new LinkedList<>();
+
+            for(int i = 0; i < jobs.size(); i++){
+
+                if(i < 100) {
+
+                    trimmedJobs.add(jobs.get(i));
+                } else{
+
+                    trainingJobs.add(jobs.get(i));
+                }
+            }
 
             Robot robot = new Robot("testRobot", new Location(0, 0), Direction.NORTH);
 
-            JobAssignerSingle assigner = new JobAssignerSingle(robot);
+            JobAssignerSingle assigner = new JobAssignerSingle(robot, new LinkedList<>(jobs));
 
-            EventDispatcher.onEvent2(new BeginAssigningEvent(jobs, new LinkedList<Location>()));
+            EventDispatcher.onEvent2(new BeginAssigningEvent(trimmedJobs, new LinkedList<Location>()));
 
 //            for(int i = 0; i < 10; i++) {
 //
