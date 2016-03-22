@@ -75,12 +75,12 @@ public class CancellationMachineTester {
 
         for(int j = 0; j < jobs.size()/100; j++) {
 
-            for (int i = 0; i < (int) (jobs.size() * percentage); i++) {
+            for (int i = j; i < (int) ((jobs.size() * percentage) + j); i++) {
 
                 trainingJobsList.add(jobList.get(i));
             }
 
-            for (int i = (int) (jobs.size() * percentage); i < jobs.size(); i++) {
+            for (int i = (int) ((jobs.size() * percentage) + j); i < jobs.size(); i++) {
 
                 knownJobsList.add(jobList.get(i));
             }

@@ -54,7 +54,7 @@ public class JobAssignerSingle extends Thread {
 	 * @param robot
 	 *            the robot
 	 */
-	public JobAssignerSingle(Robot robot) {
+	public JobAssignerSingle(Robot robot, LinkedList<Job> trainingJobs) {
 
 		EventDispatcher.subscribe2(this);
 
@@ -71,18 +71,18 @@ public class JobAssignerSingle extends Thread {
 		this.gotList = false;
 
 		try{
-			
-			this.cancellationMachine = new NaiveBayes(jobs);
+
+			this.cancellationMachine = new NaiveBayes(trainingJobs);
+			System.out.println("\nMade a Naive Bayes!");
 		}
 		catch(NullPointerException e){
-			
+
 			this.cancellationMachine = new Backup();
 		}
 		catch(AssertionError e){
-			
+
 			this.cancellationMachine = new Backup();
 		}
-			
 			
 		// Begin the thread
 		this.start();

@@ -131,7 +131,7 @@ public class JobSelectorSingle extends Thread {
 			
 			jobworth.setMetric(p * metric);
 
-			System.out.println("CALCULATION FINISHED for job: " + job);
+			System.out.println("CALCULATION FINISHED value = " + jobworth);
 
 			jobworths.add(jobworth);
 		}
