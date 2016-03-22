@@ -58,6 +58,8 @@ public class JobAssignerSingle extends Thread {
 	 */
 	public JobAssignerSingle(Robot robot) {
 
+		EventDispatcher.subscribe2(this);
+
 		// Set the variables and create the selector
 		this.robot = robot;
 
@@ -97,8 +99,6 @@ public class JobAssignerSingle extends Thread {
 		System.out.println("\nStarting Single Robot Assigner");
 
 		this.run = true;
-
-		EventDispatcher.subscribe2(this);
 
 		JobWorth jobToBeAssigned;
 
@@ -163,7 +163,7 @@ public class JobAssignerSingle extends Thread {
 							}
 
 							System.out.println("\nGot Converted List");
-							
+
 							this.assignJobs = this.selector.getSelectedList();
 
 							// Get the next job to be assigned
@@ -176,6 +176,7 @@ public class JobAssignerSingle extends Thread {
 
 							// Create a new assigned job and set it as current
 							this.currentJob = this.assign(this.robot, jobToBeAssigned);
+							EventDispatcher.onEvent2(new HasCurrentJobEvent());
 
 							System.out.println("\nThe current job is: " + this.currentJob);
 
