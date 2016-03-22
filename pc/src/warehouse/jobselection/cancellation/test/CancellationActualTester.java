@@ -21,7 +21,7 @@ public class CancellationActualTester {
     public CancellationActualTester(String[] trainingSet, String[] testSet) throws IOException {
 
 
-        System.out.println("Percentage correct: " + testMachine(trainingSet, testSet);
+        System.out.println("Percentage correct: " + testMachine(trainingSet, testSet));
 
     }
 
@@ -58,7 +58,7 @@ public class CancellationActualTester {
         List<Location> dropLocations = new ArrayList<>();
         parseFile(trainingSet[4], values -> {
             if(values.length < 2) return;
-            dropLocations.add(new Location(Integer.parseInt(values[0]), Integer.parseInt(values[1])));
+            dropLocations.add(new Location(Integer.parseInt(values[0]), Integer.parseInt(values[1].trim())));
         });
 
         // Convert the job map to a list
@@ -69,15 +69,15 @@ public class CancellationActualTester {
 
         // Parse locations
         HashMap<String, Location> itemLocations2 = new HashMap<>();
-        parseFile(trainingSet[0], values -> itemLocations2.put(values[2], new Location(Integer.parseInt(values[0]), Integer.parseInt(values[1]))));
+        parseFile(testSet[0], values -> itemLocations2.put(values[2], new Location(Integer.parseInt(values[0]), Integer.parseInt(values[1]))));
 
         // Parse items file
         HashMap<String, ItemPickup> itemPickups2 = new HashMap<>();
-        parseFile(trainingSet[1], values -> itemPickups2.put(values[0], new ItemPickup(values[0], itemLocations.get(values[0]), 0, Double.parseDouble(values[1]), Double.parseDouble(values[2]))));
+        parseFile(testSet[1], values -> itemPickups2.put(values[0], new ItemPickup(values[0], itemLocations2.get(values[0]), 0, Double.parseDouble(values[1]), Double.parseDouble(values[2]))));
 
         // Parse jobs file
         HashMap<String, Job> jobs2 = new HashMap<>();
-        parseFile(trainingSet[2], values -> {
+        parseFile(testSet[2], values -> {
             List<ItemPickup> jobPickups = new LinkedList<>();
             for(int i = 1; i < values.length; i += 2) {
                 ItemPickup p = (ItemPickup) itemPickups2.get(values[i]).clone();
@@ -87,13 +87,18 @@ public class CancellationActualTester {
             jobs2.put(values[0], new Job(null, jobPickups, values[0]));
         });
 
-        //TODO
-        parseFile(trainingSet[3], values -> jobs.get(values[0]).cancelledInTrainingSet = values[1].equals("0") ? false : true);
+        parseFile(testSet[3], values -> {
+
+            if(values[values.length - 1].equals("Cancel")) {
+
+                jobs2.get(values[0]).cancelledInTrainingSet = true;
+            }
+        });
 
         List<Location> dropLocations2 = new ArrayList<>();
-        parseFile(trainingSet[4], values -> {
+        parseFile(testSet[4], values -> {
             if(values.length < 2) return;
-            dropLocations2.add(new Location(Integer.parseInt(values[0]), Integer.parseInt(values[1])));
+            dropLocations2.add(new Location(Integer.parseInt(values[0]), Integer.parseInt(values[1].trim())));
         });
 
         // Convert the job map to a list
@@ -123,10 +128,6 @@ public class CancellationActualTester {
             }
         }
 
-        System.out.println("Total Jobs:         " + jobList.size());
-        System.out.println("Training with:      " + trainingJobsList.size());
-        System.out.println("Checking with:      " + knownJobsList.size());
-        System.out.println("Number Cancelled:   " + numberJobsCancelled);
         System.out.println("Number Predicted:   " + percentageCorrect);
         return (percentageCorrect/numberJobsCancelled)*100;
     }
