@@ -123,8 +123,10 @@ public class JobSelectorSingle extends Thread {
 		// Calculate the worth of each job and add them to the list
 		for (Job job : this.jobs) {
 
+			System.out.println("\nSELECTOR THREAD: Converting job: " + job);
 			JobWorth jobworth = new JobWorth(job, this.robot, startLocation, startFacing);
-			
+			System.out.println("\nSELECTOR THREAD: Got jobWorth of: " + jobworth);
+
 			double metric = jobworth.getMetric();
 			double p = 1 - this.cancellationMachine.getProbability(jobworth.getJob());
 			
