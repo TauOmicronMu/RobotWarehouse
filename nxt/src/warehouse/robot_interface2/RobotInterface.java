@@ -12,10 +12,6 @@ import warehouse.util.Subscriber;
  */
 public class RobotInterface {
 
-    static {
-        EventDispatcher.subscribe2(RobotInterface.class);
-    }
-
     public final static String[] menuItems = {"Lost", "Cancel"};
     public final static ButtonListener listener = new ButtonListener() {
         @Override
@@ -47,7 +43,8 @@ public class RobotInterface {
         }
     };
 
-    public static void launch() {
+    static {
+        EventDispatcher.subscribe2(RobotInterface.class);
         Button.addListener(listener);
     }
 
