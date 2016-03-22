@@ -104,6 +104,12 @@ public class RobotInterface {
     }
 
     @Subscriber
+    public static void onDropoffReached(DropOffReachedEvent event) {
+        EventDispatcher.onEvent2(new JobCompleteEvent(job));
+        reset();
+    }
+
+    @Subscriber
     public static void onPickupReached(PickupReachedEvent event) {
         currentPickup = event.pickup;
         updateItemCount();
