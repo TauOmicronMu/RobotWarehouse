@@ -82,7 +82,7 @@ public class SingleTest  extends Thread{
         trainingFiles[2] = filePath + "\\actual\\training_jobs.csv";
         trainingFiles[3] = filePath + "\\actual\\cancellations.csv";
         trainingFiles[4] = filePath + "\\actual\\drops.csv";
-        fileSet.add(trainingFiles);
+        fileSet.add(0,trainingFiles);
 
         String[] actualFiles = new String[5];
         actualFiles[0] = filePath + "\\actual\\locations.csv";
@@ -90,7 +90,7 @@ public class SingleTest  extends Thread{
         actualFiles[2] = filePath + "\\actual\\jobs.csv";
         actualFiles[3] = filePath + "\\actual\\cancellations.csv";
         actualFiles[4] = filePath + "\\actual\\drops.csv";
-        fileSet.add(actualFiles);
+        fileSet.add(1,actualFiles);
 
         int counter = 0;
 
