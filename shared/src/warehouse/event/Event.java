@@ -83,16 +83,17 @@ public abstract class Event implements Serializable {
 
     private static Pair<Job, Integer> parseJob(String[] values, int i) {
         boolean isAssigned = Boolean.valueOf(values[i]);
-        Pair<List<ItemPickup>, Integer> pickups = parsePickupList(values, i + 1);
+        Pair<Location, Integer> dropLoc = parseLocation(values, i+1);
+        Pair<List<ItemPickup>, Integer> pickups = parsePickupList(values, dropLoc.e);
         String id = values[pickups.e];
         Job job = null;
         if (isAssigned) {
             Pair<Robot, Integer> robot = parseRobot(values, pickups.e + 1);
             Pair<Route, Integer> route = parseRoute(values, robot.e);
-            job = new AssignedJob(new Location(0, 0), pickups.t, id, route.t, robot.t);
+            job = new AssignedJob(dropLoc.t, pickups.t, id, route.t, robot.t);
             i = route.e;
         } else {
-            job = new Job(new Location(0, 0), pickups.t, id);
+            job = new Job(dropLoc.t, pickups.t, id);
             i = pickups.e + 1;
         }
 
