@@ -18,8 +18,9 @@ public abstract class Event implements Serializable {
     }
 
     public static void main(String[] args) {
-        //ActionCompleteEvent
+        Robot robot = new Robot("Bob", new Location(0,0), Direction.WEST, 3280239);
 
+        //Parse Job
         String str = "false,2,aa,1,2,3,ab,2,3,4,101";
         Job job = parseJob(split(str, ','), 0).t;
         System.out.println(job);
@@ -27,7 +28,14 @@ public abstract class Event implements Serializable {
         System.out.println(str2);
         System.out.println(str.equals(str2));
 
-
+        //ActionComplete
+        Action a = new TurnAction(90.0);
+        ActionCompleteEvent ace = new ActionCompleteEvent(robot, a);
+        String aces = ace.toPacketString();
+        ActionCompleteEvent ace2 = (ActionCompleteEvent) fromPacketString(aces);
+        System.out.println(ace.equals(ace2));
+        String aces2 = ace2.toPacketString();
+        System.out.println(aces.equals(aces2));
     }
 
     public static Event fromPacketString(String str) {
