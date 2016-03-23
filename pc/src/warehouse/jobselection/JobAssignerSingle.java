@@ -98,6 +98,8 @@ public class JobAssignerSingle extends Thread {
 
 		JobWorth jobToBeAssigned;
 
+		boolean allowEmptyList = true;
+
 		System.out.println("\nASSIGNER THREAD: Waiting for BeginAssigningEvent");
 
 		while (this.run) {
@@ -180,6 +182,7 @@ public class JobAssignerSingle extends Thread {
 
 							EventDispatcher.onEvent2(e);
 
+							allowEmptyList = false;
 							this.jobComplete = false;
 
 							//System.out.println("\nASSIGNER THREAD: Waiting for JobCompleteEvent");
@@ -190,6 +193,11 @@ public class JobAssignerSingle extends Thread {
 						} catch (InterruptedException e) {
 							// sleep was interrupted for some reason
 							e.printStackTrace();
+						}
+
+						if((!allowEmptyList) && (this.assignJobs.size() <= 0)){
+
+							this.run = false;
 						}
 					}
 
