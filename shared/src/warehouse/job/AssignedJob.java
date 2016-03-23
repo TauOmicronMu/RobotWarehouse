@@ -20,6 +20,7 @@ public class AssignedJob extends Job {
 
     public AssignedJob(Job job, Route route, Robot robot) {
         this(job.dropLocation, job.pickups, job.id, route, robot);
+        this.cancelledInTrainingSet = job.cancelledInTrainingSet;
     }
 
     @Override

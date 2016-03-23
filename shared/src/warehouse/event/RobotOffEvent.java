@@ -1,5 +1,13 @@
 package warehouse.event;
 
+/**
+ * Event called when a robot has been turned off
+ * @author txs
+ *
+ */
+public class RobotOffEvent
+{
+
 import warehouse.util.Robot;
 
 /**
@@ -9,4 +17,4 @@ public class RobotOffEvent extends Event {
     public RobotOffEvent(Robot robot) {
         super(robot);
     }
-}
+}}

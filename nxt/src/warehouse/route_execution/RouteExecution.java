@@ -22,6 +22,15 @@ public class RouteExecution {
 	private Route route;
 	private LineFollow lineFollower;
 
+	  static {
+	        EventDispatcher.subscribe2(RouteExecution.class);
+	    }
+
+	    public RouteExecution() {
+	        EventDispatcher.subscribe2(this);
+	        lineFollower = new LineFollow();
+	    }
+
 	    public RouteExecution() {
 	        EventDispatcher.subscribe2(this);
 	        lineFollower = new LineFollow();
@@ -41,16 +50,20 @@ public class RouteExecution {
 			if(a instanceof MoveAction){
 				lineFollower.moveAction(((MoveAction) a).distance);
 				EventDispatcher.onEvent2(new ActionCompleteEvent(robot,a));
-			}else if(a instanceof TurnAction){
+			} 
+                        else if(a instanceof TurnAction){
 				lineFollower.turnAction(((TurnAction) a).angle);
 				EventDispatcher.onEvent2(new ActionCompleteEvent(robot,a));
-			}else if(a instanceof PickupAction){
+			} 
+                        else if(a instanceof PickupAction){
 				lineFollower.pickupAction(((PickupAction) a).pickup,robot);
 				EventDispatcher.onEvent2(new ActionCompleteEvent(robot,a));
-			}else if(a instanceof DropoffAction){
+			} 
+                        else if(a instanceof DropoffAction){
 				lineFollower.dropoffAction(jobEvent.assignedJob);
 				EventDispatcher.onEvent2(new ActionCompleteEvent(robot,a));
-			}else{
+			} 
+                        else {
 				lineFollower.idleAction(((IdleAction)a).time);
 				EventDispatcher.onEvent2(new ActionCompleteEvent(robot,a));
 			}
