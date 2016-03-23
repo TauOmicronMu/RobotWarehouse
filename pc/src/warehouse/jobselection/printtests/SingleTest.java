@@ -194,11 +194,16 @@ public class SingleTest  extends Thread{
     		}
     	}
     	
+    	int numberJobs = actualJobs.size();
+    	int numberSuccessful = actualJobs.size();
+    	boolean firstCancellation = true;
+    	
+    	
     	System.out.println("\n" + cancelled + " cancelled jobs");
     	
     		System.out.println("Starting test. There are " + this.actualJobs.size() + " to choose from, and " + this.cancelledJobs + " were cancelled.");
     	
-            Robot robot = new Robot("testRobot", new Location(0, 0), Direction.NORTH);
+            Robot robot = new Robot("testRobot", new Location(0, 0), Direction.NORTH, 0);
 
             JobAssignerSingle assigner = new JobAssignerSingle(robot, new LinkedList<>(this.trainingJobs));
 
@@ -218,7 +223,7 @@ public class SingleTest  extends Thread{
                     try {
 
                         //System.out.println("\nTEST THREAD: Sleeping");
-                        Thread.sleep(1000);
+                        Thread.sleep(100);
                         //System.out.println("\nTEST THREAD: Woke up");
                     } catch (InterruptedException e) {
                         // Sleep was interrupted for some reason
@@ -229,16 +234,23 @@ public class SingleTest  extends Thread{
                     assert (this.hasCurrentJob == true);
                     assert (assigner.getCurrentJob() != null);
 
-                    System.out.println("\nTEST THREAD: Sending Job Complete Event");
-                    
-                    System.out.println(assigner.getCurrentJob().cancelledInTrainingSet);
                     
                     if(assigner.getCurrentJob().cancelledInTrainingSet){
                     	
+                    	System.out.println("\nTEST THREAD: Sending Job CANCELLATION Event");
+                        
                     	EventDispatcher.onEvent2(new JobCancellationEvent(assigner.getCurrentJob()));
                     	cancellationCounter++;
+                    	
+                    	if(firstCancellation){
+                    		numberSuccessful = jobCounter - 1;
+                    	}
+                    	
+                    	firstCancellation = false;
                     }else{
                     
+                    	System.out.println("\nTEST THREAD: Sending Job Complete Event");
+                        
                     	EventDispatcher.onEvent2(new JobCompleteEvent(assigner.getCurrentJob()));
                     }
                     
@@ -246,7 +258,7 @@ public class SingleTest  extends Thread{
             }
 
             System.out.println("\nTEST THREAD: Telling assigner to stop");
-            System.out.println("Out of " + this.cancelledJobs + " cancelled jobs, " + cancellationCounter + " were chosen.");
+            System.out.println("\nTEST THREAD: We managed to assign " + numberSuccessful + " / " + (numberJobs - cancellationCounter) + " before getting a cancellation!");
             assigner.stopAssigning();
 
 

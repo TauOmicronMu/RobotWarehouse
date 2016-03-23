@@ -27,7 +27,7 @@ public class JobSelectorSingle extends Thread {
 
 	private Robot robot;
 	private boolean run;
-	private LinkedList<Job> jobs;
+	private LinkedList<Job> jobsClone;
 	private Location robotStartLocation;
 	private Direction robotFacing;
 
@@ -35,6 +35,7 @@ public class JobSelectorSingle extends Thread {
 	private LinkedList<JobWorth> selectedList;
 	
 	private CancellationMachine cancellationMachine;
+	private final int id;
 
 	/**
 	 * Create a job selector that chooses jobs for a single robot based on a
@@ -45,7 +46,7 @@ public class JobSelectorSingle extends Thread {
 	 * @param jobs
 	 *            the list of available jobs
 	 */
-	public JobSelectorSingle(Robot robot, LinkedList<Job> jobs, CancellationMachine cancellationMachine) {
+	public JobSelectorSingle(int number, Robot robot, LinkedList<Job> jobs, CancellationMachine cancellationMachine) {
 
 		EventDispatcher.subscribe2(this);
 
@@ -56,9 +57,18 @@ public class JobSelectorSingle extends Thread {
 
 		this.cancellationMachine = cancellationMachine;
 		
-		this.jobs = jobs;
-
+		this.jobsClone = new LinkedList<Job>();
+		
+		for(Job job : jobs){
+			
+			this.jobsClone.add(job);
+		}
+		
+		this.id = number;
+		
 		// Start the thread
+		System.out.println("\nSELECTOR THREAD " + this.id + ": starting thread");
+		
 		this.start();
 	}
 
@@ -70,34 +80,30 @@ public class JobSelectorSingle extends Thread {
 	public void run() {
 
 		this.run = true;
-
+		
 		JobWorth bestJob;
 		this.selectedList = new LinkedList<>();
 
-		while (run && (this.jobs.size() > 0)) {
+		System.out.println("\nSELECTOR THREAD " + this.id + ": ready to run with " + this.jobsClone.size() + " jobs");
+		
+		while (run) {
 
 			// convert it into a list of jobworths
 
-			//System.out.println("\nSELECTOR THREAD: Converting list NOW");
+			System.out.println("\nSELECTOR THREAD " + this.id + ": Converting list NOW");
 			this.convertedList = this.convertList(this.robotStartLocation, this.robotFacing);
 
 			assert(this.convertedList != null);
 
-			//System.out.println("\nSELECTOR THREAD: Converted list, sending event...");
+			System.out.println("\nSELECTOR THREAD " + this.id + ": Converted list, sending event...");
 
 			// get the best one
 			bestJob = this.selectBestJob(this.convertedList);
 
-			//System.out.println("\nSELECTOR THREAD: The best Job is: " + bestJob);
+			System.out.println("\nSELECTOR THREAD " + this.id + ": The best Job is: " + bestJob);
 
 			// remove it from the reference job list
-			this.jobs.remove(bestJob.getJob());
-
-            if(this.jobs.size() <= 0){
-
-                FinishedSelectionEvent e = new FinishedSelectionEvent();
-                EventDispatcher.onEvent2(e);
-            }
+			this.jobsClone.remove(bestJob.getJob());
 
 			// add it to the list of selected jobs
 			this.selectedList.add(bestJob);
@@ -106,12 +112,26 @@ public class JobSelectorSingle extends Thread {
 
 			EventDispatcher.onEvent2(e);
 
-			//System.out.println("\nSELECTOR THREAD: Adding : " + bestJob + " to the list");
-			//System.out.println("\nSELECTOR THREAD: Current list of selected jobs: " + this.selectedList);
+			System.out.println("\nSELECTOR THREAD " + this.id + ": Adding : " + bestJob + " to the list");
+			//System.out.println("\nSELECTOR THREAD " + this.id + ": Current list of selected jobs: " + this.selectedList);
 
 			this.robotStartLocation = bestJob.getRoute().end;
 
 			this.robotFacing = bestJob.getRoute().finalFacing;
+			
+            if(this.jobsClone.size() <= 0){
+
+            	System.out.println("\nSELECTOR THREAD " + this.id + ": FINISHED ALL SELECTIONS -----> WAITING TO DIE x_x");
+                FinishedSelectionEvent e2 = new FinishedSelectionEvent();
+                EventDispatcher.onEvent2(e2);
+                
+                try {
+					this.join();
+				} catch (InterruptedException e1) {
+					//Got interrupted for some reason
+					e1.printStackTrace();
+				}
+            }
 		}
 	}
 
@@ -127,17 +147,23 @@ public class JobSelectorSingle extends Thread {
 		LinkedList<JobWorth> jobworths = new LinkedList<JobWorth>();
 
 		// Calculate the worth of each job and add them to the list
-		for (Job job : this.jobs) {
+		for (Job job : this.jobsClone) {
 
-			//System.out.println("\nSELECTOR THREAD: Converting job: " + job);
+			//System.out.println("\nSELECTOR THREAD " + this.id + ": Converting job: " + job);
 			JobWorth jobworth = new JobWorth(job, this.robot, startLocation, startFacing);
-			//System.out.println("\nSELECTOR THREAD: Got jobWorth of: " + jobworth);
+			//System.out.println("\nSELECTOR THREAD " + this.id + ": Got jobWorth of: " + jobworth);
 
 			double metric = jobworth.getMetric();
-			double p = 1 - this.cancellationMachine.getProbability(jobworth.getJob());
+			double p = this.cancellationMachine.getProbability(jobworth.getJob());
 			
-			jobworth.setMetric(p * metric);
-
+			if(p >= 0.5){
+				jobworth.setMetric(0.000001 * metric);
+			}
+			else{
+				
+				jobworth.setMetric((1 - p) * metric);
+			}
+				
 			jobworths.add(jobworth);
 		}
 

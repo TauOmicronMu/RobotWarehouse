@@ -40,7 +40,6 @@ public class JobWorth implements Comparable<JobWorth>{
 		this.job = job;
 		this.facing = facing;
 		
-
 		TSP tsp = new TSP();
 
 		this.route = tsp.getShortestRoute(job, startLocation, facing).get();

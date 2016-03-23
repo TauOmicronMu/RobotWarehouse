@@ -101,6 +101,8 @@ public class JobAssignerSingle extends Thread {
 
 		JobWorth jobToBeAssigned;
 
+		int number = 0;
+		
 		System.out.println("\nASSIGNER THREAD: Waiting for BeginAssigningEvent");
 
 		while (this.run) {
@@ -109,7 +111,7 @@ public class JobAssignerSingle extends Thread {
 
 				System.out.println("\nASSIGNER THREAD: Received BeginAssigningEvent, sorting jobs");
 
-				this.selector = new JobSelectorSingle(this.robot, this.jobs, this.cancellationMachine);
+				this.selector = new JobSelectorSingle(number, this.robot, this.jobs, this.cancellationMachine);
 
 				System.out.println("\nASSIGNER THREAD: Created Single Robot Selector, assigning jobs");
 
@@ -131,8 +133,9 @@ public class JobAssignerSingle extends Thread {
 						if (this.robotGotLost || this.jobCancelled) {
 
 							System.out.println("\nASSIGNER THREAD: Robot got lost or job was cancelled");
-
-							this.selector = new JobSelectorSingle(this.robot, this.jobs, this.cancellationMachine);
+							
+							number++;
+							this.selector = new JobSelectorSingle(number, this.robot, this.jobs, this.cancellationMachine);
 
 							this.gotList = false;
 
@@ -158,18 +161,20 @@ public class JobAssignerSingle extends Thread {
 								e.printStackTrace();
 							}
 
-							//System.out.println("\nASSIGNER THREAD: Got Converted List");
+							System.out.println("\nASSIGNER THREAD: Got Converted List");
 
 							this.assignJobs = this.selector.getSelectedList();
 
 							// Get the next job to be assigned
 							jobToBeAssigned = this.assignJobs.removeFirst();
 
-							//System.out.println("\nASSIGNER THREAD: The chosen best job is: " + jobToBeAssigned);
+							System.out.println("\nASSIGNER THREAD: The chosen best job is: " + jobToBeAssigned);
 
 							// Remove it from the list of jobs
 							this.jobs.remove(jobToBeAssigned.getJob());
 
+							System.out.println("\nASSIGNER THREAD: The list of jobs now has " + this.jobs.size() + " elements");
+							
 							// Create a new assigned job and set it as current
 							this.currentJob = this.assign(this.robot, jobToBeAssigned);
 							EventDispatcher.onEvent2(new SelectorHasCurrentJobEvent());
@@ -179,13 +184,13 @@ public class JobAssignerSingle extends Thread {
 							// Tell subscribers
 							JobAssignedEvent e = new JobAssignedEvent(this.currentJob);
 
-							//System.out.println("\nASSIGNER THREAD: Dispatched JobAssignedEvent");
+							System.out.println("\nASSIGNER THREAD: Dispatched JobAssignedEvent");
 
 							EventDispatcher.onEvent2(e);
 
 							this.jobComplete = false;
 
-							//System.out.println("\nASSIGNER THREAD: Waiting for JobCompleteEvent");
+							System.out.println("\nASSIGNER THREAD: Waiting for JobCompleteEvent");
 						}
 
 						try {
