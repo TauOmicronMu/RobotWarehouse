@@ -1,12 +1,9 @@
 package warehouse.jobselection.printtests;
 
-import com.sun.xml.internal.bind.v2.runtime.*;
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader;
 import warehouse.event.BeginAssigningEvent;
-import warehouse.event.Event;
 import warehouse.event.JobCompleteEvent;
 import warehouse.job.Job;
-import warehouse.jobselection.HasCurrentJobEvent;
+import warehouse.jobselection.SelectorHasCurrentJobEvent;
 import warehouse.jobselection.JobAssignerSingle;
 import warehouse.util.*;
 import warehouse.util.Location;
@@ -198,7 +195,7 @@ public class SingleTest  extends Thread{
     }
 
     @Subscriber
-    public void onHasCurrentJobEvent(HasCurrentJobEvent e){
+    public void onHasCurrentJobEvent(SelectorHasCurrentJobEvent e){
         
         this.hasCurrentJob = true;
     }
