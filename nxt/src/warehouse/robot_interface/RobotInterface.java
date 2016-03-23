@@ -1,5 +1,6 @@
 package warehouse.robot_interface;
 
+
 import lejos.nxt.Button;
 import lejos.nxt.ButtonListener;
 import lejos.nxt.LCD;
@@ -16,32 +17,33 @@ public class RobotInterface extends Thread
 {
 	private Boolean interfaceRun, jobRun, hasJob;
 	private Communication comm;
-	private String message;
 
 	/**
 	 * Constructor
 	 */
-	public RobotInterface() {
-
-		interfaceRun = new Boolean(true);
-		hasJob = new Boolean(false);
-		jobRun = new Boolean(false);
+	public RobotInterface()
+	{
+		interfaceRun = true;
+		hasJob = false;
+		jobRun = false;
 		comm = new Communication();
-		message = comm.getMessage();
 
-		Button.ESCAPE.addButtonListener(new ButtonListener() {
+		Button.ESCAPE.addButtonListener(new ButtonListener()
+		{
 
 			@Override
-			public void buttonReleased(Button b) {
-				if (!hasJob.get()) {
+			public void buttonReleased(Button b)
+			{
+				if (!hasJob)
+				{
 					comm.robotOff();
-					interfaceRun.set(false);
+					interfaceRun = false;
 				}
 			}
 
 			@Override
-			public void buttonPressed(Button b) {
-				//TODO : ???
+			public void buttonPressed(Button b)
+			{
 			}
 		});
 
@@ -51,22 +53,24 @@ public class RobotInterface extends Thread
 	/**
 	 * When finishing a job
 	 */
-	public void reset() {
+	public void reset()
+	{
 		LCD.clearDisplay();
 		LCD.drawString("Moving around!", 0, 0);
-
-		hasJob.set(false);
-		message = null;
+		hasJob = false;
 	}
 
 	@Override
-	public void run() {
-		while (interfaceRun.get()) {
-			if (comm.hasJob()) {
+	public void run()
+	{
+		while (interfaceRun)
+		{
+			if (comm.hasJob())
+			{
 				// Start a new job
 
-				hasJob.set(true);
-				jobRun.set(true);
+				hasJob = true;
+				jobRun = true;
 
 				PickupJob pj = new PickupJob(comm, jobRun);
 				pj.run();
@@ -75,9 +79,19 @@ public class RobotInterface extends Thread
 				reset();
 			}
 			
-			if (message != null) {
+			if (comm.atDropOff())
+			{
 				LCD.clearDisplay();
-				LCD.drawString(message, 1, 1);
+				LCD.drawString("Drop Off point reached!", 1, 1);
+				try
+				{
+					Thread.sleep(5000);
+				} catch (InterruptedException e)
+				{
+					System.err.println("Catch2");
+					System.exit(1);
+				}
+				reset();
 			}
 
 			// Show mercy to the processor
@@ -86,7 +100,4 @@ public class RobotInterface extends Thread
 		}
 	}
 
-	public static void main(String[] args) {
-		new RobotInterface().run();
-	}
 }

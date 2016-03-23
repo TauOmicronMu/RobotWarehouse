@@ -1,12 +1,17 @@
 package warehouse.robot_interface;
 
+
+import warehouse.event.DropOffReachedEvent;
 import warehouse.event.JobCancellationEvent;
 import warehouse.event.JobCompleteEvent;
+import warehouse.event.PickupCompleteEvent;
+import warehouse.event.PickupReachedEvent;
+import warehouse.event.RobotLostEvent;
 import warehouse.event.RobotOffEvent;
-import warehouse.event.WrongPlaceEvent;
-import warehouse.job.Job;
+import warehouse.job.AssignedJob;
 import warehouse.util.EventDispatcher;
 import warehouse.util.ItemPickup;
+import warehouse.util.Robot;
 import warehouse.util.Subscriber;
 
 
@@ -15,30 +20,43 @@ import warehouse.util.Subscriber;
  * private field in RobotInterface, and it's instantiated inside the
  * constructor.
  */
-public class Communication {
+public class Communication
+{
 
-	public ItemPickup pickup;
-	public String message;
+	ItemPickup pickup;
+	String message;
+	Robot robot;
+	AssignedJob job;
+	boolean dropOff;
 
-	static {
+	static 
+	{
         EventDispatcher.subscribe2(Communication.class);
     }
 	
-	public Communication() {
+	public Communication()
+	{
 		EventDispatcher.subscribe2(this);
 		pickup = null;
-		message = null;
+		dropOff = false;
 	}
 	
 	@Subscriber
-	public void onDropOff(DropOffEvent e) {
-		message = e.getMessage();
-		EventDispatcher.onEvent2(new JobCompleteEvent(e.getJob()));
+	public void onDropOff(DropOffReachedEvent e)
+	{
+		dropOff = true;
+		if(e.robot.isPresent()){
+			robot = e.robot.get();
+		}
+		
+		job = e.job;
+		EventDispatcher.onEvent2(new JobCompleteEvent(job));
 	}
 	
 	@Subscriber
-	public void onPickup(PickupEvent e) {
-		pickup = e.getPickup();
+	public void onPickup(PickupReachedEvent e)
+	{
+		pickup = e.pickup;
 	}
 	
 	/**
@@ -46,9 +64,11 @@ public class Communication {
 	 * 
 	 * @return The message
 	 */
-	public String getMessage()
+	public boolean atDropOff()
 	{
-		return message;
+		boolean result = dropOff;
+		dropOff = false;
+		return result;
 	}
 
 	/**
@@ -64,24 +84,27 @@ public class Communication {
 	/**
 	 * Tells the server that the robot was turned off
 	 */
-	public void robotOff() {
-		EventDispatcher.onEvent2(new RobotOffEvent());
+	public void robotOff()
+	{
+		EventDispatcher.onEvent2(new RobotOffEvent(robot));
 		pickup = null;
 	}
 
 	/**
 	 * Tells the server that the current job was cancelled
 	 */
-	public void jobCancelled() {
-		EventDispatcher.onEvent2(new JobCancellationEvent());
+	public void jobCancelled()
+	{
+		EventDispatcher.onEvent2(new JobCancellationEvent(job));
 		pickup = null;
 	}
 
 	/**
 	 * Tells the server that the robot is in the wrong place
 	 */
-	public void wrongPlace() {
-		EventDispatcher.onEvent2(new WrongPlaceEvent());
+	public void wrongPlace()
+	{
+		EventDispatcher.onEvent2(new RobotLostEvent(robot));
 		pickup = null;
 	}
 
@@ -90,7 +113,8 @@ public class Communication {
 	 * 
 	 * @return The name of the item
 	 */
-	public String getItemName() {
+	public String getItemName()
+	{
 		return pickup.itemName;
 	}
 
@@ -99,15 +123,18 @@ public class Communication {
 	 * 
 	 * @return The number of items
 	 */
-	public int getItemNumber() {
+	public int getItemNumber()
+	{
 		return pickup.itemCount;
 	}
 
 	/**
 	 * Tells the server that the job is done
 	 */
-	public void jobDone() {
+	public void jobDone()
+	{
+		EventDispatcher.onEvent2(new PickupCompleteEvent(robot, pickup));
 		pickup = null;
-		EventDispatcher.onEvent2(new PickupCompleteEvent());
 	}
+
 }
