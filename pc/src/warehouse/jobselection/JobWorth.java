@@ -13,7 +13,7 @@ import warehouse.util.Route;
  * 
  * Created by Owen on 28/02/2016
  * 
- * Preliminary class to: Calculate the 'worth' of a job, Provide fields for
+ * Class to: Calculate the 'worth' of a job, Provide fields for
  * reward per timestep before and after considering cancellation
  * 
  * @author Owen

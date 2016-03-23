@@ -16,7 +16,7 @@ import warehouse.util.Robot;
  * 
  * Created by Owen on 28/02/2016
  * 
- * Preliminary class to: Select the best job for a single robot, Base selection
+ * Class to: Select the best job for a single robot, Base selection
  * on the 'worth' of a job
  * 
  * @author Owen
