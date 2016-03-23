@@ -601,6 +601,7 @@ public class NaiveBayes implements CancellationMachine {
 //		System.out.println("\nfinal q = " + this.qnormalisedProbabilityOfCancellation(p, q));
 		// Check that it's a valid probability to avoid getting wrong numbers in
 		// the main job selection code
+		System.out.println(finalProbability);
 		assert ((finalProbability >= 0) && (finalProbability <= 1));
 
 		// Return the final probability calculated
