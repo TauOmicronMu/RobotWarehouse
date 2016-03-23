@@ -13,4 +13,12 @@ public class PickupCompleteEvent extends Event {
         super(robot);
         this.pickup = pickup;
     }
+
+    public String toPacketString() {
+        String s = "";
+        s += "PickupComplete";
+        s += ",";
+        s += pickup.toPacketString();
+        return s;
+    }
 }

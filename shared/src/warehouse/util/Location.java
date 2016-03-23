@@ -20,4 +20,8 @@ public class Location {
                 ", y=" + y +
                 '}';
     }
+
+    public String toPacketString() {
+        return x + "," + y;
+    }
 }

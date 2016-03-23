@@ -15,4 +15,9 @@ public class MoveAction extends Action {
         this.distance = distance;
         this.destination = destination;
     }
+
+    @Override
+    public String toPacketString() {
+        return "Move";
+    }
 }

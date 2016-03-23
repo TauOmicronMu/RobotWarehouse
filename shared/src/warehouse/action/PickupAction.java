@@ -9,4 +9,8 @@ public class PickupAction extends Action {
 
     public ItemPickup pickup;
 
+    @Over
+    public String toPacketString() {
+        return "Pickup";
+    }
 }

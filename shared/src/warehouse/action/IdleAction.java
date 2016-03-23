@@ -10,4 +10,9 @@ public class IdleAction extends Action {
     public IdleAction(int time) {
         this.time = time;
     }
+
+    @Override
+    public String toPacketString() {
+        return "Idle";
+    }
 }

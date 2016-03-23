@@ -12,4 +12,10 @@ public class PickupReachedEvent extends Event {
         super(robot);
         this.pickup = pickup;
     }
+
+    public String toPacketString() {
+        String s = "";
+        return s;
+    }
+
 }
