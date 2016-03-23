@@ -21,7 +21,7 @@ public abstract class Event implements Serializable {
         Robot robot = new Robot("Bob", new Location(0,0), Direction.WEST, 3280239);
 
         //Parse Job
-        String str = "false,2,aa,1,2,3,ab,2,3,4,101";
+        String str = "false,0,0,2,aa,1,2,3,ab,2,3,4,101";
         Job job = parseJob(split(str, ','), 0).t;
         System.out.println(job);
         String str2 = job.toPacketString();
