@@ -43,6 +43,8 @@ public class Job {
         String s = "";
         s += isAssigned();
         s += ",";
+        s += dropLocation.toPacketString();
+        s += ",";
         s += pickups.size();
         s += ",";
         for(ItemPickup p : pickups) {

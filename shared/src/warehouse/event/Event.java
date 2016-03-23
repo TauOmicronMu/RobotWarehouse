@@ -18,9 +18,16 @@ public abstract class Event implements Serializable {
     }
 
     public static void main(String[] args) {
+        //ActionCompleteEvent
+
         String str = "false,2,aa,1,2,3,ab,2,3,4,101";
         Job job = parseJob(split(str, ','), 0).t;
         System.out.println(job);
+        String str2 = job.toPacketString();
+        System.out.println(str2);
+        System.out.println(str.equals(str2));
+
+
     }
 
     public static Event fromPacketString(String str) {
