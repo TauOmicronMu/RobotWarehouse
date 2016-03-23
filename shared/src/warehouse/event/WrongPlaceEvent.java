@@ -5,8 +5,6 @@ package warehouse.event;
  * @author txs
  *
  */
-public class WrongPlaceEvent
-{
 
 import warehouse.util.Robot;
 
