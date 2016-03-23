@@ -108,8 +108,11 @@ public class CancellationActualTester {
         CancellationMachine testMachine = new NaiveBayes(trainingJobsList);
 
         System.out.println(testMachine);
-        double percentageCorrect = 0;
-        int numberJobsCancelled = 0;
+        double percentageCancelledCorrect = 0;
+        double percentageNotCancelledCorrect = 0;
+
+        int numberCancelled = 0;
+        int numberNotCancelled = 0;
 
         for(Job job : knownJobsList){
 
@@ -119,17 +122,28 @@ public class CancellationActualTester {
 
             if(job.cancelledInTrainingSet){
 
-                numberJobsCancelled++;
+                numberCancelled++;
 
                 if (generatedProbability > 0.5) {
 
-                    percentageCorrect++;
+                    percentageCancelledCorrect++;
+                }
+            } else if(!job.cancelledInTrainingSet){
+
+                numberNotCancelled++;
+
+                if(generatedProbability <= 0.5){
+
+                    percentageNotCancelledCorrect++;
                 }
             }
         }
 
-        System.out.println("Number Predicted:   " + percentageCorrect);
-        return (percentageCorrect/numberJobsCancelled)*100;
+        System.out.println("Number Predicted cancelled:     " + percentageCancelledCorrect);
+        System.out.println("Number cancelled:               " + numberCancelled);
+        System.out.println("Number Predicted not cancelled: " + percentageNotCancelledCorrect);
+        System.out.println("Number not cancelled            " + numberNotCancelled);
+        return ((percentageCancelledCorrect + percentageNotCancelledCorrect)/knownJobsList.size())*100;
     }
 
     public static void parseFile(String filePath, Consumer<String[]> consumer) throws FileNotFoundException {

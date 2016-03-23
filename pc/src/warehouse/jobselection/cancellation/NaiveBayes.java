@@ -78,15 +78,19 @@ public class NaiveBayes implements CancellationMachine {
 
 			ArrayList<DPair> numberPickupsList1 = new ArrayList<DPair>();
 			numberPickupsList1.add(new DPair(NumRange.Zero, 0));
-			numberPickupsList1.add(new DPair(NumRange.OneToTwo, 0));
-			numberPickupsList1.add(new DPair(NumRange.ThreeToFour, 0));
+			numberPickupsList1.add(new DPair(NumRange.One, 0));
+            numberPickupsList1.add(new DPair(NumRange.Two, 0));
+			numberPickupsList1.add(new DPair(NumRange.Three, 0));
+            numberPickupsList1.add(new DPair(NumRange.Four, 0));
 			numberPickupsList1.add(new DPair(NumRange.FivePlus, 0));
 
 			ArrayList<DPair> numberPickupsList2 = new ArrayList<DPair>();
 			numberPickupsList2.add(new DPair(NumRange.Zero, 0));
-			numberPickupsList2.add(new DPair(NumRange.OneToTwo, 0));
-			numberPickupsList2.add(new DPair(NumRange.ThreeToFour, 0));
-			numberPickupsList2.add(new DPair(NumRange.FivePlus, 0));
+            numberPickupsList2.add(new DPair(NumRange.One, 0));
+            numberPickupsList2.add(new DPair(NumRange.Two, 0));
+            numberPickupsList2.add(new DPair(NumRange.Three, 0));
+            numberPickupsList2.add(new DPair(NumRange.Four, 0));
+            numberPickupsList2.add(new DPair(NumRange.FivePlus, 0));
 
 			NumberPickupsGivenCancelled = new Distribution(numberPickupsList1, 0);
 			NumberPickupsGivenNotCancelled = new Distribution(numberPickupsList2, 0);
@@ -251,17 +255,22 @@ public class NaiveBayes implements CancellationMachine {
 		if(intPickups == 0){
 
 			numberPickups = NumRange.Zero;
-		}else if ((intPickups >= 1) && (intPickups <= 2)) {
+		}else if (intPickups == 1){
 
-			numberPickups = NumRange.OneToTwo;
-		} else if ((intPickups >= 3) && (intPickups <= 4)) {
+			numberPickups = NumRange.One;
+		} else if (intPickups == 2){
 
-			numberPickups = NumRange.ThreeToFour;
+			numberPickups = NumRange.Two;
+		}else if (intPickups == 3) {
+
+			numberPickups = NumRange.Three;
+		}else if (intPickups == 4) {
+
+			numberPickups = NumRange.Four;
 		}else if (intPickups >= 5) {
 
 			numberPickups = NumRange.FivePlus;
 		}
-
 		return numberPickups;
 	}
 
