@@ -60,7 +60,6 @@ public class NaiveBayesTest {
         
         try {
             CancellationMachineTester tester1 = new CancellationMachineTester(0.95, files1, files2, files3, files4, files5);
-
             CancellationActualTester actualTester = new CancellationActualTester(trainingSet, testSet);
         } catch (IOException e) {
             e.printStackTrace();
