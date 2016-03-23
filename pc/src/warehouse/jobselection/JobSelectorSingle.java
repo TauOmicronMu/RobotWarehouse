@@ -5,6 +5,8 @@ import java.util.LinkedList;
 
 import warehouse.job.Job;
 import warehouse.jobselection.cancellation.CancellationMachine;
+import warehouse.jobselection.event.AddedToSelectedListEvent;
+import warehouse.jobselection.event.FinishedSelectionEvent;
 import warehouse.util.Direction;
 import warehouse.util.EventDispatcher;
 import warehouse.util.Location;
