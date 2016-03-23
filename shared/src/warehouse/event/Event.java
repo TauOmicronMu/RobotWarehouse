@@ -6,6 +6,7 @@ import warehouse.job.Job;
 import warehouse.util.*;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -17,25 +18,88 @@ public abstract class Event implements Serializable {
         this.robot = robot;
     }
 
-    public static void main(String[] args) {
-        Robot robot = new Robot("Bob", new Location(0,0), Direction.WEST, 3280239);
+    public static boolean isomorphic(Event e) {
+        String es = e.toPacketString();
+        Event e2 = fromPacketString(es);
+        String es2 = e2.toPacketString();
+        return (e.equals(e2) && es.equals(es2));
+    }
 
-        //Parse Job
+    public static void main(String[] args) {
+        final Location location = new Location(0,0);
+        final Robot robot = new Robot("Bob", location, Direction.WEST, 3280239);
+        final Action a = new TurnAction(90.0);
+        final Route route = new Route();
+        final ItemPickup pickup = new ItemPickup("Cake", location, 9001);
+
+        boolean cum = true;
+
+        //Parse Job (and create a shared one for later)
         String str = "false,0,0,2,aa,1,2,3,ab,2,3,4,101";
-        Job job = parseJob(split(str, ','), 0).t;
+        final Job job = parseJob(split(str, ','), 0).t;
         System.out.println(job);
         String str2 = job.toPacketString();
         System.out.println(str2);
         System.out.println(str.equals(str2));
 
+        final AssignedJob ajob = new AssignedJob(job, route, robot);
+
         //ActionComplete
-        Action a = new TurnAction(90.0);
         ActionCompleteEvent ace = new ActionCompleteEvent(robot, a);
-        String aces = ace.toPacketString();
-        ActionCompleteEvent ace2 = (ActionCompleteEvent) fromPacketString(aces);
-        System.out.println(ace.equals(ace2));
-        String aces2 = ace2.toPacketString();
-        System.out.println(aces.equals(aces2));
+        System.out.println(isomorphic(ace));
+        cum = cum && isomorphic(ace);
+
+        //BeginAssigning
+        BeginAssigningEvent bae = new BeginAssigningEvent(new ArrayList<Job>(){{add(job)}});
+        System.out.println(isomorphic(bae));
+        cum = cum && isomorphic(bae);
+
+        //DropOffReached
+        DropOffReachedEvent dor = new DropOffReachedEvent(ajob);
+        System.out.println(isomorphic(dor));
+        cum = cum && isomorphic(dor);
+
+        //JobAssigned
+        JobAssignedEvent ja = new JobAssignedEvent(ajob);
+        System.out.println(isomorphic(ja));
+        cum = cum && isomorphic(ja);
+
+        //JobCancellation
+        JobCancellationEvent jc = new JobCancellationEvent(ajob);
+        System.out.println(isomorphic(jc));
+        cum = cum && isomorphic(jc);
+
+        //JobComplete
+        JobCompleteEvent jco = new JobCompleteEvent(ajob);
+        System.out.println(isomorphic(jco));
+        cum = cum && isomorphic(jco);
+
+        //PickupComplete
+        PickupCompleteEvent pc = new PickupCompleteEvent(robot, pickup);
+        System.out.println(isomorphic(pc));
+        cum = cum && isomorphic(pc);
+
+        //PickupReached
+        PickupReachedEvent pr = new PickupReachedEvent(pickup, robot);
+        System.out.println(isomorphic(pr));
+        cum = cum && isomorphic(pr);
+
+        //RobotLost
+        RobotLostEvent rl = new RobotLostEvent(robot);
+        System.out.println(isomorphic(rl));
+        cum = cum && isomorphic(rl);
+
+        //RobotOff
+        RobotOffEvent ro = new RobotOffEvent(robot);
+        System.out.println(isomorphic(ro));
+        cum = cum && isomorphic(ro);
+
+        //WrongPlace
+        WrongPlaceEvent wp = new WrongPlaceEvent(robot);
+        System.out.println(isomorphic(wp));
+        cum = cum && isomorphic(wp);
+
+        System.out.println("All Tests Passed? : " + cum);
     }
 
     public static Event fromPacketString(String str) {
@@ -174,6 +238,10 @@ public abstract class Event implements Serializable {
         String[] array = new String[list.size()];
         for (int i = 0; i < array.length; i++) array[i] = list.get(i);
         return array;
+    }
+
+    public String toPacketString() {
+        return "";
     }
 
 }
