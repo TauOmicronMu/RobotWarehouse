@@ -30,11 +30,6 @@ public class RouteExecution {
 	        EventDispatcher.subscribe2(this);
 	        lineFollower = new LineFollow();
 	    }
-
-	    public RouteExecution() {
-	        EventDispatcher.subscribe2(this);
-	        lineFollower = new LineFollow();
-	    }
 	
 /**
   * Waits for a new job to be assigned and calls the corresponding methods depending on the type of action the robot needs to execute
