@@ -1,14 +1,18 @@
 package warehouse.networking;
 
 
-import samtebbs33.net.SocketStream;
-import samtebbs33.net.event.SocketEventListener;
-import samtebbs33.net.event.SocketEventManager;
-
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Set;
+
+import lejos.pc.comm.NXTComm;
+import lejos.pc.comm.NXTCommException;
+import lejos.pc.comm.NXTCommFactory;
+import lejos.pc.comm.NXTInfo;
+import samtebbs33.net.SocketStream;
+import samtebbs33.net.event.SocketEventListener;
+import samtebbs33.net.event.SocketEventManager;
 
 /**
  * Created by samtebbs on 30/01/2016.
