@@ -30,4 +30,23 @@ public class DropOffReachedEvent extends Event {
         s += job.toPacketString();
         return s;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DropOffReachedEvent that = (DropOffReachedEvent) o;
+
+        if (!str.equals(that.str)) return false;
+        return job.equals(that.job);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = str.hashCode();
+        result = 31 * result + job.hashCode();
+        return result;
+    }
 }

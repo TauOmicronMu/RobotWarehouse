@@ -5,4 +5,5 @@ public abstract class Action {
     public String toPacketString() {
         return "";
     }
+
 }

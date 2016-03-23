@@ -18,4 +18,20 @@ public class JobCancellationEvent extends Event {
         s += job.toPacketString();
         return s;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        JobCancellationEvent that = (JobCancellationEvent) o;
+
+        return job != null ? job.equals(that.job) : that.job == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return job != null ? job.hashCode() : 0;
+    }
 }

@@ -30,4 +30,19 @@ public class JobAssignedEvent extends Event {
 		return s;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		JobAssignedEvent that = (JobAssignedEvent) o;
+
+		return assignedJob.equals(that.assignedJob);
+
+	}
+
+	@Override
+	public int hashCode() {
+		return assignedJob.hashCode();
+	}
 }

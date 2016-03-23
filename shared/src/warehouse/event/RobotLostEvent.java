@@ -17,4 +17,5 @@ public class RobotLostEvent extends Event {
         s += robot.toPacketString();
         return s;
     }
+
 }

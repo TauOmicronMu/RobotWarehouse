@@ -33,6 +33,24 @@ public class BeginAssigningEvent extends Event {
         this.jobs = jobs;
     }
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		BeginAssigningEvent that = (BeginAssigningEvent) o;
+
+		if (!jobs.equals(that.jobs)) return false;
+		return dropLocations.equals(that.dropLocations);
+
+	}
+
+	@Override
+	public int hashCode() {
+		int result = jobs.hashCode();
+		result = 31 * result + dropLocations.hashCode();
+		return result;
+	}
 
 	public String toPacketString() {
 		String s = "";

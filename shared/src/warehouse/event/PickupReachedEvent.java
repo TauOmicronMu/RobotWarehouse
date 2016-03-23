@@ -18,4 +18,19 @@ public class PickupReachedEvent extends Event {
         return s;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PickupReachedEvent that = (PickupReachedEvent) o;
+
+        return pickup != null ? pickup.equals(that.pickup) : that.pickup == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return pickup != null ? pickup.hashCode() : 0;
+    }
 }

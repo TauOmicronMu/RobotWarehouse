@@ -26,4 +26,20 @@ public class ActionCompleteEvent extends Event {
         s += action.toPacketString();
         return s;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ActionCompleteEvent that = (ActionCompleteEvent) o;
+
+        return action.equals(that.action);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return action.hashCode();
+    }
 }

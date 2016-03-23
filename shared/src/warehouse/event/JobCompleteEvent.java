@@ -26,4 +26,20 @@ public class JobCompleteEvent extends Event {
 		s += job.toPacketString();
 		return s;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		JobCompleteEvent that = (JobCompleteEvent) o;
+
+		return job != null ? job.equals(that.job) : that.job == null;
+
+	}
+
+	@Override
+	public int hashCode() {
+		return job != null ? job.hashCode() : 0;
+	}
 }

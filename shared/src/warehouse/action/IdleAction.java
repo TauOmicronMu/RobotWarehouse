@@ -15,4 +15,20 @@ public class IdleAction extends Action {
     public String toPacketString() {
         return "Idle";
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        IdleAction that = (IdleAction) o;
+
+        return time == that.time;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return time;
+    }
 }
