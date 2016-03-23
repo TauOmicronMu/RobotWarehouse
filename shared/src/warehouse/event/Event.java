@@ -50,7 +50,7 @@ public abstract class Event implements Serializable {
         cum = cum && isomorphic(ace);
 
         //BeginAssigning
-        BeginAssigningEvent bae = new BeginAssigningEvent(new ArrayList<Job>(){{add(job)}});
+        BeginAssigningEvent bae = new BeginAssigningEvent(new ArrayList<Job>(){{add(job);}});
         System.out.println(isomorphic(bae));
         cum = cum && isomorphic(bae);
 
