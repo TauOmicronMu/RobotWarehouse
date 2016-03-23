@@ -7,7 +7,7 @@ import warehouse.job.AssignedJob;
  */
 public class DropOffReachedEvent extends Event {
     @Deprecated
-    public final String str;
+    public String str;
 
     public final AssignedJob job;
 

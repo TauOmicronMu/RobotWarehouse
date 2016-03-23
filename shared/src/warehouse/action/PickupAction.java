@@ -9,7 +9,7 @@ public class PickupAction extends Action {
 
     public ItemPickup pickup;
 
-    @Over
+    @Override
     public String toPacketString() {
         return "Pickup";
     }
