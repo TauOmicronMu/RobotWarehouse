@@ -23,7 +23,7 @@
  * have any questions.
  */
 
-package java.lang.reflect;
+package tom.awesome.unicorn.reflect;
 
 /**
  * {@code InvocationHandler} is the interface implemented by

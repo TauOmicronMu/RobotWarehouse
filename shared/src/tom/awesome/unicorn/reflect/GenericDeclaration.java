@@ -1,4 +1,5 @@
-/* Copyright 2003-2004 Sun Microsystems, Inc.  All Rights Reserved.
+/*
+ * Copyright 2003-2004 Sun Microsystems, Inc.  All Rights Reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -22,31 +23,28 @@
  * have any questions.
  */
 
-package java.lang.reflect;
+package tom.awesome.unicorn.reflect;
 
 /**
- * {@code GenericArrayType} represents an array type whose component
- * type is either a parameterized type or a type variable.
+ * A common interface for all entities that declare type variables.
+ *
  * @since 1.5
  */
-public interface GenericArrayType extends Type {
+public interface GenericDeclaration {
     /**
-     * Returns a {@code Type} object representing the component type
-     * of this array. This method creates the component type of the
-     * array.  See the declaration of {@link
-     * java.lang.reflect.ParameterizedType ParameterizedType} for the
-     * semantics of the creation process for parameterized types and
-     * see {@link java.lang.reflect.TypeVariable TypeVariable} for the
-     * creation process for type variables.
+     * Returns an array of {@code TypeVariable} objects that
+     * represent the type variables declared by the generic
+     * declaration represented by this {@code GenericDeclaration}
+     * object, in declaration order.  Returns an array of length 0 if
+     * the underlying generic declaration declares no type variables.
      *
-     * @return  a {@code Type} object representing the component type
-     *     of this array
-     * @throws TypeNotPresentException if the underlying array type's
-     *     component type refers to a non-existent type declaration
-     * @throws MalformedParameterizedTypeException if  the
-     *     underlying array type's component type refers to a
-     *     parameterized type that cannot be instantiated for any reason
+     * @return an array of {@code TypeVariable} objects that represent
+     *     the type variables declared by this generic declaration
+     * @throws GenericSignatureFormatError if the generic
+     *     signature of this generic declaration does not conform to
+     *     the format specified in the Java Virtual Machine Specification,
+     *     3rd edition
      */
-    Type getGenericComponentType();
+    public TypeVariable<?>[] getTypeParameters();
 }
 
