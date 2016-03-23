@@ -39,14 +39,16 @@ public class SocketEventManager extends EventManager<SocketEventListener> implem
         try {
             while (true) {
                 final Serializable obj = client.read();
-                forEach(listener -> listener.onPacketReceived(new SocketEvent.SocketPacketEvent(client, obj)));
+                for (SocketEventListener listener : listeners)
+                    listener.onPacketReceived(new SocketEvent.SocketPacketEvent(client, obj));
+                //forEach(listener -> listener.onPacketReceived(new SocketEvent.SocketPacketEvent(client, obj)));
             }
         } catch (SocketException | EOFException e) {
-            forEach(listener -> listener.onDisconnection(new SocketEvent.SocketExceptionEvent(client, e)));
-        } catch (IOException e) {
-            forEach(listener -> listener.onTimeout(new SocketEvent(client)));
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            for (SocketEventListener listener : listeners)
+                listener.onDisconnection(new SocketEvent.SocketExceptionEvent(client, e));
+            //forEach(listener -> listener.onDisconnection(new SocketEvent.SocketExceptionEvent(client, e)));
+        } catch (Exception e) {
+            for (SocketEventListener listener : listeners) listener.onTimeout(new SocketEvent(client));
         }
     }
 }
