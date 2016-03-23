@@ -83,7 +83,7 @@ public class CancellationMachineTester {
 
         CancellationMachine testMachine = new NaiveBayes(trainingJobsList);
 
-        System.out.println(testMachine);
+        System.out.println("\n" + testMachine);
         double percentageCorrect = 0;
         int numberJobsCancelled = 0;
 

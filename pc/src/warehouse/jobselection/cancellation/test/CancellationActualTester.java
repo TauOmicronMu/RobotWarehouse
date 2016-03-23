@@ -21,7 +21,7 @@ public class CancellationActualTester {
     public CancellationActualTester(String[] trainingSet, String[] testSet) throws IOException {
 
 
-        System.out.println("Percentage correct: " + testMachine(trainingSet, testSet));
+        System.out.println("\nFOR ACTUAL FILES: \nPercentage correct: " + testMachine(trainingSet, testSet) + "\n");
 
     }
 

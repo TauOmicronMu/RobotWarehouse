@@ -13,83 +13,91 @@ import warehouse.util.Route;
  * 
  * Created by Owen on 28/02/2016
  * 
- * Preliminary class to:
- * -calculate the 'worth' of a job
- * -provide fields for reward per timestep/weight
+ * Preliminary class to: Calculate the 'worth' of a job, Provide fields for
+ * reward per timestep before and after considering cancellation
  * 
  * @author Owen
  *
  */
-public class JobWorth implements Comparable<JobWorth>{
+public class JobWorth implements Comparable<JobWorth> {
 
 	private Job job;
 	private double rewardTime;
 	private double metric;
-	
+
 	private Route route;
 	private Direction facing;
-	
+
 	/**
-	 * Create a new JobWorth object that contains a job and also describes
-	 * how good it is to assign it to a robot.
+	 * Create a new JobWorth object that contains a job and also describes how
+	 * good it is to assign it to a robot.
 	 * 
-	 * @param job the given job
+	 * @param job
+	 *            the given job
+	 * @param robot
+	 *            the given robot
+	 * @param startLocation
+	 *            the start location of the job
+	 * @param facing
+	 *            the facing the robot is at when it starts the job
 	 */
-	public JobWorth(Job job, Robot robot, Location startLocation, Direction facing){
-		
+	public JobWorth(Job job, Robot robot, Location startLocation, Direction facing) {
+
 		this.job = job;
 		this.facing = facing;
-		
+
+		// Get the optimal route from route planning
 		TSP tsp = new TSP();
 
 		this.route = tsp.getShortestRoute(job, startLocation, facing).get();
 		this.facing = this.route.finalFacing;
-		
+
+		// get the reward per time step for this job
 		this.rewardTime = rewardPerTimeStep(job);
-	
+
 		this.metric = rewardTime;
 	}
-	
+
 	/**
 	 * Get method for the final facing.
 	 * 
 	 * @return the direction corresponding to the final facing
 	 */
-	public Direction getFinalFacing(){
-		
+	public Direction getFinalFacing() {
+
 		return this.facing;
 	}
-	
+
 	/**
 	 * Get method for the end location of the route
 	 * 
 	 * @return the location at the end of the route
 	 */
-	public Location getEndLocation(){
-		
+	public Location getEndLocation() {
+
 		return this.route.end;
 	}
-	
+
 	/**
 	 * Get method for the job.
 	 * 
 	 * @return the job
 	 */
-	public Job getJob(){
-		
+	public Job getJob() {
+
 		return this.job;
 	}
-	
+
 	/**
 	 * Get method for the route
 	 * 
 	 * @return the route
 	 */
-	public Route getRoute(){
-		
+	public Route getRoute() {
+
 		return this.route;
 	}
-	
+
 	/**
 	 * Get method for reward per time step.
 	 * 
@@ -102,89 +110,92 @@ public class JobWorth implements Comparable<JobWorth>{
 	/**
 	 * Get method for cancellation probability incorporated with reward values.
 	 * 
-	 * @return the average reward for the job
+	 * @return the reward per timestep for the job, after cancellation is taken
+	 *         into account
 	 */
 	public double getMetric() {
 		return metric;
 	}
-	
+
 	/**
 	 * Set the metric for this jobworth
 	 * 
-	 * @param metric the metric for this job
+	 * @param metric
+	 *            the metric for this job
 	 */
-	public void setMetric(double metric){
-		
+	public void setMetric(double metric) {
+
 		this.metric = metric;
 	}
 
 	/**
 	 * To String method.
 	 */
-	public String toString(){
-		
+	public String toString() {
+
 		return "Job of time reward: " + this.rewardTime + " and metric of: " + this.metric;
 	}
 
 	/**
 	 * Helper method to calculate the reward per time step.
 	 * 
-	 * @param job the given job
+	 * @param job
+	 *            the given job
 	 * @return the reward per time step
 	 */
-	private double rewardPerTimeStep(Job job){
-		
-		/*reward per time step = 
+	private double rewardPerTimeStep(Job job) {
+
+		/*
+		 * reward per time step =
 		 * 
-		 *  sum from 1 to k (number of pickups) of:
-		 *  	
-		 *  	number of items * reward per item
-		 * 	
+		 * sum from 1 to k (number of pickups) of:
+		 * 
+		 * number of items * reward per item
+		 * 
 		 * Divided by:
 		 * 
-		 * 	total time to execute all pickups
+		 * total time to execute all pickups
 		 */
-		
-		double sumReward = 0; 
-		
-		for(ItemPickup pickup : job.pickups){
-			
+
+		double sumReward = 0;
+
+		for (ItemPickup pickup : job.pickups) {
+
 			sumReward += (pickup.itemCount * pickup.reward);
 		}
-		
+
 		int bestDistance = this.route.totalDistance;
-		
-		return (sumReward/bestDistance);
+
+		return (sumReward / bestDistance);
 	}
 
 	@Override
 	public int compareTo(JobWorth jobworth) {
-		
-		if(this.getMetric() > jobworth.getMetric()){
-			
+
+		if (this.getMetric() > jobworth.getMetric()) {
+
 			return 1;
-		}
-		else if(this.getMetric() < jobworth.getMetric()){
-			
+		} else if (this.getMetric() < jobworth.getMetric()) {
+
 			return -1;
 		}
-		
+
 		return 0;
 	}
-	
+
 	@Override
-	public boolean equals(Object o){
-		
-		if((o instanceof JobWorth) && (this.getMetric() == ((JobWorth)o).getMetric())){
-			
+	public boolean equals(Object o) {
+
+		if ((o instanceof JobWorth) && (this.getMetric() == ((JobWorth) o).getMetric())) {
+
 			return true;
 		}
 		return false;
 	}
-	
+
 	@Override
-	public int hashCode(){
-		
-		return (int)this.getMetric();
+	public int hashCode() {
+
+		return (int) this.getMetric();
 	}
 }
