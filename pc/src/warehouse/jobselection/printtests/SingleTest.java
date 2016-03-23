@@ -157,6 +157,8 @@ public class SingleTest  extends Thread{
         }
 
         SingleTest tester = new SingleTest(trainingJobs, actualJobs);
+        
+        
     }
 
     public SingleTest(List<Job> trainingJobs, List<Job> actualJobs){
@@ -260,8 +262,13 @@ public class SingleTest  extends Thread{
             System.out.println("\nTEST THREAD: Telling assigner to stop");
             System.out.println("\nTEST THREAD: We managed to assign " + numberSuccessful + " / " + (numberJobs - cancellationCounter) + " before getting a cancellation!");
             assigner.stopAssigning();
-
-
+            
+            try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				// Interrupted for some reason
+				e.printStackTrace();
+			}
     }
 
     @Subscriber

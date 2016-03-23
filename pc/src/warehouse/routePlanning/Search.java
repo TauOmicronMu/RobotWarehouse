@@ -169,7 +169,7 @@ public class Search {
 		gScore.put(startState, 0.0);
 		fScore.put(startState, (double) start.manhattanDistance(goal));
 
-		// Main loop
+		// WarehouseMain loop
 		while (!openSet.isEmpty()) {
 			// get the next best node to expand
 			State current = getLowestState(openSet, fScore);
@@ -237,7 +237,7 @@ public class Search {
 		gScore.put(start, 0.0);
 		fScore.put(start, (double) start.manhattanDistance(goal));
 
-		// Main loop
+		// WarehouseMain loop
 		while (!openSet.isEmpty()) {
 			// get the next best node to expand
 			Location current = getLowestLocation(openSet, fScore);

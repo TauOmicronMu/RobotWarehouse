@@ -84,6 +84,8 @@ public class EventDispatcher {
         }
         /* methods.forEach(method -> {
             Class methodParam = method.getParameters()[0].getType();
+        methods.forEach(method -> {
+            Class methodParam = method.getParameterTypes()[0];
             if(clsMethodMap.containsKey(methodParam)) clsMethodMap.get(methodParam).add(method);
             else {
                 ArrayList<Method> list = new ArrayList<Method>();
@@ -118,6 +120,7 @@ public class EventDispatcher {
         for (Method mth : methods)
             if (mth.getParameterTypes().length == 1 && mth.getAnnotation(annotationClass) != null) list.add(mth);
         return list;
+        //return (List<Method>) Arrays.stream(methods).filter(mth -> mth.getParameterTypes().length == 1 && mth.getAnnotation(annotationClass)!= null).collect(Collectors.toList());
     }
 
 }
