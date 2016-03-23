@@ -24,8 +24,8 @@ import warehouse.util.Subscriber;
  * Created by Owen on 07/03/2016
  * 
  * Preliminary class to: 
- * -Assign the best job in a list to a robot 
- * -Utilise the JobSelectorSingle class to sort the jobs
+ * Assign the best job in a list to a robot ,
+ * Utilise the JobSelectorSingle class to sort the jobs
  * 
  * @author Owen
  *
@@ -53,6 +53,7 @@ public class JobAssignerSingle extends Thread {
 	 * 
 	 * @param robot
 	 *            the robot
+	 * @param trainingJobs the list of training jobs for the cancellation machine to use
 	 */
 	public JobAssignerSingle(Robot robot, LinkedList<Job> trainingJobs) {
 
@@ -218,7 +219,7 @@ public class JobAssignerSingle extends Thread {
 
 		// If it reaches this point,
 		// it has been told to stop.
-		System.out.println("\nASSIGNER THREAD: Reached end of job list, or was told to stop - Finished");
+		System.out.println("\nASSIGNER THREAD: Reached end of job list, or was told to stop ----> WAITING TO DIE X_X");
 	}
 
 	/**
