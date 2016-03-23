@@ -2,6 +2,7 @@ package warehouse.networking;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,13 +10,18 @@ import lejos.pc.comm.NXTCommException;
 import samtebbs33.net.SocketStream;
 import samtebbs33.net.event.SocketEvent;
 import warehouse.event.Event;
+import warehouse.util.Direction;
 import warehouse.util.EventDispatcher;
+import warehouse.util.Location;
 import warehouse.util.MultiSubscriber;
+
+import warehouse.util.Robot;
 
 public class WarehouseServer extends Server {
 	
 	private SocketStream[] robotConnections = new SocketStream[3];
 	private int numRobots = 0;
+	public static final ArrayList<Robot> robots = new ArrayList(); 
 
 	public WarehouseServer() throws IOException, NXTCommException {
 		super();
@@ -26,6 +32,7 @@ public class WarehouseServer extends Server {
 	@Override
 	public void onClientConnected(SocketStream stream) throws IOException {
 		super.onClientConnected(stream);
+		robots.add(new Robot( robotNames[numRobots], new Location(0, 0), Direction.NORTH, numRobots));;
 		robotConnections[numRobots++] = stream;  
 	}
 
