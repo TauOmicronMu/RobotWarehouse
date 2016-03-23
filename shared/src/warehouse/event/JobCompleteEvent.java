@@ -17,4 +17,13 @@ public class JobCompleteEvent extends Event {
 		this.job = job;
 	}
 
+	public String toPacketString() {
+		String s = "";
+		s += "JobComplete";
+		s += ",";
+		s += robot.toPacketString();
+		s += ",";
+		s += job.toPacketString();
+		return s;
+	}
 }

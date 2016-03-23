@@ -10,4 +10,12 @@ public class JobCancellationEvent extends Event {
         super(job.robot);
         this.job = job;
     }
+
+    public String toPacketString() {
+        String s = "";
+        s += "JobCancellation";
+        s += ",";
+        s += job.toPacketString();
+        return s;
+    }
 }
