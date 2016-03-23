@@ -58,6 +58,10 @@ public class HeldKarpTSP {
 				distances.put(found, getDistance(found));
 		}
 		
+		for(int node =2; node < allLocations.size(); node++){
+			
+		}
+		
 		// TODO return method
 		return null;
 	}

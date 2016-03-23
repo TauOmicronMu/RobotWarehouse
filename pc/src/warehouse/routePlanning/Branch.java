@@ -35,7 +35,7 @@ public class Branch {
 	 *            the list of groups for this branch
 	 */
 	public Branch(double[][] adjacencyMatrix, LinkedList<Edge> route, int[] edgesLeft, int[] edgesConnected,
-			int currentNode, int connectedNode, LinkedList<LinkedList<Edge>> currentGroups, int currentWeight) {
+			int currentNode, int connectedNode, LinkedList<LinkedList<Edge>> currentGroups) {
 		setAdjacencyMatrix(adjacencyMatrix);
 		setRoute(route);
 		setEdgesLeft(edgesLeft);
@@ -43,7 +43,6 @@ public class Branch {
 		setCurrentNode(currentNode);
 		setConnectedNode(connectedNode);
 		setCurrentGroups(currentGroups);
-		setCurrentWeight(currentWeight);
 	}
 
 	/**
@@ -469,7 +468,7 @@ public class Branch {
 		// adds a new edge to whichever group it belongs in and merges groups
 		// checks to see if it is the first node ever added
 		if (currentGroups.isEmpty()) {
-			LinkedList<Edge> g = new LinkedList<>();
+			LinkedList<Edge> g = new LinkedList<Edge>();
 			g.add(pairToAdd);
 			currentGroups.add(g);
 		} else {
@@ -508,7 +507,7 @@ public class Branch {
 			}
 			// creates a new group if it did not fit into any groups
 			if (numberOfAdds == 0) {
-				LinkedList<Edge> g = new LinkedList<>();
+				LinkedList<Edge> g = new LinkedList<Edge>();
 				g.add(pairToAdd);
 				currentGroups.add(g);
 			}
@@ -569,39 +568,5 @@ public class Branch {
 			System.out.println();
 		}
 		System.out.println();
-	}
-
-	/**
-	 * @return the currentWeight
-	 */
-	public int getCurrentWeight() {
-		return currentWeight;
-	}
-
-	/**
-	 * @param currentWeight
-	 *            the currentWeight to set
-	 */
-	private void setCurrentWeight(int currentWeight) {
-		this.currentWeight = currentWeight;
-	}
-
-	/**
-	 * Adds a weight to current the current weight and returns a boolean
-	 * representing whether the robot needs to return to the drop off location
-	 * before continuing
-	 * 
-	 * @param weightToAdd
-	 *            the weight to add
-	 * @return boolean representing whether the robot must go to the drop
-	 *         location
-	 */
-	public boolean addWeight(int weightToAdd) {
-		currentWeight += weightToAdd;
-		if (currentWeight >= 50) {
-			currentWeight = currentWeight - 50;
-			return true;
-		}
-		return false;
 	}
 }

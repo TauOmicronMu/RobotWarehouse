@@ -78,7 +78,7 @@ public class TSP {
 		LinkedList<Edge> route = new LinkedList<Edge>();
 
 		// creates the initial branch
-		Branch initial = new Branch(adjacencyMatrix, route, edgesLeft, edgesConnected, 0, 1, currentGroups, 0);
+		Branch initial = new Branch(adjacencyMatrix, route, edgesLeft, edgesConnected, 0, 1, currentGroups);
 
 		// starts the first call of the route finding algorithm
 		getRoute(initial);
@@ -191,7 +191,7 @@ public class TSP {
 		for (int i = 0; i < 2; i++) {
 			branches[i] = new Branch(currentBranch.getAdjacencyMatrix(), currentBranch.getRoute(),
 					currentBranch.getEdgesLeft(), currentBranch.getEdgesConnected(), currentNode, connectedNode,
-					currentBranch.getCurrentGroups(), currentBranch.getCurrentWeight());
+					currentBranch.getCurrentGroups());
 		}
 
 		// one branch adds a node, the other removes it
