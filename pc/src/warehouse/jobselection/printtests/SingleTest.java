@@ -122,13 +122,10 @@ public class SingleTest  extends Thread{
             });
 
             if(counter == 0) {
-                parseFile(fileNameArray[3], values -> {
 
-                    if (values[values.length - 1].equals("Cancel")) {
+                // Parse cancellations file (I'm not sure of the actual file name)
+                parseFile(fileNameArray[3], values -> jobs.get(values[0]).cancelledInTrainingSet = values[1].equals("0") ? false : true);
 
-                        jobs.get(values[0]).cancelledInTrainingSet = true;
-                    }
-                });
             }
 
             List<Location> dropLocations = new ArrayList<>();

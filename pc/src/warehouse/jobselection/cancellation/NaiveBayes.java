@@ -405,15 +405,25 @@ public class NaiveBayes implements CancellationMachine {
 
 		for (int i = 0; i < this.TotalReward.p.probabilities.size(); i++) {
 
-			this.TotalReward.p.probabilities.get(i).probability /= this.TotalReward.p.denominator;
-			this.TotalReward.q.probabilities.get(i).probability /= this.TotalReward.q.denominator;
-		}
+            if(this.TotalReward.p.probabilities.get(i).probability > 0) {
+                this.TotalReward.p.probabilities.get(i).probability /= this.TotalReward.p.denominator;
+            }
+
+            if(this.TotalReward.q.probabilities.get(i).probability > 0) {
+                this.TotalReward.q.probabilities.get(i).probability /= this.TotalReward.q.denominator;
+            }
+        }
 
 		for (int i = 0; i < this.TotalWeight.p.probabilities.size(); i++) {
 
-			this.TotalWeight.p.probabilities.get(i).probability /= this.TotalWeight.p.denominator;
-			this.TotalWeight.q.probabilities.get(i).probability /= this.TotalWeight.q.denominator;
-		}
+            if(this.TotalWeight.p.probabilities.get(i).probability > 0) {
+                this.TotalWeight.p.probabilities.get(i).probability /= this.TotalWeight.p.denominator;
+            }
+
+            if(this.TotalWeight.p.probabilities.get(i).probability > 0) {
+                this.TotalWeight.q.probabilities.get(i).probability /= this.TotalWeight.q.denominator;
+            }
+        }
 	}
 
 	/**
@@ -601,6 +611,7 @@ public class NaiveBayes implements CancellationMachine {
 //		System.out.println("\nfinal q = " + this.qnormalisedProbabilityOfCancellation(p, q));
 		// Check that it's a valid probability to avoid getting wrong numbers in
 		// the main job selection code
+		System.out.println(finalProbability);
 		assert ((finalProbability >= 0) && (finalProbability <= 1));
 
 		// Return the final probability calculated
