@@ -23,16 +23,16 @@
  * have any questions.
  */
 
-
-package java.lang.reflect;
+package tom.awesome.unicorn.reflect;
 
 /**
- * Thrown when a semantically malformed parameterized type is
- * encountered by a reflective method that needs to instantiate it.
- * For example, if the number of type arguments to a parameterized type
- * is wrong.
+ * Type is the common superinterface for all types in the Java
+ * programming language. These include raw types, parameterized types,
+ * array types, type variables and primitive types.
  *
  * @since 1.5
  */
-public class MalformedParameterizedTypeException extends RuntimeException{}
+
+public interface Type {
+}
 

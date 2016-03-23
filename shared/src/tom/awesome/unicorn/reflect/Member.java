@@ -23,7 +23,7 @@
  * have any questions.
  */
 
-package java.lang.reflect;
+package tom.awesome.unicorn.reflect;
 
 /**
  * Member is an interface that reflects identifying information about
