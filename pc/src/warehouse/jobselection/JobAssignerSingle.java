@@ -200,12 +200,6 @@ public class JobAssignerSingle extends Thread {
 						// sleep was interrupted for some reason
 						e.printStackTrace();
 					}
-
-					if(this.assignJobs.size() <= 0){
-
-						this.run = false;
-					}
-
 				}
 			}
 		}
