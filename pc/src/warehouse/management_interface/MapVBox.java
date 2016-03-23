@@ -56,7 +56,7 @@ public class MapVBox extends VBox {
 	public void warehouseMap() {
 
 //		GridMap map = TestMaps.warehouseMap();
-		GridMap map = MapUtils.createRealWarehouse();
+		GridMap map = MapUtils.createMarkingWarehouseMap();
 
 		// Create the simulation using the given map. This simulation can run
 		// without a GUI.
