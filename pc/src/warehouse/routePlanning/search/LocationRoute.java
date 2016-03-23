@@ -1,4 +1,4 @@
-package warehouse.routePlanning;
+package warehouse.routePlanning.search;
 
 import java.util.LinkedList;
 
@@ -19,6 +19,15 @@ public class LocationRoute {
 	
 	public LinkedList<Location> getRoute() {
 		return route;
+	}
+	
+	@Override
+	public String toString() {
+		String toReturn = "Route: \n";
+		for(Location l: route){
+			toReturn += "(" + l.x + "," +l.y +")\n";
+		}
+		return toReturn;
 	}
 	
 }

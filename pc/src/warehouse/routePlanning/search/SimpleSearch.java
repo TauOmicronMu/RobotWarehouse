@@ -1,4 +1,4 @@
-package warehouse.routePlanning;
+package warehouse.routePlanning.search;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Set;
 
+import warehouse.routePlanning.Map;
 import warehouse.util.Location;;
 
 public class SimpleSearch extends Search {
@@ -15,7 +16,18 @@ public class SimpleSearch extends Search {
 		super(m);
 	}
 
-	private Optional<LocationRoute> DistanceAStar(Location start, Location goal) {
+	public Optional<LocationRoute> getRoute(Location start, Location goal) {
+		if (inMap(start.y, start.x) && inMap(goal.y, goal.x)) {
+			start = map[start.y][start.x];
+			goal = map[goal.y][goal.x];
+			if (available.get(start) && available.get(goal)) {
+				return SimpleAStar(start, goal);
+			}
+		}
+		return Optional.empty();
+	}
+
+	private Optional<LocationRoute> SimpleAStar(Location start, Location goal) {
 		// The set of Locations already evaluated.
 		Set<Location> closedSet = new HashSet<Location>();
 
@@ -50,8 +62,9 @@ public class SimpleSearch extends Search {
 			// if the best node is the goal then finished
 			if (current.x == goal.x && current.y == goal.y) {
 				// return the optimal route
-				LinkedList<Location> route = getPath(cameFrom, current);
-				return Optional.of(getPathSize(cameFrom, current));
+				LinkedList<Location> path = getPath(cameFrom, current);
+				LocationRoute route = new LocationRoute(path, path.size() - 1);
+				return Optional.of(route);
 			}
 			// else continue
 			// remove current form the openSet and add to closedSet

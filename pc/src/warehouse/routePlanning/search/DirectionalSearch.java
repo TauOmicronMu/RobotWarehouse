@@ -1,4 +1,4 @@
-package warehouse.routePlanning;
+package warehouse.routePlanning.search;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,33 +8,19 @@ import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Set;
 
-import warehouse.action.Action;
-import warehouse.action.IdleAction;
-import warehouse.action.MoveAction;
-import warehouse.action.TurnAction;
+import warehouse.routePlanning.Map;
 import warehouse.util.Direction;
 import warehouse.util.Location;
-import warehouse.util.Route;
 
-public class DirectionalSearch {
-	
-	private HashMap<Location, Boolean> available;
-	private Location[][] map;
-	private final int pickUpTime = 10;
-	private final int dropOffTime = 8;
-	private Location dropLocation;
-	ArrayList<State> states;
+public class DirectionalSearch extends Search {
 
-	/**
-	 * Constructor which sets up the map and obstacles
-	 */
-	public DirectionalSearch(Map m, Location dropLocation) {
-		map = m.getMap();
-		available = m.getAvailable();
+	private ArrayList<State> states;
+
+	public DirectionalSearch(Map m) {
+		super(m);
 		states = generateStates();
-		this.dropLocation = dropLocation;
 	}
-	
+
 	/**
 	 * Generates all possible states in the map
 	 * 
@@ -65,7 +51,7 @@ public class DirectionalSearch {
 	 *            the starting facing
 	 * @return the list of states
 	 */
-	private Optional<LinkedList<State>> getEdge(Location start, Location goal, Direction facing) {
+	public Optional<StateRoute> getRoute(Location start, Location goal, Direction facing) {
 		if (inMap(start.y, start.x) && inMap(goal.y, goal.x)) {
 			start = map[start.y][start.x];
 			goal = map[goal.y][goal.x];
@@ -90,7 +76,7 @@ public class DirectionalSearch {
 	 *            the goal location
 	 * @return a list of locations which form the optimal route to take
 	 */
-	private Optional<LinkedList<State>> StateAStar(Location start, Location goal, Direction facing) {
+	private Optional<StateRoute> StateAStar(Location start, Location goal, Direction facing) {
 		State startState = getState(start, facing).get();
 
 		// The set of states already evaluated.
@@ -127,7 +113,9 @@ public class DirectionalSearch {
 			// if the best node is the goal then finished
 			if (current.getLocation().x == goal.x && current.getLocation().y == goal.y) {
 				// return the optimal route
-				return Optional.of(getPath(cameFrom, current));
+				LinkedList<State> path = getPath(cameFrom, current);
+				StateRoute route = new StateRoute(path, path.size());
+				return Optional.of(route);
 			}
 			// else continue
 			// remove current form the openSet and add to closedSet
@@ -159,7 +147,7 @@ public class DirectionalSearch {
 		// no route could be found
 		return Optional.empty();
 	}
-	
+
 	/**
 	 * Sets up the a map with infinity values for every location
 	 * 
@@ -179,7 +167,7 @@ public class DirectionalSearch {
 		}
 		return hScore;
 	}
-	
+
 	/**
 	 * Gets the location with the lowest estimated cost to the goal
 	 * 
@@ -203,7 +191,7 @@ public class DirectionalSearch {
 		}
 		return best;
 	}
-	
+
 	/**
 	 * Assembles a list of states in order from a series of linked states
 	 * 
@@ -225,43 +213,7 @@ public class DirectionalSearch {
 		}
 		return path;
 	}
-	
-	/**
-	 * Creates a route from a given list of states
-	 * 
-	 * @param allStates
-	 *            the list of all states passed through
-	 * @return the route generated
-	 */
-	private Route createRoute(LinkedList<State> allStates) {
-		// The list of moves to make to reach goal
-		LinkedList<Action> path = new LinkedList<Action>();
 
-		for (int current = 1; current < allStates.size(); current++) {
-			Location currentLocation = allStates.get(current).getLocation();
-			Direction currentFacing = allStates.get(current).getFacing();
-			Location previousLocation = allStates.get(current - 1).getLocation();
-			Direction previousFacing = allStates.get(current - 1).getFacing();
-
-			// checks the type of action to add to the route
-			if (previousFacing.equals(currentFacing)) {
-				if (previousLocation.x == currentLocation.x && previousLocation.y == currentLocation.y) {
-					path.add(new IdleAction(1));
-				} else {
-					path.add(new MoveAction(1, currentLocation));
-				}
-			} else if (previousFacing.turnLeft().equals(currentFacing)) {
-				path.add(new TurnAction(-95));
-			} else {
-				path.add(new TurnAction(95));
-			}
-		}
-
-		Route route = new Route(path, allStates.getFirst().getLocation(), allStates.getLast().getLocation(), allStates.getLast().getFacing());
-		route.totalDistance = path.size();
-		return route;
-	}
-	
 	/**
 	 * Gets the neighbours of a node
 	 * 
@@ -310,7 +262,7 @@ public class DirectionalSearch {
 
 		return neighbours;
 	}
-	
+
 	/**
 	 * Gets the state for a given location and direction
 	 * 
@@ -327,18 +279,5 @@ public class DirectionalSearch {
 			}
 		}
 		return Optional.empty();
-	}
-	
-	/**
-	 * Returns whether a given location is inside the map or not
-	 * 
-	 * @param y
-	 *            the y coordinate
-	 * @param x
-	 *            the x coordinate
-	 * @return boolean representing whether the location is in the map or not
-	 */
-	private boolean inMap(int y, int x) {
-		return (y >= 0 && y < map.length && x >= 0 && x < map[y].length);
 	}
 }

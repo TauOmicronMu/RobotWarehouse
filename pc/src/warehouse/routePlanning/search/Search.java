@@ -1,13 +1,14 @@
-package warehouse.routePlanning;
+package warehouse.routePlanning.search;
 
 import java.util.HashMap;
 
+import warehouse.routePlanning.Map;
 import warehouse.util.Location;
 
 public abstract class Search {
 	protected Location[][] map;
 	protected HashMap<Location, Boolean> available;
-	
+
 	public Search(Map m) {
 		map = m.getMap();
 		available = m.getAvailable();
@@ -25,5 +26,5 @@ public abstract class Search {
 	protected boolean inMap(int y, int x) {
 		return (y >= 0 && y < map.length && x >= 0 && x < map[y].length);
 	}
-	
+
 }
