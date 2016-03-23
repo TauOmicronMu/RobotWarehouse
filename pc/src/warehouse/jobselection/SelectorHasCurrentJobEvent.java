@@ -5,8 +5,4 @@ package warehouse.jobselection;
  */
 public class SelectorHasCurrentJobEvent {
 
-    public SelectorHasCurrentJobEvent(){
-
-
-    }
 }

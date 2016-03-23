@@ -283,6 +283,7 @@ public class SingleTest  extends Thread{
             String line = in.nextLine();
             if(!line.isEmpty()) consumer.accept(line.trim().split(","));
         }
+        
     }
     
     public static void print(Object o){
