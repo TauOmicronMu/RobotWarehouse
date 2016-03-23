@@ -281,7 +281,7 @@ public class JobAssignerSingle extends Thread {
 	 *            the job complete event
 	 */
 	@Subscriber
-	public void onJobCompleteevent(JobCompleteEvent e) {
+	public void onJobCompleteEvent(JobCompleteEvent e) {
 
 		System.out.println("\nASSIGNER THREAD: -------------------------------");
 		//System.out.println("\nASSIGNER THREAD: Job Complete, assigning new job");
