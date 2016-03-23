@@ -1,20 +1,19 @@
-package warehouse.route_execution;
+package warehouse.route_execution_test;
 
 import lejos.nxt.LightSensor;
 
-
-/**Class that updates the values that the 2 sensors read
+/**Class that simulates the real listener
  * @author Gabriel Iuriciuc
  *
  */
-public class LSListener extends Thread {
+public class LSlListenerTest extends Thread {
 
-	private LineFollow robotUnit;
+	private LineFollowTest robotUnit;
 	private LightSensor right;
 	private LightSensor left;
 	public static boolean stop = true;
 
-	public LSListener(LineFollow robotUnit, LightSensor right, LightSensor left) {
+	public LSlListenerTest(LineFollowTest robotUnit, LightSensor right, LightSensor left) {
 		this.robotUnit = robotUnit;
 		this.right = right;
 		this.left = left;

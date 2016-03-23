@@ -12,6 +12,11 @@ import warehouse.util.Robot;
 import warehouse.util.Route;
 import warehouse.util.Subscriber;
 
+/**
+ * Class that receives the route and sees what type of actions a robot needs to execute
+ * @author Gabriel
+ *
+ */
 public class RouteExecution {
 
 	private Route route;
@@ -22,6 +27,11 @@ public class RouteExecution {
 	        lineFollower = new LineFollow();
 	    }
 	
+/**
+  * Waits for a new job to be assigned and calls the corresponding methods depending on the type of action the robot needs to execute
+  *
+  */
+	    
 	@Subscriber
 	public void onJobAssignment(JobAssignedEvent jobEvent)
 	{
