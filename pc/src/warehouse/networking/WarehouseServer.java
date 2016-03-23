@@ -1,17 +1,16 @@
 package warehouse.networking;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-
 import lejos.pc.comm.NXTCommException;
 import samtebbs33.net.SocketStream;
-
 import samtebbs33.net.event.SocketEvent;
 import warehouse.event.Event;
 import warehouse.util.EventDispatcher;
 import warehouse.util.MultiSubscriber;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 public class WarehouseServer extends Server {
 	
@@ -78,8 +77,8 @@ public class WarehouseServer extends Server {
 
 	@MultiSubscriber
 	public void onEvent(Event event) {
-		if(event.robot.isPresent()) {
-			send(event.robot.get().id, event);
+		if (event.robot != null) {
+			send(event.robot.id, event);
 		}
 		else {
 			broadcast(event);
