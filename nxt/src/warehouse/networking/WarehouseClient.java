@@ -32,7 +32,7 @@ public class WarehouseClient extends Client {
 	@Override
 	public void onDisconnection(SocketExceptionEvent event) {
 		// TODO Auto-generated method stub
-		
+		System.err.println("Disconnected");
 	}
 
 	@Override
