@@ -2,7 +2,7 @@ package warehouse.action;
 
 public abstract class Action {
 
-    public toPacketstring() {
+    public String toPacketstring() {
         return "";
     }
 }
