@@ -5,9 +5,6 @@ package warehouse.event;
  * @author txs
  *
  */
-public class RobotOffEvent
-{
-
 import warehouse.util.Robot;
 
 /**
@@ -25,4 +22,4 @@ public class RobotOffEvent extends Event {
         s += robot.toPacketString();
         return s;
     }
-}}
+}
