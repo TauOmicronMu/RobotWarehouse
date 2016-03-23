@@ -19,8 +19,8 @@ public abstract class Event implements Serializable {
 
     public static void main(String[] args) {
         String str = "false,2,aa,1,2,3,ab,2,3,4,101";
-        Route route = parseRoute(split(str, ','), 0).t;
-        System.out.println(route);
+        Job job = parseJob(split(str, ','), 0).t;
+        System.out.println(job);
     }
 
     public static Event fromPacketString(String str) {
@@ -68,16 +68,17 @@ public abstract class Event implements Serializable {
 
     private static Pair<Job, Integer> parseJob(String[] values, int i) {
         boolean isAssigned = Boolean.valueOf(values[i]);
-        Pair<List<ItemPickup>, Integer> pickups = parsePickupList(values, i + 1);
+        Pair<Location, Integer> dropLoc = parseLocation(values, i+1);
+        Pair<List<ItemPickup>, Integer> pickups = parsePickupList(values, dropLoc.e);
         String id = values[pickups.e];
         Job job = null;
         if (isAssigned) {
             Pair<Robot, Integer> robot = parseRobot(values, pickups.e + 1);
             Pair<Route, Integer> route = parseRoute(values, robot.e);
-            job = new AssignedJob(new Location(0, 0), pickups.t, id, route.t, robot.t);
+            job = new AssignedJob(dropLoc.t, pickups.t, id, route.t, robot.t);
             i = route.e;
         } else {
-            job = new Job(new Location(0, 0), pickups.t, id);
+            job = new Job(dropLoc.t, pickups.t, id);
             i = pickups.e + 1;
         }
 
