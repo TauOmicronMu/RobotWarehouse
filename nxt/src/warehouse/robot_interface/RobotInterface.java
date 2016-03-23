@@ -1,6 +1,9 @@
 package warehouse.robot_interface;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> c38831639d5da111cb4562e6a5ec6cee90de0c6f
 import lejos.nxt.Button;
 import lejos.nxt.ButtonListener;
 import lejos.nxt.LCD;
@@ -17,10 +20,15 @@ public class RobotInterface extends Thread
 {
 	private Boolean interfaceRun, jobRun, hasJob;
 	private Communication comm;
+<<<<<<< HEAD
+=======
+	private String message;
+>>>>>>> c38831639d5da111cb4562e6a5ec6cee90de0c6f
 
 	/**
 	 * Constructor
 	 */
+<<<<<<< HEAD
 	public RobotInterface()
 	{
 		interfaceRun = true;
@@ -38,12 +46,34 @@ public class RobotInterface extends Thread
 				{
 					comm.robotOff();
 					interfaceRun = false;
+=======
+	public RobotInterface() {
+
+		interfaceRun = new Boolean(true);
+		hasJob = new Boolean(false);
+		jobRun = new Boolean(false);
+		comm = new Communication();
+		message = comm.getMessage();
+
+		Button.ESCAPE.addButtonListener(new ButtonListener() {
+
+			@Override
+			public void buttonReleased(Button b) {
+				if (!hasJob.get()) {
+					comm.robotOff();
+					interfaceRun.set(false);
+>>>>>>> c38831639d5da111cb4562e6a5ec6cee90de0c6f
 				}
 			}
 
 			@Override
+<<<<<<< HEAD
 			public void buttonPressed(Button b)
 			{
+=======
+			public void buttonPressed(Button b) {
+				//TODO : ???
+>>>>>>> c38831639d5da111cb4562e6a5ec6cee90de0c6f
 			}
 		});
 
@@ -53,6 +83,7 @@ public class RobotInterface extends Thread
 	/**
 	 * When finishing a job
 	 */
+<<<<<<< HEAD
 	public void reset()
 	{
 		LCD.clearDisplay();
@@ -71,6 +102,24 @@ public class RobotInterface extends Thread
 
 				hasJob = true;
 				jobRun = true;
+=======
+	public void reset() {
+		LCD.clearDisplay();
+		LCD.drawString("Moving around!", 0, 0);
+
+		hasJob.set(false);
+		message = null;
+	}
+
+	@Override
+	public void run() {
+		while (interfaceRun.get()) {
+			if (comm.hasJob()) {
+				// Start a new job
+
+				hasJob.set(true);
+				jobRun.set(true);
+>>>>>>> c38831639d5da111cb4562e6a5ec6cee90de0c6f
 
 				PickupJob pj = new PickupJob(comm, jobRun);
 				pj.run();
@@ -79,6 +128,7 @@ public class RobotInterface extends Thread
 				reset();
 			}
 			
+<<<<<<< HEAD
 			if (comm.atDropOff())
 			{
 				LCD.clearDisplay();
@@ -92,6 +142,11 @@ public class RobotInterface extends Thread
 					System.exit(1);
 				}
 				reset();
+=======
+			if (message != null) {
+				LCD.clearDisplay();
+				LCD.drawString(message, 1, 1);
+>>>>>>> c38831639d5da111cb4562e6a5ec6cee90de0c6f
 			}
 
 			// Show mercy to the processor
@@ -100,4 +155,10 @@ public class RobotInterface extends Thread
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	public static void main(String[] args) {
+		new RobotInterface().run();
+	}
+>>>>>>> c38831639d5da111cb4562e6a5ec6cee90de0c6f
 }
