@@ -61,8 +61,8 @@ public class NaiveBayesTest {
         testSet[4] = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test\\actual\\drops.csv";
         
         try {
-//            CancellationMachineTester tester1 = new CancellationMachineTester(0.95, files1, files3, files4, files5);
-//            CancellationMachineTester tester2 = new CancellationMachineTester(0.95, files2);
+            CancellationMachineTester tester1 = new CancellationMachineTester(0.95, files1, files3, files4, files5);
+            CancellationMachineTester tester2 = new CancellationMachineTester(0.95, files2);
 
             CancellationActualTester actualTester = new CancellationActualTester(trainingSet, testSet);
         } catch (IOException e) {
