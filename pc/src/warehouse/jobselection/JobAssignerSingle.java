@@ -193,11 +193,11 @@ public class JobAssignerSingle extends Thread {
 							// sleep was interrupted for some reason
 							e.printStackTrace();
 						}
-
-						if((!allowEmptyList) && (this.assignJobs.size() <= 0)){
-
-							this.run = false;
-						}
+						System.out.println(allowEmptyList);
+//						if((!allowEmptyList) && (this.assignJobs.size() <= 0)){
+//
+//							this.run = false;
+//						}
 					}
 
 					try {
