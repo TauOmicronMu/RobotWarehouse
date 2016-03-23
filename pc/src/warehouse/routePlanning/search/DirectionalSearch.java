@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Set;
 
-import warehouse.routePlanning.Map;
+import warehouse.routePlanning.util.Map;
 import warehouse.util.Direction;
 import warehouse.util.Location;
 

@@ -1,12 +1,12 @@
-package warehouse.routePlanning.searchTest;
+package warehouse.routePlanning.test;
 
 import java.util.Optional;
 
 import rp.robotics.mapping.GridMap;
 import rp.robotics.mapping.MapUtils;
-import warehouse.routePlanning.Map;
 import warehouse.routePlanning.search.LocationRoute;
 import warehouse.routePlanning.search.SimpleSearch;
+import warehouse.routePlanning.util.Map;
 import warehouse.util.Location;
 
 public class SimpleSearchTest {

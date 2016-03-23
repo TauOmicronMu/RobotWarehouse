@@ -1,4 +1,4 @@
-package warehouse.routePlanning;
+package warehouse.routePlanning.util;
 
 import java.util.LinkedList;
 import java.util.Optional;
@@ -9,6 +9,7 @@ import warehouse.action.IdleAction;
 import warehouse.action.MoveAction;
 import warehouse.action.PickupAction;
 import warehouse.action.TurnAction;
+import warehouse.routePlanning.search.State;
 import warehouse.util.Direction;
 import warehouse.util.Location;
 import warehouse.util.Route;
@@ -17,7 +18,7 @@ public class RouteBuilder {
 	private final int pickUpTime = 10;
 	private final int dropOffTime = 8;
 	private Location dropLocation;
-	
+
 	/**
 	 * Gets the route around a series of locations
 	 * 
@@ -43,7 +44,7 @@ public class RouteBuilder {
 		// keeps appending sections of route to the final route until all
 		// locations have been visited
 		Direction currentFacing = currentEdge.get().getLast().getFacing();
-		for (int edge = 1; edge < toVisit.size() -1; edge++) {
+		for (int edge = 1; edge < toVisit.size() - 1; edge++) {
 			currentEdge = getEdge(toVisit.get(edge), toVisit.get(edge + 1), currentFacing);
 			if (currentEdge.isPresent()) {
 				currentFacing = currentEdge.get().getLast().getFacing();
@@ -54,7 +55,7 @@ public class RouteBuilder {
 		}
 		return Optional.of(finalRoute);
 	}
-	
+
 	/**
 	 * Creates a route from a given list of states
 	 * 
@@ -86,7 +87,8 @@ public class RouteBuilder {
 			}
 		}
 
-		Route route = new Route(path, allStates.getFirst().getLocation(), allStates.getLast().getLocation(), allStates.getLast().getFacing());
+		Route route = new Route(path, allStates.getFirst().getLocation(), allStates.getLast().getLocation(),
+				allStates.getLast().getFacing());
 		route.totalDistance = path.size();
 		return route;
 	}
@@ -102,11 +104,11 @@ public class RouteBuilder {
 	 */
 	private Route appendRoute(Route r1, Route r2) {
 		LinkedList<Action> totalPath = new LinkedList<Action>();
-		totalPath = r1.actions; 
-		if(r1.end.x == dropLocation.x && r1.end.y == dropLocation.y){
+		totalPath = r1.actions;
+		if (r1.end.x == dropLocation.x && r1.end.y == dropLocation.y) {
 			totalPath.add(new DropoffAction());
 			r1.totalDistance += dropOffTime;
-		}else{
+		} else {
 			totalPath.add(new PickupAction());
 			r1.totalDistance += pickUpTime;
 		}

@@ -2,7 +2,7 @@ package warehouse.routePlanning.search;
 
 import java.util.HashMap;
 
-import warehouse.routePlanning.Map;
+import warehouse.routePlanning.util.Map;
 import warehouse.util.Location;
 
 public abstract class Search {

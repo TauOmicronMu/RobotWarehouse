@@ -1,10 +1,15 @@
-package warehouse.routePlanning;
+package warehouse.routePlanning.test;
 
 import java.util.LinkedList;
 import java.util.Optional;
 
-import warehouse.action.*;
+import warehouse.action.Action;
+import warehouse.action.DropoffAction;
+import warehouse.action.MoveAction;
+import warehouse.action.PickupAction;
+import warehouse.action.TurnAction;
 import warehouse.job.Job;
+import warehouse.routePlanning.TSP;
 import warehouse.util.Direction;
 import warehouse.util.ItemPickup;
 import warehouse.util.Location;

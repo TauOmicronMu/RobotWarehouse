@@ -1,4 +1,4 @@
-package warehouse.routePlanning;
+package warehouse.routePlanning.util;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -14,7 +14,6 @@ public class Branch {
 	private int connectedNode;
 	private LinkedList<LinkedList<Edge>> currentGroups;
 	private double lowerBound;
-	private int currentWeight;
 
 	/**
 	 * Constructor which creates a branch given the branch information
