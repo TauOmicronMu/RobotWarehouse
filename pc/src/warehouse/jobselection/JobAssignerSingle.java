@@ -14,7 +14,6 @@ import warehouse.jobselection.cancellation.CancellationMachine;
 import warehouse.jobselection.cancellation.NaiveBayes;
 import warehouse.util.EventDispatcher;
 import warehouse.util.ItemPickup;
-import warehouse.util.Location;
 import warehouse.util.Robot;
 import warehouse.util.Subscriber;
 
