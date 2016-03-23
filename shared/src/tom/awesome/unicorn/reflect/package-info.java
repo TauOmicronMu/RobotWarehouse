@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 Sun Microsystems, Inc.  All Rights Reserved.
+ * Copyright 2003-2004 Sun Microsystems, Inc.  All Rights Reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -23,15 +23,4 @@
  * have any questions.
  */
 
-package java.lang.reflect;
-
-
-/**
- * Thrown when a syntactically malformed signature attribute is
- * encountered by a reflective method that needs to interpret the
- * generic signature information for a type, method or constructor.
- *
- * @since 1.5
- */
-public class GenericSignatureFormatError extends ClassFormatError{}
-
+package tom.awesome.unicorn.reflect;

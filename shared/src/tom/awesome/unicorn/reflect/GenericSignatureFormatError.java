@@ -23,16 +23,15 @@
  * have any questions.
  */
 
-package java.lang.reflect;
+package tom.awesome.unicorn.reflect;
+
 
 /**
- * Type is the common superinterface for all types in the Java
- * programming language. These include raw types, parameterized types,
- * array types, type variables and primitive types.
+ * Thrown when a syntactically malformed signature attribute is
+ * encountered by a reflective method that needs to interpret the
+ * generic signature information for a type, method or constructor.
  *
  * @since 1.5
  */
-
-public interface Type {
-}
+public class GenericSignatureFormatError extends ClassFormatError{}
 

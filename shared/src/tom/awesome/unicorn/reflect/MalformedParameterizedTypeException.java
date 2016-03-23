@@ -1,5 +1,5 @@
 /*
- * Copyright 2003-2004 Sun Microsystems, Inc.  All Rights Reserved.
+ * Copyright 2003 Sun Microsystems, Inc.  All Rights Reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -23,4 +23,16 @@
  * have any questions.
  */
 
-package java.lang.reflect;
+
+package tom.awesome.unicorn.reflect;
+
+/**
+ * Thrown when a semantically malformed parameterized type is
+ * encountered by a reflective method that needs to instantiate it.
+ * For example, if the number of type arguments to a parameterized type
+ * is wrong.
+ *
+ * @since 1.5
+ */
+public class MalformedParameterizedTypeException extends RuntimeException{}
+

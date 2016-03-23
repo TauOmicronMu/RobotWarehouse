@@ -23,7 +23,7 @@
  * have any questions.
  */
 
-package java.lang.reflect;
+package tom.awesome.unicorn.reflect;
 
 import sun.reflect.MethodAccessor;
 import sun.reflect.ConstructorAccessor;
