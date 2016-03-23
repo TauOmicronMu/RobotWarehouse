@@ -12,6 +12,7 @@ import warehouse.jobselection.cancellation.Backup;
 import warehouse.jobselection.cancellation.CancellationMachine;
 import warehouse.jobselection.cancellation.NaiveBayes;
 import warehouse.util.EventDispatcher;
+import warehouse.util.ItemPickup;
 import warehouse.util.Location;
 import warehouse.util.Robot;
 import warehouse.util.Subscriber;
@@ -45,6 +46,7 @@ public class JobAssignerSingle extends Thread {
 	private boolean jobCancelled;
 	
 	private CancellationMachine cancellationMachine;
+	private double totalReward;
 
 	/**
 	 * Create a new Job Assigner for a single robot based on a list of jobs
@@ -282,7 +284,16 @@ public class JobAssignerSingle extends Thread {
 	@Subscriber
 	public void onJobCompleteevent(JobCompleteEvent e) {
 
-		System.out.println("\nASSIGNER THREAD: -------------------------------");
+		double reward = 0;
+		
+		for(ItemPickup pickup : e.job.pickups){
+			
+			reward += pickup.reward * pickup.itemCount;
+		}
+		
+		this.totalReward += reward;
+		
+		System.out.println("\nASSIGNER THREAD: JOB COMPLETED ----> REWARD OF " + reward + " ACQUIRED. TOTAL REWARD = " + this.totalReward);
 		//System.out.println("\nASSIGNER THREAD: Job Complete, assigning new job");
 
 		this.jobComplete = true;

@@ -1,6 +1,7 @@
 package warehouse.jobselection.printtests;
 
 import warehouse.event.BeginAssigningEvent;
+import warehouse.event.JobCancellationEvent;
 import warehouse.event.JobCompleteEvent;
 import warehouse.job.Job;
 import warehouse.jobselection.SelectorHasCurrentJobEvent;
@@ -24,13 +25,14 @@ public class SingleTest  extends Thread{
     private List<Job> actualJobs;
     private ArrayList<List<Job>> jobSet;
     private boolean hasCurrentJob;
+	private int cancelledJobs;
 
     public static void main(String[] args) throws IOException{
 
         ArrayList<List<Job>> jobSet = new ArrayList<>();
         ArrayList<String[]> fileSet = new ArrayList<>();
 
-        String filePath = "C:\\Users\\Aidan\\workspace\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test";
+        String filePath = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test";
 
 //        String[] files1 = new String[5];
 //        files1[0] = filePath + "\\1\\locations.csv";
@@ -85,11 +87,12 @@ public class SingleTest  extends Thread{
         actualFiles[0] = filePath + "\\actual\\locations.csv";
         actualFiles[1] = filePath + "\\actual\\items.csv";
         actualFiles[2] = filePath + "\\actual\\jobs.csv";
-        actualFiles[3] = filePath + "\\actual\\cancellations.csv";
+        actualFiles[3] = filePath + "\\actual\\marking_file.csv";
         actualFiles[4] = filePath + "\\actual\\drops.csv";
         fileSet.add(1,actualFiles);
 
         int counter = 0;
+        int cancelled = 0;
 
         List<Job> trainingJobs = new LinkedList<>();
         List<Job> actualJobs = new LinkedList<>();
@@ -124,6 +127,16 @@ public class SingleTest  extends Thread{
                 parseFile(fileNameArray[3], values -> jobs.get(values[0]).cancelledInTrainingSet = values[1].equals("0") ? false : true);
 
             }
+            else{
+            	
+            	parseFile(fileNameArray[3], values -> {
+
+                    if(values[values.length - 1].equals("Cancel")) {
+
+                        jobs.get(values[0]).cancelledInTrainingSet = true;
+                    }
+                });
+            }
 
             List<Location> dropLocations = new ArrayList<>();
             parseFile(fileNameArray[4], values -> jobs.values().forEach(job -> job.dropLocation = new Location(Integer.parseInt(values[0]), Integer.parseInt(values[1].trim()))));
@@ -148,6 +161,18 @@ public class SingleTest  extends Thread{
 
     public SingleTest(List<Job> trainingJobs, List<Job> actualJobs){
 
+    	int cancelled = 0;
+    	
+    	for(Job job : actualJobs){
+    		
+    		if(job.cancelledInTrainingSet){
+    			
+    			cancelled++;
+    		}
+    	}
+    	
+    	this.cancelledJobs = cancelled;
+    	
         this.trainingJobs = trainingJobs;
         this.actualJobs = actualJobs;
 
@@ -159,14 +184,35 @@ public class SingleTest  extends Thread{
     @Override
     public void run() {
 
+    	int cancelled = 0;
+    	
+    	for(Job job : actualJobs){
+    		
+    		if(job.cancelledInTrainingSet){
+    			
+    			cancelled++;
+    		}
+    	}
+    	
+    	System.out.println("\n" + cancelled + " cancelled jobs");
+    	
+    		System.out.println("Starting test. There are " + this.actualJobs.size() + " to choose from, and " + this.cancelledJobs + " were cancelled.");
+    	
             Robot robot = new Robot("testRobot", new Location(0, 0), Direction.NORTH);
 
             JobAssignerSingle assigner = new JobAssignerSingle(robot, new LinkedList<>(this.trainingJobs));
 
             EventDispatcher.onEvent2(new BeginAssigningEvent(this.actualJobs, new LinkedList<Location>()));
 
+            int cancellationCounter = 0;
+            int jobCounter = 0;
+            
             for (int i = 0; i < actualJobs.size(); i++) {
 
+            	jobCounter++;
+            	
+            	System.out.println("\nJob Number: " + jobCounter);
+            	
                 while(!this.hasCurrentJob) {
 
                     try {
@@ -184,12 +230,23 @@ public class SingleTest  extends Thread{
                     assert (assigner.getCurrentJob() != null);
 
                     System.out.println("\nTEST THREAD: Sending Job Complete Event");
-                    EventDispatcher.onEvent2(new JobCompleteEvent(assigner.getCurrentJob()));
-                
+                    
+                    System.out.println(assigner.getCurrentJob().cancelledInTrainingSet);
+                    
+                    if(assigner.getCurrentJob().cancelledInTrainingSet){
+                    	
+                    	EventDispatcher.onEvent2(new JobCancellationEvent(assigner.getCurrentJob()));
+                    	cancellationCounter++;
+                    }else{
+                    
+                    	EventDispatcher.onEvent2(new JobCompleteEvent(assigner.getCurrentJob()));
+                    }
+                    
                 this.hasCurrentJob = false;
             }
 
             System.out.println("\nTEST THREAD: Telling assigner to stop");
+            System.out.println("Out of " + this.cancelledJobs + " cancelled jobs, " + cancellationCounter + " were chosen.");
             assigner.stopAssigning();
 
 
@@ -208,7 +265,7 @@ public class SingleTest  extends Thread{
             if(!line.isEmpty()) consumer.accept(line.trim().split(","));
         }
     }
-
+    
     public static void print(Object o){
 
         System.out.println(o);
