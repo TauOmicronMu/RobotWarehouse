@@ -21,11 +21,7 @@ public class RouteExecution {
 
 	private Route route;
 	private LineFollow lineFollower;
-
-	  static {
-	        EventDispatcher.subscribe2(RouteExecution.class);
-	    }
-
+	
 	    public RouteExecution() {
 	        EventDispatcher.subscribe2(this);
 	        lineFollower = new LineFollow();

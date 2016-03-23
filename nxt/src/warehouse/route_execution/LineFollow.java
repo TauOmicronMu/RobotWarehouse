@@ -60,10 +60,6 @@ public class LineFollow {
 		ls1Listener.start();
 	}
 	
-	 static {
-	        EventDispatcher.subscribe2(LineFollow.class);
-	 }
-	
 	 /**
 	  * Makes the robot move for a given number of junctions with the help of a line follower
 	  *
