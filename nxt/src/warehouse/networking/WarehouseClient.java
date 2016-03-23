@@ -1,13 +1,13 @@
 package warehouse.networking;
 
-import java.io.IOException;
-
 import samtebbs33.net.event.SocketEvent;
 import samtebbs33.net.event.SocketEvent.SocketExceptionEvent;
 import samtebbs33.net.event.SocketEvent.SocketPacketEvent;
 import warehouse.event.Event;
 import warehouse.util.EventDispatcher;
 import warehouse.util.MultiSubscriber;
+
+import java.io.IOException;
 
 public class WarehouseClient extends Client {
 
@@ -19,8 +19,8 @@ public class WarehouseClient extends Client {
 
 	@Override
 	public void onPacketReceived(SocketPacketEvent event) {
-		EventDispatcher.onEvent2(event.packet);
-		
+		LCD.clear();
+		LCD.drawString("Msg: " + event.packet.toString());
 	}
 
 	@Override
