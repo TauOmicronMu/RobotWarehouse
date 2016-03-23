@@ -12,8 +12,8 @@ import java.util.List;
 public class EventDispatcher {
 
     public static final EventDispatcher INSTANCE = new EventDispatcher();
-    private final HashMap<Class, List<Pair<Object, List<Method>>>> subscribers = new HashMap<>();
-    private final List<Pair<Object, List<Method>>> multiSubscribers = new ArrayList<>();
+    private final HashMap<Class, List<Pair<Object, List<Method>>>> subscribers = new HashMap<Class, List<Pair<Object, List<Method>>>>();
+    private final List<Pair<Object, List<Method>>> multiSubscribers = new ArrayList<Pair<Object, List<Method>>>();
 
     /**
      * Static wrapper for INSTANCE.onEvent()
@@ -71,7 +71,7 @@ public class EventDispatcher {
         if(obj.getClass() == Class.class) cls = (Class) obj;
         else cls = obj.getClass();
 
-        HashMap<Class, List<Method>> clsMethodMap = new HashMap<>();
+        HashMap<Class, List<Method>> clsMethodMap = new HashMap<Class, List<Method>>();
         List<Method> methods = getMethods(Subscriber.class, cls.getMethods());
         for (Method method : methods) {
             Class methodParam = method.getParameterTypes()[0];
@@ -107,7 +107,8 @@ public class EventDispatcher {
                 ArrayList<Pair<Object, List<Method>>> list = new ArrayList<Pair<Object, List<Method>>>();
                 subscribers.put(key, list);
                 list.add(new Pair(obj, clsMethodMap.get(key)));
-            }
+            }LCD.clear();
+		LCD.drawString("Msg: " + event.packet.toString(), 0, 0);
         });*/
 
         // Add the multi subscriber methods
@@ -116,7 +117,7 @@ public class EventDispatcher {
     }
 
     private List<Method> getMethods(Class annotationClass, Method[] methods) {
-        ArrayList<Method> list = new ArrayList<>();
+        ArrayList<Method> list = new ArrayList<Method>();
         for (Method mth : methods)
             if (mth.getParameterTypes().length == 1 && mth.getAnnotation(annotationClass) != null) list.add(mth);
         return list;

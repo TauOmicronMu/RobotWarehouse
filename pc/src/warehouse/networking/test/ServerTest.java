@@ -7,6 +7,8 @@ import warehouse.util.MultiSubscriber;
 
 import java.io.IOException;
 
+import lejos.pc.comm.NXTCommException;
+
 /**
  * Created by sxt567 on 23/03/16.
  */
@@ -16,7 +18,7 @@ public class ServerTest {
         EventDispatcher.subscribe2(ServerTest.class);
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, NXTCommException {
         WarehouseServer server = new WarehouseServer();
         server.broadcast("Hi there bob");
     }

@@ -19,7 +19,7 @@ import samtebbs33.net.event.SocketEventManager;
  */
 public abstract class Server implements SocketEventListener, Closeable {
 
-    String[] robotNames = {"squirtle", "charmander", "bulbasaur"};
+    String[] robotNames = {"Charmander"};
 
     public Server() throws IOException, NXTCommException {
         for (String robot : robotNames) {

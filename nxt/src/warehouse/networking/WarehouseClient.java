@@ -7,6 +7,8 @@ import warehouse.util.EventDispatcher;
 
 import java.io.IOException;
 
+import lejos.nxt.LCD;
+
 public class WarehouseClient extends Client {
 
 	public WarehouseClient() throws IOException {
@@ -18,7 +20,7 @@ public class WarehouseClient extends Client {
 	@Override
 	public void onPacketReceived(SocketPacketEvent event) {
 		LCD.clear();
-		LCD.drawString("Msg: " + event.packet.toString());
+		LCD.drawString("Msg: " + event.packet.toString(), 0, 0);
 	}
 
 	@Override
