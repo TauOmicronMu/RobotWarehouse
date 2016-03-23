@@ -19,8 +19,8 @@ public abstract class Event implements Serializable {
 
     public static void main(String[] args) {
         String str = "false,2,aa,1,2,3,ab,2,3,4,101";
-        Route route = parseRoute(split(str, ','), 0).t;
-        System.out.println(route);
+        Job job = parseJob(split(str, ','), 0).t;
+        System.out.println(job);
     }
 
     public static Event fromPacketString(String str) {

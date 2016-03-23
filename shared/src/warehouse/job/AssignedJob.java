@@ -37,7 +37,7 @@ public class AssignedJob extends Job {
     }
 
     public String toPacketString() {
-        String s = super();
+        String s = super.toPacketString();
         s += robot.toPacketString();
         s += ",";
         s += route.toPacketString();
