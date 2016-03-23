@@ -23,7 +23,7 @@
  * have any questions.
  */
 
-package java.lang.reflect;
+package tom.awesome.unicorn.reflect;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -72,7 +72,7 @@ import sun.misc.ProxyGenerator;
  * A method invocation on a proxy instance through one of its proxy
  * interfaces will be dispatched to the {@link InvocationHandler#invoke
  * invoke} method of the instance's invocation handler, passing the proxy
- * instance, a {@code java.lang.reflect.Method} object identifying
+ * instance, a {@code Method} object identifying
  * the method that was invoked, and an array of type {@code Object}
  * containing the arguments.  The invocation handler processes the
  * encoded method invocation as appropriate and the result that it
@@ -88,7 +88,7 @@ import sun.misc.ProxyGenerator;
  * of class names that begin with the string {@code "$Proxy"}
  * should be, however, reserved for proxy classes.
  *
- * <li>A proxy class extends {@code java.lang.reflect.Proxy}.
+ * <li>A proxy class extends {@code Proxy}.
  *
  * <li>A proxy class implements exactly the interfaces specified at its
  * creation, in the same order.
