@@ -29,7 +29,10 @@ public abstract class Event implements Serializable {
         final Location location = new Location(0,0);
         final Robot robot = new Robot("Bob", location, Direction.WEST, 3280239);
         final Action a = new TurnAction(90.0);
-        final Route route = new Route();
+        final Action b = new MoveAction(5,location);
+        final Action c = new IdleAction(25);
+        final ArrayList<Action> actions = new ArrayList<Action>() {{add(a); add(b); add(c);}};
+        final Route route = new Route(actions, location, location, Direction.WEST);
         final ItemPickup pickup = new ItemPickup("Cake", location, 9001);
 
         boolean cum = true;
