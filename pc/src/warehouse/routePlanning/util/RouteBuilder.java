@@ -9,7 +9,9 @@ import warehouse.action.IdleAction;
 import warehouse.action.MoveAction;
 import warehouse.action.PickupAction;
 import warehouse.action.TurnAction;
+import warehouse.routePlanning.search.DirectionalSearch;
 import warehouse.routePlanning.search.State;
+import warehouse.routePlanning.search.StateRoute;
 import warehouse.util.Direction;
 import warehouse.util.Location;
 import warehouse.util.Route;
@@ -18,6 +20,12 @@ public class RouteBuilder {
 	private final int pickUpTime = 10;
 	private final int dropOffTime = 8;
 	private Location dropLocation;
+	private DirectionalSearch ds;
+	
+	public RouteBuilder(Location dropOffLocation, Map m){
+		this.dropLocation = dropOffLocation;
+		ds = new DirectionalSearch(m);
+	}
 
 	/**
 	 * Gets the route around a series of locations
@@ -34,21 +42,23 @@ public class RouteBuilder {
 		Route finalRoute = new Route(new LinkedList<Action>(), toVisit.getFirst(), toVisit.getFirst(), facing);
 
 		// sets the initial route to be the first edge in the search
-		Optional<LinkedList<State>> currentEdge = getEdge(toVisit.get(0), toVisit.get(1), facing);
+		Optional<StateRoute> currentEdge = ds.getRoute(toVisit.get(0), toVisit.get(1), facing);
 		if (currentEdge.isPresent()) {
-			finalRoute = createRoute(currentEdge.get());
+			LinkedList<State> route  = currentEdge.get().getRoute();
+			finalRoute = createRoute(route);
 		} else {
 			return Optional.empty();
 		}
 
 		// keeps appending sections of route to the final route until all
 		// locations have been visited
-		Direction currentFacing = currentEdge.get().getLast().getFacing();
+		Direction currentFacing = currentEdge.get().getRoute().getLast().getFacing();
 		for (int edge = 1; edge < toVisit.size() - 1; edge++) {
-			currentEdge = getEdge(toVisit.get(edge), toVisit.get(edge + 1), currentFacing);
+			currentEdge = ds.getRoute(toVisit.get(edge), toVisit.get(edge + 1), currentFacing);
 			if (currentEdge.isPresent()) {
-				currentFacing = currentEdge.get().getLast().getFacing();
-				finalRoute = appendRoute(finalRoute, createRoute(currentEdge.get()));
+				LinkedList<State> route  = currentEdge.get().getRoute();
+				currentFacing = route.getLast().getFacing();
+				finalRoute = appendRoute(finalRoute, createRoute(route));
 			} else {
 				return Optional.empty();
 			}
