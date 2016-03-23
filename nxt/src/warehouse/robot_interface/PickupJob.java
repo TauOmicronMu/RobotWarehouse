@@ -1,6 +1,9 @@
 package warehouse.robot_interface;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> c38831639d5da111cb4562e6a5ec6cee90de0c6f
 import lejos.nxt.Button;
 import lejos.nxt.ButtonListener;
 import lejos.nxt.LCD;
@@ -15,8 +18,12 @@ import rp.util.Rate;
  * @author txs
  *
  */
+<<<<<<< HEAD
 public class PickupJob
 {
+=======
+public class PickupJob {
+>>>>>>> c38831639d5da111cb4562e6a5ec6cee90de0c6f
 
 	private Communication comm;
 	private Boolean jobRun;
@@ -30,8 +37,12 @@ public class PickupJob
 	 * @param comm
 	 * @param jobRun
 	 */
+<<<<<<< HEAD
 	public PickupJob(Communication comm, Boolean jobRun)
 	{
+=======
+	public PickupJob(Communication comm, Boolean jobRun) {
+>>>>>>> c38831639d5da111cb4562e6a5ec6cee90de0c6f
 		this.comm = comm;
 		this.jobRun = jobRun;
 		itemName = comm.getItemName();
@@ -39,16 +50,24 @@ public class PickupJob
 		enterPressed = false;
 		escapePressed = false;
 
+<<<<<<< HEAD
 		Button.ENTER.addButtonListener(new ButtonListener()
 		{
 
 			@Override
 			public void buttonReleased(Button b)
 			{
+=======
+		Button.ENTER.addButtonListener(new ButtonListener() {
+
+			@Override
+			public void buttonReleased(Button b) {
+>>>>>>> c38831639d5da111cb4562e6a5ec6cee90de0c6f
 				enterPressed = true;
 			}
 
 			@Override
+<<<<<<< HEAD
 			public void buttonPressed(Button b)
 			{
 			}
@@ -60,16 +79,33 @@ public class PickupJob
 			@Override
 			public void buttonReleased(Button b)
 			{
+=======
+			public void buttonPressed(Button b) {
+			    //TODO : ???
+			}
+		});
+		
+		Button.ESCAPE.addButtonListener(new ButtonListener() {
+
+			@Override
+			public void buttonReleased(Button b) {
+>>>>>>> c38831639d5da111cb4562e6a5ec6cee90de0c6f
 				escapePressed = true;
 			}
 
 			@Override
+<<<<<<< HEAD
 			public void buttonPressed(Button b)
 			{
+=======
+			public void buttonPressed(Button b) {
+				//TODO : ???
+>>>>>>> c38831639d5da111cb4562e6a5ec6cee90de0c6f
 			}
 		});
 	}
 
+<<<<<<< HEAD
 	public void run()
 	{
 		updateScreen();
@@ -78,6 +114,13 @@ public class PickupJob
 		{
 			if (enterPressed)
 			{
+=======
+	public void run() {
+		updateScreen();
+
+		while (jobRun && itemNumber > 0) {
+			if (enterPressed) {
+>>>>>>> c38831639d5da111cb4562e6a5ec6cee90de0c6f
 				itemNumber--;
 				enterPressed = false;
 
@@ -87,11 +130,20 @@ public class PickupJob
 				Delay.msDelay(30);
 			}
 
+<<<<<<< HEAD
 			if (escapePressed)
 			{
 				itemNumber++;
 				CancelMenu cancelMenu = new CancelMenu(comm, jobRun);
 				cancelMenu.run();
+=======
+			if (escapePressed) {
+				itemNumber++;
+
+				CancelMenu cancelMenu = new CancelMenu(comm, jobRun);
+				cancelMenu.run();
+
+>>>>>>> c38831639d5da111cb4562e6a5ec6cee90de0c6f
 				escapePressed = false;
 			}
 
@@ -99,6 +151,7 @@ public class PickupJob
 			rate.sleep();
 		}
 
+<<<<<<< HEAD
 		if (itemNumber == 0)
 		{
 			Sound.playTone(440, 30);
@@ -106,6 +159,14 @@ public class PickupJob
 			comm.jobDone();
 		} else
 		{
+=======
+		if (itemNumber == 0) {
+			Sound.playTone(440, 30);
+			Delay.msDelay(30);
+			comm.jobDone();
+		}
+		else {
+>>>>>>> c38831639d5da111cb4562e6a5ec6cee90de0c6f
 			Sound.playTone(200, 30);
 			Delay.msDelay(30);
 		}
@@ -114,11 +175,18 @@ public class PickupJob
 	/**
 	 * Updating the screen with the remaining number of items
 	 */
+<<<<<<< HEAD
 	private void updateScreen()
 	{
+=======
+	private void updateScreen() {
+>>>>>>> c38831639d5da111cb4562e6a5ec6cee90de0c6f
 		LCD.clearDisplay();
 		LCD.drawString("Item: " + itemName, 0, 0);
 		LCD.drawString("Remaining: " + itemNumber, 0, 1);
 	}
+<<<<<<< HEAD
 
+=======
+>>>>>>> c38831639d5da111cb4562e6a5ec6cee90de0c6f
 }
