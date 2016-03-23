@@ -26,7 +26,6 @@ public class WarehouseServer extends Server {
 	public WarehouseServer() throws IOException, NXTCommException {
 		super();
 		EventDispatcher.subscribe2(this);
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override
@@ -43,19 +42,16 @@ public class WarehouseServer extends Server {
 
 	@Override
 	public void onTimeout(SocketEvent socket) {
-		// TODO Auto-generated method stub
 		System.err.println("Timeout");
 	}
 
 	@Override
 	public void onDisconnection(SocketEvent.SocketExceptionEvent event) {
-		// TODO Auto-generated method stub
 		System.err.println("Disconnected");
 	}
 
 	@Override
 	public int getNumClients() {
-		// TODO Auto-generated method stub
 		return numRobots;
 	}
 
@@ -78,8 +74,7 @@ public class WarehouseServer extends Server {
 
 	@Override
 	public void close() throws IOException {
-		// TODO Auto-generated method stub
-		
+		System.err.println("Why did you call this method?");
 	}
 
 	@MultiSubscriber
