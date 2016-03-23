@@ -3,10 +3,8 @@ package warehouse.util;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by samtebbs on 24/02/2016.
@@ -42,11 +40,15 @@ public class EventDispatcher {
     public void onEvent(Object obj) {
         if(subscribers.containsKey(obj.getClass())) {
             List<Pair<Object, List<Method>>> subscriberObjects = subscribers.get(obj.getClass());
-            subscriberObjects.forEach(pair -> {
+            for (Pair<Object, List<Method>> pair : subscriberObjects)
+                for (Method method : pair.e) invoke(method, pair.t, obj);
+            /* subscriberObjects.forEach(pair -> {
                 pair.e.forEach(method -> invoke(method, pair.t, obj));
-            });
+            }); */
         }
-        multiSubscribers.forEach(pair -> pair.e.forEach(mth -> invoke(mth, pair.t, obj)));
+        for (Pair<Object, List<Method>> pair : multiSubscribers)
+            for (Method method : pair.e) invoke(method, pair.t, obj);
+        //multiSubscribers.forEach(pair -> pair.e.forEach(mth  -> invoke(mth, pair.t, obj)));
     }
 
     private void invoke(Method method, Object subscriber, Object obj) {
@@ -71,23 +73,45 @@ public class EventDispatcher {
 
         HashMap<Class, List<Method>> clsMethodMap = new HashMap<>();
         List<Method> methods = getMethods(Subscriber.class, cls.getMethods());
+<<<<<<< HEAD
         methods.forEach(method -> {
             Class methodParam = method.getParameterTypes()[0];
+=======
+        for (Method method : methods) {
+            Class methodParam = method.getParameterTypes()[0];
+            if (clsMethodMap.containsKey(methodParam)) clsMethodMap.get(methodParam).add(method);
+            else {
+                ArrayList<Method> list = new ArrayList<Method>();
+                clsMethodMap.put(methodParam, list);
+                list.add(method);
+            }
+        }
+        /* methods.forEach(method -> {
+            Class methodParam = method.getParameters()[0].getType();
+>>>>>>> 09027249db707d54cd866d91c8bb75be6e0f87c2
             if(clsMethodMap.containsKey(methodParam)) clsMethodMap.get(methodParam).add(method);
             else {
                 ArrayList<Method> list = new ArrayList<Method>();
                 clsMethodMap.put(methodParam, list);
                 list.add(method);
             }
-        });
-        clsMethodMap.keySet().forEach(key -> {
+        }); */
+        for (Class key : clsMethodMap.keySet()) {
             if(subscribers.containsKey(key)) subscribers.get(key).add(new Pair(obj, clsMethodMap.get(key)));
             else {
                 ArrayList<Pair<Object, List<Method>>> list = new ArrayList<Pair<Object, List<Method>>>();
                 subscribers.put(key, list);
                 list.add(new Pair(obj, clsMethodMap.get(key)));
             }
-        });
+        }
+        /* clsMethodMap.keySet().forEach(key -> {
+            if(subscribers.containsKey(key)) subscribers.get(key).add(new Pair(obj, clsMethodMap.get(key)));
+            else {
+                ArrayList<Pair<Object, List<Method>>> list = new ArrayList<Pair<Object, List<Method>>>();
+                subscribers.put(key, list);
+                list.add(new Pair(obj, clsMethodMap.get(key)));
+            }
+        });*/
 
         // Add the multi subscriber methods
         List<Method> multiMethods = getMethods(MultiSubscriber.class, cls.getMethods());
@@ -95,7 +119,14 @@ public class EventDispatcher {
     }
 
     private List<Method> getMethods(Class annotationClass, Method[] methods) {
+<<<<<<< HEAD
         return (List<Method>) Arrays.stream(methods).filter(mth -> mth.getParameterTypes().length == 1 && mth.getAnnotation(annotationClass)!= null).collect(Collectors.toList());
+=======
+        ArrayList<Method> list = new ArrayList<>();
+        for (Method mth : methods)
+            if (mth.getParameterTypes().length == 1 && mth.getAnnotation(annotationClass) != null) list.add(mth);
+        return list;
+>>>>>>> 09027249db707d54cd866d91c8bb75be6e0f87c2
     }
 
 }
