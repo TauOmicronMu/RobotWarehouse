@@ -8,4 +8,8 @@ public class TurnAction extends Action {
         this.angle = angle;
     }
 
+    @Override
+    public String toString() {
+        return "Turn";
+    }
 }

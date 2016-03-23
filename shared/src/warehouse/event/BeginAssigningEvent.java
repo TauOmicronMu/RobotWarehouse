@@ -24,4 +24,16 @@ public class BeginAssigningEvent extends Event {
 		this.jobs = jobs;
 		this.dropLocations = dropLocations;
 	}
+
+	public String toPacketString() {
+		String s = "";
+		s += "BeginAssigning";
+		s += ",";
+		s += jobs.size();
+		s += ",";
+		for(Job j : jobs) {
+		    s += j;
+		}
+		return s;
+	}
 }

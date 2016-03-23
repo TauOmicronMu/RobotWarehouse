@@ -9,4 +9,8 @@ public class PickupAction extends Action {
 
     public ItemPickup pickup;
 
+    @Override
+    public String toString() {
+        return "Pickup";
+    }
 }
