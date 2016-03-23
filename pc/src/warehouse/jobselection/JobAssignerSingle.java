@@ -70,7 +70,7 @@ public class JobAssignerSingle extends Thread {
 		try{
 
 			this.cancellationMachine = new NaiveBayes(trainingJobs);
-			System.out.println("\nASSIGNER THREAD: Made a Naive Bayes!");
+			System.out.println("\nASSIGNER THREAD: Made a Naive Bayes: " + this.cancellationMachine);
 		}
 		catch(NullPointerException e){
 
