@@ -85,10 +85,6 @@ public class JobSelectorSingle extends Thread {
 
 			//System.out.println("\nSELECTOR THREAD: Converted list, sending event...");
 
-			AddedToSelectedListEvent e = new AddedToSelectedListEvent();
-
-			EventDispatcher.onEvent2(e);
-
 			// get the best one
 			bestJob = this.selectBestJob(this.convertedList);
 
@@ -97,8 +93,18 @@ public class JobSelectorSingle extends Thread {
 			// remove it from the reference job list
 			this.jobs.remove(bestJob.getJob());
 
+            if(this.jobs.size() <= 0){
+
+                FinishedSelectionEvent e = new FinishedSelectionEvent();
+                EventDispatcher.onEvent2(e);
+            }
+
 			// add it to the list of selected jobs
 			this.selectedList.add(bestJob);
+
+			AddedToSelectedListEvent e = new AddedToSelectedListEvent();
+
+			EventDispatcher.onEvent2(e);
 
 			//System.out.println("\nSELECTOR THREAD: Adding : " + bestJob + " to the list");
 			//System.out.println("\nSELECTOR THREAD: Current list of selected jobs: " + this.selectedList);
