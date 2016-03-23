@@ -41,15 +41,15 @@ public class DirectionalSearch extends Search {
 	}
 
 	/**
-	 * Gets the list of states which represent the optimal route found by A*
+	 * Gets the route between two locations including turn and idle actions
 	 * 
 	 * @param start
 	 *            the start location
 	 * @param goal
-	 *            the goal location
+	 *            the end location
 	 * @param facing
-	 *            the starting facing
-	 * @return the list of states
+	 *            the start facing
+	 * @return a route in the form of a list of states, if a route is found
 	 */
 	public Optional<StateRoute> getRoute(Location start, Location goal, Direction facing) {
 		if (inMap(start.y, start.x) && inMap(goal.y, goal.x)) {
@@ -63,18 +63,15 @@ public class DirectionalSearch extends Search {
 	}
 
 	/**
-	 * Gets the optimal route between two locations via A* using direction of
-	 * turning
+	 * Performs A* search between two locations including turn and idle actions
 	 * 
 	 * @param start
 	 *            the start location
 	 * @param goal
-	 *            the goal location
-	 * @param start
-	 *            the start location
-	 * @param goal
-	 *            the goal location
-	 * @return a list of locations which form the optimal route to take
+	 *            the end location
+	 * @param facing
+	 *            the start facing
+	 * @return a state route (a list of states in order and a total distance)
 	 */
 	private Optional<StateRoute> StateAStar(Location start, Location goal, Direction facing) {
 		State startState = getState(start, facing).get();
@@ -149,10 +146,10 @@ public class DirectionalSearch extends Search {
 	}
 
 	/**
-	 * Sets up the a map with infinity values for every location
+	 * Sets up a map with infinity values for every location
 	 * 
 	 * @param hScore
-	 *            the map which holds the heuristic distances
+	 *            a map which holds heuristic distances
 	 * @return map with initialised values
 	 */
 	private HashMap<State, Double> initHScoreState(HashMap<State, Double> hScore) {
@@ -215,11 +212,11 @@ public class DirectionalSearch extends Search {
 	}
 
 	/**
-	 * Gets the neighbours of a node
+	 * Gets the neighbours of a current state
 	 * 
-	 * @param node
-	 *            the location to find the neighbours for
-	 * @return the array of neighbours
+	 * @param currentState
+	 *            the current state
+	 * @return the list of neighbours
 	 */
 	private LinkedList<State> getNeighbours(State currentState) {
 		LinkedList<State> neighbours = new LinkedList<State>();
@@ -270,7 +267,7 @@ public class DirectionalSearch extends Search {
 	 *            the location of the state
 	 * @param facing
 	 *            the facing of the state
-	 * @return the state if found, or null vlaue if not
+	 * @return the state if found, or null value if not
 	 */
 	private Optional<State> getState(Location location, Direction facing) {
 		for (State s : states) {
