@@ -9,7 +9,7 @@ public class TurnAction extends Action {
     }
 
     @Override
-    public String toString() {
+    public String toPacketString() {
         return "Turn";
     }
 }

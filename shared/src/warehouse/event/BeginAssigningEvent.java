@@ -14,16 +14,25 @@ import java.util.List;
 public class BeginAssigningEvent extends Event {
 	
 	public List<Job> jobs;
+
+    @Deprecated
 	public List<Location> dropLocations;
 
 	/**
 	 * Create a new event
 	 */
+    @Deprecated
 	public BeginAssigningEvent(List<Job> jobs, List<Location> dropLocations){
 		super(null);
 		this.jobs = jobs;
 		this.dropLocations = dropLocations;
 	}
+
+    public BeginAssigningEvent(List<Job> jobs) {
+        super(null);
+        this.jobs = jobs;
+    }
+
 
 	public String toPacketString() {
 		String s = "";
@@ -32,7 +41,7 @@ public class BeginAssigningEvent extends Event {
 		s += jobs.size();
 		s += ",";
 		for(Job j : jobs) {
-		    s += j;
+		    s += j.toPacketString();
 		}
 		return s;
 	}

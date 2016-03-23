@@ -37,10 +37,12 @@ public class Job {
     }
 
     /*
-     * "numberofpickups,<name,location,itemcount>*n,id"
+     * "assigned?,numberofpickups,<name,location,itemcount>*n,id"
      */
     public String toPacketString() {
         String s = "";
+        s += isAssigned();
+        s += ",";
         s += pickups.size();
         s += ",";
         for(ItemPickup p : pickups) {

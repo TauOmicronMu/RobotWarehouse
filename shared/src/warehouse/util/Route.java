@@ -17,4 +17,20 @@ public class Route {
         this.end = end;
         this.finalFacing = finalFacing;
     }
+
+    public String toPacketString() {
+        String s = "";
+        s += actions.size();
+        s += ",";
+        for(Action a : actions) {
+            s += a.toPacketString();
+            s += ",";
+        }
+        s += start.toPacketString();
+        s += ",";
+        s += end.toPacketString();
+        s += ",";
+        s += finalFacing.toPacketString();
+        return s;
+    }
 }

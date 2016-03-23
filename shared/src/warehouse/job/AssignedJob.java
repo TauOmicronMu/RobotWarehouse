@@ -35,4 +35,12 @@ public class AssignedJob extends Job {
                 ", robot=" + robot +
                 '}';
     }
+
+    public String toPacketString() {
+        String s = super();
+        s += route.toPacketString();
+        s += ",";
+        s += robot.toPacketString();
+        return s;
+    }
 }

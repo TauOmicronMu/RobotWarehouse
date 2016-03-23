@@ -17,7 +17,7 @@ public class MoveAction extends Action {
     }
 
     @Override
-    public String toString() {
+    public String toPacketString() {
         return "Move";
     }
 }

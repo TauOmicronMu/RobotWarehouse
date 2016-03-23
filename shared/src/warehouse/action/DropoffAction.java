@@ -5,7 +5,7 @@ package warehouse.action;
  */
 public class DropoffAction extends Action {
     @Override
-    public String toString() {
+    public String toPacketString() {
         return "Dropoff";
     }
 }

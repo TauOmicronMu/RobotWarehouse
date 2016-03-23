@@ -23,7 +23,7 @@ public class ActionCompleteEvent extends Event {
         s += ",";
         s += robot.toPacketString();
         s += ",";
-        s += action;
+        s += action.toPacketString();
         return s;
     }
 }

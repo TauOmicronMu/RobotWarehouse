@@ -1,7 +1,8 @@
 package warehouse.action;
 
 public abstract class Action {
-    public toString() {
+
+    public toPacketstring() {
         return "";
     }
 }
