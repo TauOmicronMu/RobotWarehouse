@@ -3,9 +3,7 @@ package warehouse.networking;
 import samtebbs33.net.event.SocketEvent;
 import samtebbs33.net.event.SocketEvent.SocketExceptionEvent;
 import samtebbs33.net.event.SocketEvent.SocketPacketEvent;
-import warehouse.event.Event;
 import warehouse.util.EventDispatcher;
-import warehouse.util.MultiSubscriber;
 
 import java.io.IOException;
 
@@ -45,11 +43,6 @@ public class WarehouseClient extends Client {
 	protected void onConnected() {
 		// TODO Auto-generated method stub
 		
-	}
-	
-	@MultiSubscriber
-	public void onEvent(Event event) throws IOException {
-		send(event);
 	}
 	
 
