@@ -6,6 +6,8 @@ import warehouse.job.Job;
 import warehouse.util.*;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -17,25 +19,93 @@ public abstract class Event implements Serializable {
         this.robot = robot;
     }
 
-    public static void main(String[] args) {
-        Robot robot = new Robot("Bob", new Location(0,0), Direction.WEST, 3280239);
+    public static boolean isomorphic(Event e) {
+        String es = e.toPacketString();
+        Event e2 = fromPacketString(es);
+        String es2 = e2.toPacketString();
+        //System.out.println(es);
+        //System.out.println(es2);
+        return (es.equals(es2));
+    }
 
-        //Parse Job
+    public static void main(String[] args) {
+        final Location location = new Location(0,0);
+        final Robot robot = new Robot("Bob", location, Direction.WEST, 3280239);
+        final Action a = new TurnAction(90.0);
+        final Action b = new MoveAction(5,location);
+        final Action c = new IdleAction(25);
+        final ArrayList<Action> actions = new ArrayList<Action>() {{add(a); add(b); add(c);}};
+        final Route route = new Route(actions, location, location, Direction.WEST);
+        final ItemPickup pickup = new ItemPickup("Cake", location, 9001);
+
+        boolean cum = true;
+
+        //Parse Job (and create a shared one for later)
         String str = "false,0,0,2,aa,1,2,3,ab,2,3,4,101";
-        Job job = parseJob(split(str, ','), 0).t;
-        System.out.println(job);
+        final Job job = parseJob(split(str, ','), 0).t;
+        //System.out.println(job);
         String str2 = job.toPacketString();
-        System.out.println(str2);
-        System.out.println(str.equals(str2));
+        //System.out.println(str2);
+        //System.out.println(str.equals(str2));
+
+        final AssignedJob ajob = new AssignedJob(job, route, robot);
 
         //ActionComplete
-        Action a = new TurnAction(90.0);
         ActionCompleteEvent ace = new ActionCompleteEvent(robot, a);
-        String aces = ace.toPacketString();
-        ActionCompleteEvent ace2 = (ActionCompleteEvent) fromPacketString(aces);
-        System.out.println(ace.equals(ace2));
-        String aces2 = ace2.toPacketString();
-        System.out.println(aces.equals(aces2));
+        System.out.println(isomorphic(ace));
+        cum = cum && isomorphic(ace);
+
+        //BeginAssigning
+        BeginAssigningEvent bae = new BeginAssigningEvent(new ArrayList<Job>(){{add(job);}});
+        System.out.println(isomorphic(bae));
+        cum = cum && isomorphic(bae);
+
+        //DropOffReached
+        DropOffReachedEvent dor = new DropOffReachedEvent(ajob);
+        System.out.println(isomorphic(dor));
+        cum = cum && isomorphic(dor);
+
+        //JobAssigned
+        JobAssignedEvent ja = new JobAssignedEvent(ajob);
+        System.out.println(isomorphic(ja));
+        cum = cum && isomorphic(ja);
+
+        //JobCancellation
+        JobCancellationEvent jc = new JobCancellationEvent(ajob);
+        System.out.println(isomorphic(jc));
+        cum = cum && isomorphic(jc);
+
+        //JobComplete
+        JobCompleteEvent jco = new JobCompleteEvent(ajob);
+        System.out.println(isomorphic(jco));
+        cum = cum && isomorphic(jco);
+
+        //PickupComplete
+        PickupCompleteEvent pc = new PickupCompleteEvent(robot, pickup);
+        System.out.println(isomorphic(pc));
+        cum = cum && isomorphic(pc);
+
+        //PickupReached
+        PickupReachedEvent pr = new PickupReachedEvent(pickup, robot);
+        System.out.println(isomorphic(pr));
+        cum = cum && isomorphic(pr);
+
+        //RobotLost
+        RobotLostEvent rl = new RobotLostEvent(robot);
+        System.out.println(isomorphic(rl));
+        cum = cum && isomorphic(rl);
+
+        //RobotOff
+        RobotOffEvent ro = new RobotOffEvent(robot);
+        System.out.println(isomorphic(ro));
+        cum = cum && isomorphic(ro);
+
+        //WrongPlace
+        WrongPlaceEvent wp = new WrongPlaceEvent(robot);
+        System.out.println(isomorphic(wp));
+        cum = cum && isomorphic(wp);
+
+        System.out.println("All Tests Passed? : " + cum);
     }
 
     public static Event fromPacketString(String str) {
@@ -44,26 +114,29 @@ public abstract class Event implements Serializable {
         String type = values[0];
         Event event = null;
         Pair<Robot, Integer> robotPair = parseRobot(values, 1);
+        //System.out.println("CHECKING " + type);
         if (type.equals("ActionComplete")) {
             Action action = parseAction(values, robotPair.e).t;
             event = new ActionCompleteEvent(robotPair.t, action);
         } else if (type.equals("BeginAssigning"))
-            event = new BeginAssigningEvent(parseJobList(values, 1).t, new LinkedList<Location>());
+            event = new BeginAssigningEvent(parseJobList(values, robotPair.e).t, new LinkedList<Location>());
         else if (type.equals("DropOffReached"))
-            event = new DropOffReachedEvent("", (AssignedJob) parseJob(values, 1).t);
-        else if (type.equals("JobAssignment")) event = new JobAssignedEvent((AssignedJob) parseJob(values, 1).t);
-        else if (type.equals("JobCancellation")) event = new JobCancellationEvent((AssignedJob) parseJob(values, 1).t);
+            event = new DropOffReachedEvent("", (AssignedJob) parseJob(values, robotPair.e).t);
+        else if (type.equals("JobAssigned")) event = new JobAssignedEvent((AssignedJob) parseJob(values, robotPair.e).t);
+        else if (type.equals("JobCancellation")) event = new JobCancellationEvent((AssignedJob) parseJob(values, robotPair.e).t);
         else if (type.equals("PickupComplete"))
             event = new PickupCompleteEvent(robotPair.t, parsePickup(values, robotPair.e).t);
         else if (type.equals("PickupReached"))
             event = new PickupReachedEvent(parsePickup(values, robotPair.e).t, robotPair.t);
         else if (type.equals("RobotLost")) event = new RobotLostEvent(robotPair.t);
-        else if (type.equals("RobotOffEvent")) event = new RobotLostEvent(robotPair.t);
+        else if (type.equals("RobotOff")) event = new RobotOffEvent(robotPair.t);
         else if (type.equals("WrongPlace")) event = new WrongPlaceEvent(robotPair.t);
+        else if(type.equals("JobComplete")) event = new JobCompleteEvent((AssignedJob) parseJob(values, robotPair.e).t);
         return event;
     }
 
     private static Pair<ItemPickup, Integer> parsePickup(String[] values, Integer i) {
+        //System.out.println("parsePickup values = [" + Arrays.toString(values) + "], i = [" + i + "]");
         String itemName = values[i];
         Pair<Location, Integer> loc = parseLocation(values, i + 1);
         return new Pair<>(new ItemPickup(itemName, loc.t, Integer.parseInt(values[loc.e])), loc.e + 1);
@@ -82,6 +155,7 @@ public abstract class Event implements Serializable {
     }
 
     private static Pair<Job, Integer> parseJob(String[] values, int i) {
+        //System.out.println("values = [" + Arrays.toString(values) + "], i = [" + i + "]");
         boolean isAssigned = Boolean.valueOf(values[i]);
         Pair<Location, Integer> dropLoc = parseLocation(values, i+1);
         Pair<List<ItemPickup>, Integer> pickups = parsePickupList(values, dropLoc.e);
@@ -89,19 +163,21 @@ public abstract class Event implements Serializable {
         Job job = null;
         if (isAssigned) {
             Pair<Robot, Integer> robot = parseRobot(values, pickups.e + 1);
+            //System.out.println("robot = " + robot);
             Pair<Route, Integer> route = parseRoute(values, robot.e);
             job = new AssignedJob(dropLoc.t, pickups.t, id, route.t, robot.t);
             i = route.e;
         } else {
             job = new Job(dropLoc.t, pickups.t, id);
-            i = pickups.e + 1;
+            i = pickups.e+1;
         }
 
         return new Pair<>(job, i);
     }
 
     private static Pair<Route, Integer> parseRoute(String[] values, Integer i) {
-        Pair<List<Action>, Integer> actions = parseActionList(values, i + 1);
+        Pair<List<Action>, Integer> actions = parseActionList(values, i);
+        //System.out.println("actions = " + actions);
         Pair<Location, Integer> loc = parseLocation(values, actions.e), loc2 = parseLocation(values, loc.e);
         Direction direction = Direction.valueOf(values[loc2.e]);
         return new Pair<>(new Route(actions.t, loc.t, loc2.t, direction), loc2.e + 1);
@@ -113,6 +189,7 @@ public abstract class Event implements Serializable {
         List<Action> actions = new LinkedList<>();
         for (int j = 0; j < size; j++) {
             Pair<Action, Integer> action = parseAction(values, i);
+            //System.out.println("action = " + action);
             i = action.e;
             actions.add(action.t);
         }
@@ -125,12 +202,11 @@ public abstract class Event implements Serializable {
         i++;
         if (actionType.equals("Dropoff")) {
             action = new DropoffAction();
-            i++;
         } else if (actionType.equals("Idle")) {
             action = new IdleAction(Integer.parseInt(values[i++]));
         } else if (actionType.equals("Move")) {
             action = new MoveAction(Integer.parseInt(values[i]), parseLocation(values, i + 1).t);
-            i += 2;
+            i += 3;
         } else if (actionType.equals("Pickup")) {
             action = new PickupAction();
             i++;
@@ -141,6 +217,7 @@ public abstract class Event implements Serializable {
     }
 
     private static Pair<List<ItemPickup>, Integer> parsePickupList(String[] values, int i) {
+        //System.out.println("parsePickupList values = [" + Arrays.toString(values) + "], i = [" + i + "]");
         int size = Integer.parseInt(values[i]);
         List<ItemPickup> pickups = new LinkedList<>();
         i++;
@@ -153,10 +230,12 @@ public abstract class Event implements Serializable {
     }
 
     private static Pair<Location, Integer> parseLocation(String[] values, int start) {
+        //System.out.println("parseLocation values = [" + Arrays.toString(values) + "], start = [" + start + "]");
         return new Pair<>(new Location(Integer.parseInt(values[start]), Integer.parseInt(values[start + 1])), start + 2);
     }
 
     private static Pair<Robot, Integer> parseRobot(String[] values, int start) {
+        //System.out.println("parseRobot values = [" + Arrays.toString(values) + "], start = [" + start + "]");
         Pair<Location, Integer> loc = parseLocation(values, start + 1);
         return new Pair<>(new Robot(values[start], loc.t, Direction.valueOf(values[loc.e]), Integer.parseInt(values[loc.e + 1])), loc.e + 2);
     }
@@ -174,6 +253,13 @@ public abstract class Event implements Serializable {
         String[] array = new String[list.size()];
         for (int i = 0; i < array.length; i++) array[i] = list.get(i);
         return array;
+    }
+
+    public String toPacketString() {
+        if(robot == null) {
+            return new Robot("Bob", new Location(0,0), Direction.WEST, 3280239).toPacketString();
+        }
+        return robot.toPacketString();
     }
 
 }

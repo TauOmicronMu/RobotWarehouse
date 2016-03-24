@@ -28,6 +28,6 @@ public class Robot {
      */
     public String toPacketString() {
         return
-                robotName + "," + position.x + "," + position.y + "," + rotation.name();
+                robotName + "," + position.x + "," + position.y + "," + rotation.name() + "," + id;
     }
 }

@@ -16,7 +16,8 @@ public class PickupCompleteEvent extends Event {
 
     public String toPacketString() {
         String s = "";
-        s += "PickupComplete";
+        s += "PickupComplete,";
+        s += super.toPacketString();
         s += ",";
         s += pickup.toPacketString();
         return s;

@@ -10,7 +10,7 @@ public class TurnAction extends Action {
 
     @Override
     public String toPacketString() {
-        return "Turn";
+        return "Turn" + "," + angle;
     }
 
     @Override

@@ -14,7 +14,9 @@ public class PickupReachedEvent extends Event {
     }
 
     public String toPacketString() {
-        String s = "";
+        String s = "PickupReached,";
+        s += super.toPacketString();
+        s += "," + pickup.toPacketString();
         return s;
     }
 
