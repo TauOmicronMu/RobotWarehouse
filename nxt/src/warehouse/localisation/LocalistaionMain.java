@@ -200,6 +200,11 @@ public class LocalistaionMain implements StoppableRunnable {
 				if(max < m_distribution.getProbability(x, y))
 					max = m_distribution.getProbability(x, y);
 				if (m_distribution.getProbability(x, y) >= 0.7f) {
+					
+					/*commented area is for the real robot to send an event 
+					 * (coordiantes and heading of the robot)
+					 * after the robot founds itself
+					 */
 					// Heading heading = m_pilot.getGridPose().getHeading();
 					// Direction d = Direction.NORTH;
 					// switch (heading) {
