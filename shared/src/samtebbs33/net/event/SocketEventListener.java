@@ -1,6 +1,5 @@
 package samtebbs33.net.event;
 
-import jdk.nashorn.internal.ir.annotations.Ignore;
 
 /**
  * Created by samtebbs on 29/01/2016.
@@ -19,7 +18,6 @@ public interface SocketEventListener {
      *
      * @param socket
      */
-    @Ignore
     void onTimeout(SocketEvent socket);
 
     /**
