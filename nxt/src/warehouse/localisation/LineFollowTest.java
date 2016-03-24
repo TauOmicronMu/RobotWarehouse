@@ -20,6 +20,7 @@ public class LineFollowTest {
 	public int rightSensorValue;
 	private UltrasonicSensor distanceSensor;
 	//changes travel speed
+	private final int numb = 1500;
 	private final Float travelSpeed = 0.18f;
 
 	private int delay=50;
@@ -48,7 +49,7 @@ public class LineFollowTest {
 	public void moveAction(int distance){
 		while (distance > 0) {
 
-			if(leftSensorValue < 1530 && rightSensorValue < 1530){
+			if(leftSensorValue < numb && rightSensorValue < numb){
 
 				distance--;
 				pilot.stop();
