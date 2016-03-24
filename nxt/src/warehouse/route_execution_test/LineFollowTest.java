@@ -47,7 +47,7 @@ public class LineFollowTest {
 		while (distance > 0) {
 //			System.out.println("left"+ leftSensorValue);
 //			System.out.println("right" +rightSensorValue);
-			if(leftSensorValue < 1530 && rightSensorValue < 1530){
+			if(leftSensorValue < 1500 && rightSensorValue < 1500){
 //				System.out.println("Junction");
 				distance--;
 				pilot.stop();

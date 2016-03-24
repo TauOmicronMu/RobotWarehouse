@@ -66,7 +66,7 @@ public class LineFollow {
 	  */
 	 public void moveAction(int distance){
 			while (distance > 0) {
-				if(leftSensorValue < 1530 && rightSensorValue < 1530){
+				if(leftSensorValue < 1500 && rightSensorValue < 1500){
 					distance--;
 					pilot.stop();
 				}else{

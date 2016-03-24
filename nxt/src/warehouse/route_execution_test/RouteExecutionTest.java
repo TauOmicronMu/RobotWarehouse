@@ -9,11 +9,15 @@ public class RouteExecutionTest {
 	
 	public static void main(String[] args) {
 		LineFollowTest lineFollower = new LineFollowTest();
-		int i=4;
-		while(i>0){
-			lineFollower.moveAction(1);
+		// Constructed an imaginary route to test
+			lineFollower.moveAction(4);
 			lineFollower.turnAction(90);
-			i--;
-		}
+			lineFollower.moveAction(5);
+			lineFollower.turnAction(-90);
+			lineFollower.moveAction(1);
+			lineFollower.turnAction(-90);
+			lineFollower.moveAction(2);
+			lineFollower.turnAction(-90);
 	}
 }
+
