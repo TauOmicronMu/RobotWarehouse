@@ -22,4 +22,12 @@ public class Robot {
                 ", rotation=" + rotation +
                 '}';
     }
+
+    /*
+     * "name,x,y,rotation"
+     */
+    public String toPacketString() {
+        return
+                robotName + "," + position.x + "," + position.y + "," + rotation.name() + "," + id;
+    }
 }
