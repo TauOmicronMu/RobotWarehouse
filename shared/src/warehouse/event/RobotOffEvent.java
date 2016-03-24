@@ -5,7 +5,6 @@ package warehouse.event;
  * @author txs
  *
  */
-
 import warehouse.util.Robot;
 
 /**
@@ -14,5 +13,13 @@ import warehouse.util.Robot;
 public class RobotOffEvent extends Event {
     public RobotOffEvent(Robot robot) {
         super(robot);
+    }
+
+    public String toPacketString() {
+        String s = "";
+        s += "RobotOff";
+        s += ",";
+        s += robot.toPacketString();
+        return s;
     }
 }

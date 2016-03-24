@@ -9,4 +9,13 @@ public class RobotLostEvent extends Event {
     public RobotLostEvent(Robot robot) {
         super(robot);
     }
+
+    public String toPacketString() {
+        String s = "";
+        s += "RobotLost";
+        s += ",";
+        s += robot.toPacketString();
+        return s;
+    }
+
 }

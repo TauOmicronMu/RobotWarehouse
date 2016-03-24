@@ -15,9 +15,10 @@ public class Location {
 
     @Override
     public String toString() {
-        return "{" +
-                "x=" + x +
-                ", y=" + y +
-                '}';
+        return toPacketString();
+    }
+
+    public String toPacketString() {
+        return x + "," + y;
     }
 }
