@@ -111,7 +111,7 @@ public class DirectionalSearch extends Search {
 			if (current.getLocation().x == goal.x && current.getLocation().y == goal.y) {
 				// return the optimal route
 				LinkedList<State> path = getPath(cameFrom, current);
-				StateRoute route = new StateRoute(path, path.size());
+				StateRoute route = new StateRoute(path, path.size() -1);
 				return Optional.of(route);
 			}
 			// else continue
@@ -160,7 +160,6 @@ public class DirectionalSearch extends Search {
 				hScore.put(getState(y, Direction.SOUTH).get(), Double.POSITIVE_INFINITY);
 				hScore.put(getState(y, Direction.WEST).get(), Double.POSITIVE_INFINITY);
 			}
-
 		}
 		return hScore;
 	}

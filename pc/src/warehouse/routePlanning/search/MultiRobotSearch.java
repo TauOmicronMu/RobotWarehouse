@@ -1,5 +1,11 @@
 package warehouse.routePlanning.search;
 
-public class MultiRobotSearch {
+import warehouse.routePlanning.util.Map;
+
+public class MultiRobotSearch extends Search{
+
+	public MultiRobotSearch(Map m) {
+		super(m);
+	}
 
 }

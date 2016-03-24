@@ -22,8 +22,8 @@ public class RouteBuilder {
 	private final int dropOffTime = 8;
 	private Location dropLocation;
 	private DirectionalSearch ds;
-	
-	public RouteBuilder(Location dropOffLocation, Map m){
+
+	public RouteBuilder(Location dropOffLocation, Map m) {
 		this.dropLocation = dropOffLocation;
 		ds = new DirectionalSearch(m);
 	}
@@ -43,9 +43,12 @@ public class RouteBuilder {
 		Route finalRoute = new Route(new LinkedList<Action>(), toVisit.getFirst(), toVisit.getFirst(), facing);
 
 		// sets the initial route to be the first edge in the search
+		if(!(toVisit.size() > 1)){
+			return Optional.empty();
+		}
 		Optional<StateRoute> currentEdge = ds.getRoute(toVisit.get(0), toVisit.get(1), facing);
 		if (currentEdge.isPresent()) {
-			LinkedList<State> route  = currentEdge.get().getRoute();
+			LinkedList<State> route = currentEdge.get().getRoute();
 			finalRoute = createRoute(route);
 		} else {
 			return Optional.empty();
@@ -57,13 +60,15 @@ public class RouteBuilder {
 		for (int edge = 1; edge < toVisit.size() - 1; edge++) {
 			currentEdge = ds.getRoute(toVisit.get(edge), toVisit.get(edge + 1), currentFacing);
 			if (currentEdge.isPresent()) {
-				LinkedList<State> route  = currentEdge.get().getRoute();
+				LinkedList<State> route = currentEdge.get().getRoute();
 				currentFacing = route.getLast().getFacing();
 				finalRoute = appendRoute(finalRoute, createRoute(route));
 			} else {
 				return Optional.empty();
 			}
 		}
+		finalRoute.actions.add(new DropoffAction());
+		finalRoute.totalDistance += dropOffTime;
 		return Optional.of(finalRoute);
 	}
 
@@ -92,9 +97,9 @@ public class RouteBuilder {
 					path.add(new MoveAction(1, currentLocation));
 				}
 			} else if (previousFacing.turnLeft().equals(currentFacing)) {
-				path.add(new TurnAction(-95));
+				path.add(new TurnAction(-90));
 			} else {
-				path.add(new TurnAction(95));
+				path.add(new TurnAction(90));
 			}
 		}
 
