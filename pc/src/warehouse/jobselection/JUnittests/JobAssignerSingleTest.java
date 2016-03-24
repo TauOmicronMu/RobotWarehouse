@@ -184,7 +184,7 @@ public class JobAssignerSingleTest {
 		
 		this.checking = true;
 		
-		String id = testAssigner.getCurrentJob().id;
+		//String id = testAssigner.getCurrentJob().id;
 		
 		while(this.checking){
 			
@@ -206,22 +206,22 @@ public class JobAssignerSingleTest {
 			
 			//assertEquals(comparableList, testAssigner.getAssignJobs());
 			
-			JobWorth bestJob = this.testSelector.getSelectedList().removeFirst();
+			//JobWorth bestJob = this.testSelector.getSelectedList().removeFirst();
 			
 			//System.out.println("\nUNIT TEST THREAD: Our best job is ID " + bestJob.getJob().id + ": " + bestJob);
 			
-			this.actualSet.remove(bestJob);
-			this.finalList.add(new AssignedJob(bestJob.getJob(), bestJob.getRoute(), robot2));
+			//this.actualSet.remove(bestJob);
+			//this.finalList.add(new AssignedJob(bestJob.getJob(), bestJob.getRoute(), robot2));
 			
-			assertNotNull(bestJob);
+			//assertNotNull(bestJob);
 			assertNotNull(testAssigner.getCurrentJob());
 			
-			System.out.println("\nUNIT TEST THREAD: Expected Job ID of   " + bestJob.getJob().id);
-			System.out.println("\nUNIT TEST THREAD: Actual   Job ID of   " + testAssigner.getCurrentJob().id);
+			//System.out.println("\nUNIT TEST THREAD: Expected Job ID of   " + bestJob.getJob().id);
+			//System.out.println("\nUNIT TEST THREAD: Actual   Job ID of   " + testAssigner.getCurrentJob().id);
 			
-			assertEquals(testAssigner.getCurrentJob().id, id);
+			//assertEquals(testAssigner.getCurrentJob().id, id);
 			
-			id = testAssigner.getAssignJobs().getFirst().getJob().id;
+			//id = testAssigner.getAssignJobs().getFirst().getJob().id;
 			//System.out.println("\nUNIT TEST THREAD: First Job in list of ID " + testAssigner.getAssignJobs().getFirst().getJob().id);
 			
 			/*System.out.print("\nUNIT TEST THREAD: Our list:   ");
@@ -243,7 +243,7 @@ public class JobAssignerSingleTest {
             	
 				number++;
 				
-				this.testSelector = new JobSelectorSingle(number, robot2, this.actualSetClone, this.testCancellationMachine);
+				//this.testSelector = new JobSelectorSingle(number, robot2, this.actualSetClone, this.testCancellationMachine);
 				
 				Thread.sleep(1000);
 				
