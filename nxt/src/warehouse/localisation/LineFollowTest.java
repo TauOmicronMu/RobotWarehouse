@@ -7,23 +7,38 @@ import lejos.nxt.UltrasonicSensor;
 import lejos.robotics.navigation.DifferentialPilot;
 import lejos.util.Delay;
 
+
 /**
  * Class that enables a NXT Robot to follow a line.
  * 
- * @author Team E1
  *
  */
 public class LineFollowTest {
 
+	/** The pilot. */
 	private DifferentialPilot pilot;
+	
+	/** The left sensor value. */
 	public int leftSensorValue;
+	
+	/** The right sensor value. */
 	public int rightSensorValue;
+	
+	/** The distance sensor. */
 	private UltrasonicSensor distanceSensor;
-	//changes travel speed
+	
+	/** The constant of sensor measurments */
+	private final int numb = 1500;
+	
+	/** The travel speed. */
 	private final Float travelSpeed = 0.18f;
 
+	/** The delay. */
 	private int delay=50;
 	
+	/**
+	 * Instantiates a new line follow test.
+	 */
 	public LineFollowTest(){
 		pilot = new DifferentialPilot(0.056, 0.12, Motor.B, Motor.C);
 		delay = 50;
@@ -45,14 +60,22 @@ public class LineFollowTest {
 		ls1Listener.start();
 	}
 	
+	/**
+	 * Move action
+	 *
+	 * @param distance the distance- how many steps in the map to move
+	 */
 	public void moveAction(int distance){
 		while (distance > 0) {
 
-			if(leftSensorValue < 1530 && rightSensorValue < 1530){
+			//if both sensors are on the black tape then decrease distance by one
+			//robot moved one step
+			if(leftSensorValue < numb && rightSensorValue < numb){
 
 				distance--;
 				pilot.stop();
 			}else{
+				//else use a feedback control and correct robots direction
 				pilot.steer((leftSensorValue - rightSensorValue)/4);
 				Delay.msDelay(delay);
 			}
@@ -61,11 +84,21 @@ public class LineFollowTest {
 		pilot.travel(0.02f);
 	}
 	
+	/**
+	 * Gets the range from the range scanner
+	 *
+	 * @return the range
+	 */
 	public double getRange()
 	{
 		return distanceSensor.getDistance();
 	}
 	
+	/**
+	 * Turn action turn the robot at a particular angle
+	 *
+	 * @param angle the angle
+	 */
 	public void turnAction(double angle){
 		//distance to travel before turning
 		pilot.travel(0.03f);
