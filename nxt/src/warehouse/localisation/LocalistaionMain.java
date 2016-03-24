@@ -1,14 +1,15 @@
 package warehouse.localisation;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4dfdac5806430cde9f694fe02f6807b9a9db6e3b
 import java.util.Random;
 
 import lejos.nxt.Button;
-import lejos.nxt.addon.OpticalDistanceSensor;
 import lejos.robotics.RangeReading;
 import lejos.robotics.RangeReadings;
-import lejos.robotics.navigation.DifferentialPilot;
 import lejos.util.Delay;
 =======
 import java.util.Random;
@@ -30,6 +31,7 @@ import rp.robotics.navigation.Heading;
 <<<<<<< HEAD
 import rp.systems.StoppableRunnable;
 
+<<<<<<< HEAD
 
 =======
 import rp.robotics.simulation.MapBasedSimulation;
@@ -41,14 +43,18 @@ import rp.robotics.visualisation.KillMeNow;
 import rp.robotics.visualisation.MapVisualisationComponent;
 import rp.systems.StoppableRunnable;
 >>>>>>> c38831639d5da111cb4562e6a5ec6cee90de0c6f
+=======
+// TODO: Auto-generated Javadoc
+>>>>>>> 4dfdac5806430cde9f694fe02f6807b9a9db6e3b
 /**
- * 
- * @author jokLiu
+ * The Class LocalistaionMain.
  *
+ * @author jokLiu
  */
 
 public class LocalistaionMain implements StoppableRunnable {
 
+	
 	// The map used as the basis of behaviour
 	private final GridMap m_map;
 
@@ -56,6 +62,7 @@ public class LocalistaionMain implements StoppableRunnable {
 	// grid map. Note this assumes that the robot has a known heading.
 	private GridPositionDistribution m_distribution;
 
+<<<<<<< HEAD
 	// The visualisation showing position uncertainty
 <<<<<<< HEAD
 //	private GridPositionDistributionVisualisation m_mapVis;
@@ -74,22 +81,41 @@ public class LocalistaionMain implements StoppableRunnable {
 	// The range scanning sensor
 	private LocalisedRangeScanner m_ranger;
 >>>>>>> c38831639d5da111cb4562e6a5ec6cee90de0c6f
+=======
+	
+	// The pilot object used to move the robot around on the grid.
+	private final GridPilotModified m_pilot;
+>>>>>>> 4dfdac5806430cde9f694fe02f6807b9a9db6e3b
 
+	/** The m_running. */
 	private boolean m_running = true;
 
 	// distances to the every object in the map
 	private Distances dist;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	OpticalDistanceSensor infraRed;
 	Part2_LineFollow lineFollower;
 	DifferentialPilot pilot;
+=======
+	
+	/** The line follower. */
+	LineFollowTest lineFollower;
+	
+>>>>>>> 4dfdac5806430cde9f694fe02f6807b9a9db6e3b
 
-	public LocalistaionMain( GridMap _gridMap, GridPose _start, 
-			Distances dist, Part2_LineFollow lineFollower, OpticalDistanceSensor infraRed, DifferentialPilot pilot) {
+	/**
+	 * Instantiates a new localistaion main.
+	 *
+	 * @param _gridMap the _grid map
+	 * @param _start the _start
+	 * @param dist the dist
+	 * @param lineFollower the line follower
+	 */
+	public LocalistaionMain(GridMap _gridMap, GridPose _start, Distances dist, LineFollowTest lineFollower) {
 
-		this.infraRed = infraRed;
+		
 		this.lineFollower = lineFollower;
-		this.pilot = pilot;
 		m_pilot = new GridPilotModified(_gridMap, _start);
 		m_map = _gridMap;
 =======
@@ -109,11 +135,13 @@ public class LocalistaionMain implements StoppableRunnable {
 		this.dist = dist;
 	}
 
+
 	@Override
 	public void stop() {
 		m_running = false;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	
 =======
@@ -143,11 +171,15 @@ public class LocalistaionMain implements StoppableRunnable {
 >>>>>>> c38831639d5da111cb4562e6a5ec6cee90de0c6f
 
 	/***
+=======
+	/**
+	 * *
+>>>>>>> 4dfdac5806430cde9f694fe02f6807b9a9db6e3b
 	 * Move the robot and update the distribution with the action and sensor
-	 * models
-	 * 
-	 * @param _actionModel
-	 * @param _sensorModel
+	 * models.
+	 *
+	 * @param _actionModel the _action model
+	 * @param _sensorModel the _sensor model
 	 */
 	private void move(ActionModel _actionModel, SensorModel _sensorModel) {
 
@@ -158,6 +190,7 @@ public class LocalistaionMain implements StoppableRunnable {
 		Heading heading = m_pilot.getGridPose().getHeading();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		
 		if (infraRed.getRange() >= 0.35f) {
 			lineFollower.start();
@@ -167,7 +200,13 @@ public class LocalistaionMain implements StoppableRunnable {
 				
 			
 			}
+=======
+		//if it is possible drive one step and update all the probabilities
+		if (lineFollower.getRange() >= 22f) {
+			lineFollower.moveAction(1);
+>>>>>>> 4dfdac5806430cde9f694fe02f6807b9a9db6e3b
 			m_pilot.moveForward();
+			Delay.msDelay(100);
 
 			// Update estimate of position using the action model
 			m_distribution = _actionModel.updateAfterMove(m_distribution, heading);
@@ -175,6 +214,7 @@ public class LocalistaionMain implements StoppableRunnable {
 
 		m_distribution.normalise();
 
+<<<<<<< HEAD
 
 =======
 		// Move robot forward
@@ -225,14 +265,38 @@ public class LocalistaionMain implements StoppableRunnable {
 
 		// A delay so we can see what's going on
 		Delay.msDelay(delay);
+=======
+		// A delay so we can see what's going on
+		Delay.msDelay(delay);
+
+//		// Update the estimate of position using the sensor model
+//		RangeReadings readings = new RangeReadings(1);
+//		readings.set(0, new RangeReading(0f,PLUS_X (float) lineFollower.getRange()));
+//		m_distribution = _sensorModel.updateAfterSensing(m_distribution, heading, readings);
+//
+//		m_distribution.normalise();
+//
+//		// A delay so we can see what's going on
+//		Delay.msDelay(delay);
+>>>>>>> 4dfdac5806430cde9f694fe02f6807b9a9db6e3b
 	}
 
+	/**
+	 * Sense method in order to use only sensor for localising
+	 *
+	 * @param _sensorModel the _sensor model
+	 */
 	private void sense(SensorModel _sensorModel) {
 		Heading heading = m_pilot.getGridPose().getHeading();
+		
 		// Update the estimate of position using the sensor model
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		//create readings object in order to pass readings from actual robot
+>>>>>>> 4dfdac5806430cde9f694fe02f6807b9a9db6e3b
 		RangeReadings readings = new RangeReadings(1);
-		readings.set(0, new RangeReading(0f, infraRed.getRange()));
+		readings.set(0, new RangeReading(0f, (float) lineFollower.getRange()));
 		m_distribution = _sensorModel.updateAfterSensing(m_distribution, heading, readings);
 
 		m_distribution.normalise();
@@ -266,7 +330,9 @@ public class LocalistaionMain implements StoppableRunnable {
 		ActionModel actionModel = new ActionModelModified();
 		SensorModel sensorModel = new SensorModelModified(dist);
 		Random random = new Random();
+		
 
+<<<<<<< HEAD
 		m_pilot.rotateNegative();
 <<<<<<< HEAD
 		pilot.rotate(-90);
@@ -333,19 +399,68 @@ public class LocalistaionMain implements StoppableRunnable {
 						sense(sensorModel);
 						break;
 					}
+=======
+		//running until the robot coordinates are found
+		while (m_running) {
+
+			if (!knownCoordinates()) {
+				//if there is no wall in front drive straight
+				//and update probabilities
+				if (lineFollower.getRange() >= 22f) {
+					move(actionModel, sensorModel);
 				}
+				//else rotate left
+				else
+				{
+					m_pilot.rotatePositive();
+					lineFollower.turnAction(-90);
+					Delay.msDelay(100);
+//					sense(sensorModel);
+>>>>>>> 4dfdac5806430cde9f694fe02f6807b9a9db6e3b
+				}
+
+//				else {
+//					int temp = random.nextInt(2);
+//					switch (temp) {
+//					case 0:
+//						m_pilot.rotateNegative();
+//						lineFollower.turnAction(-90);
+//						Delay.msDelay(100);
+//						sense(sensorModel);
+//						break;
+//					case 1:
+//						m_pilot.rotatePositive();
+//						lineFollower.turnAction(90);
+//						Delay.msDelay(100);
+//						sense(sensorModel);
+//						break;
+//					}
+//				}
 			}
 
 		}
 
 	}
-
+	
+	/** The max. */
+	private double max = 0;
+	
+	/**
+	 * Checks if the robot founds its place
+	 *
+	 * @return true, if successful
+	 */
 	private boolean knownCoordinates() {
 <<<<<<< HEAD
 
+		
+		//iterating through the whole map, checking if there is a probability which is greater than 0.7
 		for (int x = 0; x < m_map.getXSize(); x++) {
 			for (int y = 0; y < m_map.getYSize(); y++) {
+				if(max < m_distribution.getProbability(x, y))
+					max = m_distribution.getProbability(x, y);
 				if (m_distribution.getProbability(x, y) >= 0.7f) {
+<<<<<<< HEAD
 //					Heading heading = m_pilot.getGridPose().getHeading();
 //					Direction d = Direction.NORTH;
 //					switch (heading) {
@@ -367,14 +482,34 @@ public class LocalistaionMain implements StoppableRunnable {
 				if (m_distribution.getProbability(x, y) >= 0.7f) {
 					System.out.println("x: " + x + " // y: " + y);
 >>>>>>> c38831639d5da111cb4562e6a5ec6cee90de0c6f
+=======
+					// Heading heading = m_pilot.getGridPose().getHeading();
+					// Direction d = Direction.NORTH;
+					// switch (heading) {
+					// case PLUS_X:
+					// d = Direction.EAST;
+					// case PLUS_Y:
+					// d = Direction.NORTH;
+					// case MINUS_X:
+					// d = Direction.WEST;
+					// case MINUS_Y:
+					// d = Direction.SOUTH;
+					// }
+					// EventDispatcher.onEvent2(new StartingCoordinatesEvent(x,
+					// y, d));
+					System.out.println("x: " + x + " // y: " + y);
+					Button.waitForAnyPress();
+>>>>>>> 4dfdac5806430cde9f694fe02f6807b9a9db6e3b
 					m_running = false;
 					return true;
 				}
 			}
 		}
+		System.out.println(max);
 		return false;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	
 =======
@@ -412,4 +547,6 @@ public class LocalistaionMain implements StoppableRunnable {
 	}
 >>>>>>> c38831639d5da111cb4562e6a5ec6cee90de0c6f
 
+=======
+>>>>>>> 4dfdac5806430cde9f694fe02f6807b9a9db6e3b
 }
