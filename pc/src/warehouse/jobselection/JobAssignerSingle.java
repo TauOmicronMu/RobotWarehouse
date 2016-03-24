@@ -51,6 +51,9 @@ public class JobAssignerSingle extends Thread {
 	
 	private CancellationMachine cancellationMachine;
 	private double totalReward;
+	
+	private LinkedList<AssignedJob> finalList;
+	private int cutOffPoint;
 
 	/**
 	 * Create a new Job Assigner for a single robot based on a list of jobs
@@ -108,7 +111,13 @@ public class JobAssignerSingle extends Thread {
 
 		JobWorth jobToBeAssigned;
 
-		int number = 0;
+		int selectorNumber = 0;
+		int jobNumber = 0;
+		
+		this.finalList = new LinkedList<>();
+		this.cutOffPoint = 0;	
+		
+		boolean firstCancelled = true;
 		
 		System.out.println("\nASSIGNER THREAD: Waiting for BeginAssigningEvent");
 
@@ -118,7 +127,7 @@ public class JobAssignerSingle extends Thread {
 
 				System.out.println("\nASSIGNER THREAD: Received BeginAssigningEvent, sorting jobs");
 
-				this.selector = new JobSelectorSingle(number, this.robot, this.jobs, this.cancellationMachine);
+				this.selector = new JobSelectorSingle(selectorNumber, this.robot, this.jobs, this.cancellationMachine);
 
 				System.out.println("\nASSIGNER THREAD: Created Single Robot Selector, assigning jobs");
 
@@ -134,15 +143,24 @@ public class JobAssignerSingle extends Thread {
 					// If the robot has completed a job and now has no assigned
 					// job, give it a new one
 					if (this.jobComplete || this.jobCancelled) {
-
+						
 						// If the robot is not going to start its next job from
 						// the drop location as it got lost or the job was cancelled
 						if (this.robotGotLost || this.jobCancelled) {
 
+							if(firstCancelled){
+							
+								System.out.println("\nASSIGNER THREAD: Setting cut off point to " + jobNumber);
+								this.cutOffPoint = jobNumber;
+								firstCancelled = false;
+							}
+							
 							System.out.println("\nASSIGNER THREAD: Robot got lost or job was cancelled");
 							
-							number++;
-							this.selector = new JobSelectorSingle(number, this.robot, this.jobs, this.cancellationMachine);
+							this.selector.stopSelection();
+							
+							selectorNumber++;
+							this.selector = new JobSelectorSingle(selectorNumber, this.robot, this.jobs, this.cancellationMachine);
 
 							this.gotList = false;
 
@@ -161,6 +179,9 @@ public class JobAssignerSingle extends Thread {
 
 						if (gotList) {
 
+							jobNumber++;
+							System.out.println("\nASSIGNER THREAD: " + jobNumber);
+							
 							try {
 								Thread.sleep(100);
 							} catch (InterruptedException e) {
@@ -172,10 +193,12 @@ public class JobAssignerSingle extends Thread {
 
 							this.assignJobs = this.selector.getSelectedList();
 
+							assert(this.assignJobs.size() > 0);
+							
 							// Get the next job to be assigned
 							jobToBeAssigned = this.assignJobs.removeFirst();
 
-							System.out.println("\nASSIGNER THREAD: The chosen best job is: " + jobToBeAssigned);
+							System.out.println("\nASSIGNER THREAD: The chosen best job is ID " + jobToBeAssigned.getJob().id + ": " + jobToBeAssigned);
 
 							// Remove it from the list of jobs
 							this.jobs.remove(jobToBeAssigned.getJob());
@@ -186,6 +209,8 @@ public class JobAssignerSingle extends Thread {
 							this.currentJob = this.assign(this.robot, jobToBeAssigned);
 							EventDispatcher.onEvent2(new SelectorHasCurrentJobEvent());
 
+							this.finalList.add(this.currentJob);
+							
 							System.out.println("\nASSIGNER THREAD: The current job is: " + this.currentJob);
 
 							// Tell subscribers
@@ -221,6 +246,13 @@ public class JobAssignerSingle extends Thread {
 					}
 				}
 			}
+			
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// sleep was interrupted for some reason
+				e.printStackTrace();
+			}
 		}
 
 		// If it reaches this point, it has assigned every job
@@ -255,6 +287,46 @@ public class JobAssignerSingle extends Thread {
 	public AssignedJob getCurrentJob() {
 
 		return this.currentJob;
+	}
+	
+	/**
+	 * Method to get the current list of jobs to be assigned
+	 * 
+	 * @return the current list of jobs to be assigned
+	 */
+	public LinkedList<JobWorth> getAssignJobs(){
+		
+		return this.assignJobs;
+	}
+	
+	/**
+	 * Method to get the current cancellation machine being used by the assigner
+	 * 
+	 * @return the current cancellation machine
+	 */
+	public CancellationMachine getCancellationMachine(){
+		
+		return this.cancellationMachine;
+	}
+	
+	/**
+	 * Method to get the final list of assigned jobs that this assigner generated before it stopped
+	 * 
+	 * @return the final linked list of assigned jobs
+	 */
+	public LinkedList<AssignedJob> getFinalList(){
+		
+		return this.finalList;
+	}
+	
+	/**
+	 * Get the index of the first cancelled job in the final list.
+	 *
+	 * @return the index of the first cancelled job in the final list
+	 */
+	public int getCutOffPoint(){
+		
+		return this.cutOffPoint;
 	}
 
 	/**
