@@ -24,8 +24,8 @@ public class JobAssignedEvent extends Event {
 
 	public String toPacketString() {
 		String s = "";
-		s += "JobAssigned";
-		s += ",";
+		s += "JobAssigned,";
+		s += super.toPacketString() + ",";
 		s += assignedJob.toPacketString();
 		return s;
 	}

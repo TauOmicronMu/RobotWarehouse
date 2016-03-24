@@ -27,6 +27,8 @@ public class DropOffReachedEvent extends Event {
         String s = "";
         s += "DropOffReached";
         s += ",";
+        s += robot.toPacketString();
+        s += ",";
         s += job.toPacketString();
         return s;
     }
@@ -38,8 +40,8 @@ public class DropOffReachedEvent extends Event {
 
         DropOffReachedEvent that = (DropOffReachedEvent) o;
 
-        if (!str.equals(that.str)) return false;
-        return job.equals(that.job);
+        if (str != null ? !str.equals(that.str) : that.str != null) return false;
+        return job != null ? job.equals(that.job) : that.job == null;
 
     }
 

@@ -13,7 +13,8 @@ public class JobCancellationEvent extends Event {
 
     public String toPacketString() {
         String s = "";
-        s += "JobCancellation";
+        s += "JobCancellation,";
+        s += super.toPacketString();
         s += ",";
         s += job.toPacketString();
         return s;

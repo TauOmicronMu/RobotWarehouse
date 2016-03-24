@@ -18,7 +18,7 @@ public class MoveAction extends Action {
 
     @Override
     public String toPacketString() {
-        return "Move";
+        return "Move," + distance + "," + destination;
     }
 
     @Override

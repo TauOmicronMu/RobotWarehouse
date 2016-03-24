@@ -13,7 +13,7 @@ public class IdleAction extends Action {
 
     @Override
     public String toPacketString() {
-        return "Idle";
+        return "Idle," + time;
     }
 
     @Override

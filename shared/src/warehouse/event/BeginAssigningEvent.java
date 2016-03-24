@@ -53,9 +53,12 @@ public class BeginAssigningEvent extends Event {
 	}
 
 	public String toPacketString() {
-		String s = "";
+        String s = "";
+		String r = super.toPacketString();
 		s += "BeginAssigning";
 		s += ",";
+        s += r;
+        s += ",";
 		s += jobs.size();
 		s += ",";
 		for(Job j : jobs) {
