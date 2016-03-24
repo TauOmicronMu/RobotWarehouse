@@ -1,10 +1,5 @@
 package warehouse.localisation;
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> c38831639d5da111cb4562e6a5ec6cee90de0c6f
 import lejos.robotics.RangeReadings;
 import rp.robotics.localisation.GridPositionDistribution;
 import rp.robotics.localisation.SensorModel;
