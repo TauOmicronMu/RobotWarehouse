@@ -9,6 +9,7 @@ public class MoveAction extends Action {
 
     public int distance;
     public Location destination;
+    public double speed;
 
     public MoveAction(int distance, Location destination) {
         this.distance = distance;
