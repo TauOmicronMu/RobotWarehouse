@@ -11,7 +11,7 @@ public class Robot {
         this.robotName = robotName;
         this.position = position;
         this.rotation =  rotation;
-        this.id = id;s
+        this.id = id;
     }
 
     @Override
