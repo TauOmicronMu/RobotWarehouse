@@ -77,7 +77,7 @@ public abstract class Server implements SocketEventListener, Closeable {
     public void broadcastExcluding(Serializable packet, SocketStream client) {
         for (SocketStream stream : getClients()) {
             try {
-                send(packet, stream);
+                if(!stream.equals(client)) send(packet, stream);
             } catch (IOException e) {
                 e.printStackTrace();
             }

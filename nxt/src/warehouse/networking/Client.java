@@ -1,8 +1,10 @@
 package warehouse.networking;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
-import java.net.SocketException;
+import java.net.Socket;
 
 import lejos.nxt.comm.Bluetooth;
 import lejos.nxt.comm.NXTConnection;
@@ -15,25 +17,27 @@ import samtebbs33.net.event.SocketEventListener;
  */
 public abstract class Client implements SocketEventListener {
 
-    private SocketStream stream;
-
+    private OutputStream out;
+    private InputStream in;
+    
     public Client() throws IOException {
-        NXTConnection conn = Bluetooth.waitForConnection();
-        stream = new SocketStream(conn.openDataOutputStream(), conn.openDataInputStream());
+        NXTConnection connection = Bluetooth.waitForConnection();
+        this.out = connection.openOutputStream();
+        this.in = connection.openInputStream();
         onConnected();
     }
 
     /**
-     * Send a packet to the connected server
+     * Send a String to the connected server
      *
-     * @param packet
+     * @param string
      * @throws IOException
      */
-    public void send(Serializable packet) throws IOException {
+    public void send(String s) throws IOException {
         try {
-            stream.write(packet);
-        } catch (SocketException e) {
-            onDisconnection(new SocketEvent.SocketExceptionEvent(stream, e));
+            out.write(s.getBytes(), 0, s.length());
+        } catch (IOException e) {
+            //TODO : DO something here.
         }
     }
 
