@@ -4,7 +4,7 @@ import rp.robotics.localisation.ActionModel;
 import rp.robotics.localisation.GridPositionDistribution;
 import rp.robotics.navigation.Heading;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Action model for probabilities when robot is moving.
  *
