@@ -52,7 +52,7 @@ public class WarehouseClient extends Client {
 	
 	@MultiSubscriber
 	public void onEvent(Event event) throws IOException {
-		send(event.toString());
+		send(event.toPacketString());
 	}
 	
 	private void p(String s) {
