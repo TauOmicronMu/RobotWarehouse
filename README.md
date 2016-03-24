@@ -13,7 +13,7 @@ public void onJobUpdate(JobUpdateEvent event) {
 
 If you want to make a method that listens to all event types, do the same but use the `MutliSubscriber` annotation and use `Object` as the parameter's type.
 
-You then have to tell the EventDispatcher that this class has subscriber methods. If you have static subscriber methods, you can either use a static initialiser or use the constructor method. If you have non-static subscriber methods, then you must use the constructor method.
+You then have to tell the EventDispatcher that this class has subscriber methods by *one* of the two methods below. If you have static subscriber methods, you can either use a static initialiser or use the constructor method. If you have non-static subscriber methods, then you must use the constructor method.
 ```
 public class Test {
 
@@ -37,7 +37,7 @@ EventDispatcher.onEvent2(eventOj)
 ```
 
 ## Pulling the latest commits from the dev branch
-To get the lates changes, make sure you are in your role's repo and do:
+To get the latest changes, make sure you are in your role's repo and do:
 ```
 git merge origin/dev
 ```
