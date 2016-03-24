@@ -423,6 +423,13 @@ public class JobAssignerMultiple extends Thread {
 					}
 				}
 			}
+			
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// sleep was interrupted for some reason
+				e.printStackTrace();
+			}
 		}
 
 		// If it reaches this point, it has assigned every job

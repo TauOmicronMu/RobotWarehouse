@@ -1,6 +1,7 @@
 package warehouse.jobselection.JUnittests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -20,6 +21,11 @@ import warehouse.event.JobCancellationEvent;
 import warehouse.event.JobCompleteEvent;
 import warehouse.job.Job;
 import warehouse.jobselection.JobAssignerSingle;
+import warehouse.jobselection.JobSelectorSingle;
+import warehouse.jobselection.JobWorth;
+import warehouse.jobselection.cancellation.Backup;
+import warehouse.jobselection.cancellation.CancellationMachine;
+import warehouse.jobselection.cancellation.NaiveBayes;
 import warehouse.jobselection.event.FinishedAssigningEvent;
 import warehouse.util.Direction;
 import warehouse.util.EventDispatcher;
@@ -31,8 +37,11 @@ import warehouse.util.Subscriber;
 public class JobAssignerSingleTest {
 
 	private LinkedList<Job> trainingSet;
-	private List<Job> actualSet;
+	private LinkedList<Job> actualSet;
 	private boolean checking;
+	private JobSelectorSingle testSelector;
+	private CancellationMachine testCancellationMachine;
+	private LinkedList<Job> finalList;
 
 	@Before
 	public void setUp() throws Exception {
@@ -122,6 +131,17 @@ public class JobAssignerSingleTest {
 		this.trainingSet = new LinkedList<>(trainingJobs);
 		this.actualSet = new LinkedList<>(actualJobs);
 		
+		try{
+			this.testCancellationMachine = new NaiveBayes(this.trainingSet); 
+		}
+		catch(NullPointerException e){
+			this.testCancellationMachine = new Backup();
+		}
+		catch(AssertionError e){
+			this.testCancellationMachine = new Backup();
+		}
+		
+		
 		this.checking = false;
 		
 		EventDispatcher.subscribe2(this);
@@ -130,11 +150,26 @@ public class JobAssignerSingleTest {
 	@Test
 	public void test() throws InterruptedException {
 		
+		LinkedList<Job> finalAssignedJobsList = new LinkedList<>();
+		
 		Robot robot = new Robot("testRobot", new Location(0, 0), Direction.NORTH, 0);
 		
 		JobAssignerSingle testAssigner = new JobAssignerSingle(robot, this.trainingSet);
 		
+		Thread.sleep(1000);
+		
+		assertEquals(this.testCancellationMachine, testAssigner.getCancellationMachine());
+		
+		int number = 0;
+		
+		System.out.println("\nUNIT TEST THREAD: Our cancellation machine: \n" + this.testCancellationMachine);
+		
+		this.testSelector = new JobSelectorSingle(number, robot, this.actualSet, this.testCancellationMachine);
+		
+		System.out.println("\nUNIT TEST THREAD: Sending Event");
 		EventDispatcher.onEvent2(new BeginAssigningEvent(this.actualSet, new LinkedList<Location>()));
+		
+		Thread.sleep(1000);
 		
 		this.checking = true;
 		
@@ -142,16 +177,36 @@ public class JobAssignerSingleTest {
 			
 			Thread.sleep(1000);
 			
-			assertTrue(testAssigner.getCurrentJob() != null);
+			JobWorth bestJob = this.testSelector.getSelectedList().removeFirst();
+			
+			System.out.println("\nUNIT TEST THREAD: Our best job is ID " + bestJob.getJob().id + ": " + bestJob);
+			
+			this.actualSet.remove(bestJob);
+			
+			assertNotNull(bestJob);
+			assertNotNull(testAssigner.getCurrentJob());
+			
+			System.out.println("\nUNIT TEST THREAD: Expected Job ID of   " + bestJob.getJob().id);
+			System.out.println("\nUNIT TEST THREAD: Actual   Job ID of   " + testAssigner.getCurrentJob().id);
+			
+			assertEquals(testAssigner.getCurrentJob().id, bestJob.getJob().id);
 			
 			if(testAssigner.getCurrentJob().cancelledInTrainingSet){
             	
+				number++;
+				
+				this.testSelector = new JobSelectorSingle(number, robot, this.actualSet, this.testCancellationMachine);
+				
+				Thread.sleep(1000);
+				
             	EventDispatcher.onEvent2(new JobCancellationEvent(testAssigner.getCurrentJob()));
             	
             }else{
             
             	EventDispatcher.onEvent2(new JobCompleteEvent(testAssigner.getCurrentJob()));
             }
+			
+			//assertEquals(testAssigner.getFinalList(), this.finalList);
 		}
 	}
 

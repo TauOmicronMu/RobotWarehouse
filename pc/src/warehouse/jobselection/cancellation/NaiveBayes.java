@@ -1,6 +1,7 @@
 package warehouse.jobselection.cancellation;
 
 import java.util.*;
+import java.util.Map.Entry;
 
 import warehouse.job.Job;
 import warehouse.jobselection.cancellation.enums.NumRange;
@@ -726,6 +727,78 @@ public class NaiveBayes implements CancellationMachine {
 		return result;
 	}
 
+	@Override
+	public boolean equals(Object o){
+		
+		if(!(o instanceof NaiveBayes)){
+			
+			return false;
+		}
+
+		NaiveBayes n = (NaiveBayes)o;
+		
+		for(Map.Entry<String, Feature> thisEntry : this.NumberPickups.entrySet()){
+			
+			Feature nEntry = n.NumberPickups.get(thisEntry.getKey());
+			
+			for(int i = 0; i < thisEntry.getValue().p.probabilities.size(); i++){
+				
+				if(!(((thisEntry.getValue().p.probabilities.get(i).descriptor.equals(nEntry.p.probabilities.get(i).descriptor))
+						&& (thisEntry.getValue().p.probabilities.get(i).probability == nEntry.p.probabilities.get(i).probability)))){
+					
+					return false;
+				}
+			}
+			
+			for(int i = 0; i < thisEntry.getValue().q.probabilities.size(); i++){
+				
+				if(!(((thisEntry.getValue().q.probabilities.get(i).descriptor.equals(nEntry.q.probabilities.get(i).descriptor))
+						&& (thisEntry.getValue().q.probabilities.get(i).probability == nEntry.q.probabilities.get(i).probability)))){
+					
+					return false;
+				}
+			}
+		}
+		
+		for(int i = 0; i < this.TotalReward.p.probabilities.size(); i++){
+			
+			if(!(((TotalReward.p.probabilities.get(i).descriptor.equals(n.TotalReward.p.probabilities.get(i).descriptor))
+					&& (TotalReward.p.probabilities.get(i).probability == n.TotalReward.p.probabilities.get(i).probability)))){
+				
+				return false;
+			}
+			
+			if(!(((TotalReward.q.probabilities.get(i).descriptor.equals(n.TotalReward.q.probabilities.get(i).descriptor))
+					&& (TotalReward.q.probabilities.get(i).probability == n.TotalReward.q.probabilities.get(i).probability)))){
+				
+				return false;
+			}
+		}
+		
+		for(int i = 0; i < this.TotalWeight.p.probabilities.size(); i++){
+			
+			if(!(((TotalWeight.p.probabilities.get(i).descriptor.equals(n.TotalWeight.p.probabilities.get(i).descriptor))
+					&& (TotalWeight.p.probabilities.get(i).probability == n.TotalWeight.p.probabilities.get(i).probability)))){
+				
+				return false;
+			}
+			
+			if(!(((TotalWeight.q.probabilities.get(i).descriptor.equals(n.TotalWeight.q.probabilities.get(i).descriptor))
+					&& (TotalWeight.q.probabilities.get(i).probability == n.TotalWeight.q.probabilities.get(i).probability)))){
+				
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	@Override
+	public int hashCode(){
+		
+		return 0;
+	}
+	
 	// DESCRIBES AN ARRAY OF DPAIRS
 
 	/**
@@ -804,8 +877,15 @@ public class NaiveBayes implements CancellationMachine {
 
 		@Override
 		public int hashCode() {
-
-			return 0;
+			
+			int hashCode = 0;
+			
+			for(DPair pair : this.probabilities){
+				
+				hashCode += pair.hashCode();
+			}
+			
+			return hashCode;
 		}
 
 		public String toString() {
@@ -867,7 +947,7 @@ public class NaiveBayes implements CancellationMachine {
 		@Override
 		public int hashCode() {
 
-			return hash(this.name, (this.p.probabilities.size() + this.q.probabilities.size()) / 2);
+			return this.p.hashCode() + this.q.hashCode();
 		}
 
 		/**
@@ -921,7 +1001,12 @@ public class NaiveBayes implements CancellationMachine {
 		@Override
 		public int hashCode() {
 
-			return 0;
+			if(!(this.descriptor instanceof String)){
+			
+				return 0;
+			}
+			
+			return hash((String)this.descriptor, (int)this.probability);
 		}
 
 		/**
@@ -933,7 +1018,7 @@ public class NaiveBayes implements CancellationMachine {
 		}
 	}
 
-	// METHOD FOR HASHING FEATURES
+	// METHOD FOR HASHING
 
 	/**
 	 * Method for generating a hash for a hashmap based on a string and a number

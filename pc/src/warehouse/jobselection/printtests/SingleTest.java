@@ -1,20 +1,29 @@
 package warehouse.jobselection.printtests;
 
-import warehouse.event.BeginAssigningEvent;
-import warehouse.event.JobCancellationEvent;
-import warehouse.event.JobCompleteEvent;
-import warehouse.job.Job;
-import warehouse.jobselection.JobAssignerSingle;
-import warehouse.jobselection.event.SelectorHasCurrentJobEvent;
-import warehouse.util.*;
-import warehouse.util.Location;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+
+import warehouse.event.BeginAssigningEvent;
+import warehouse.event.JobCancellationEvent;
+import warehouse.event.JobCompleteEvent;
+import warehouse.job.AssignedJob;
+import warehouse.job.Job;
+import warehouse.jobselection.JobAssignerSingle;
+import warehouse.jobselection.event.SelectorHasCurrentJobEvent;
+import warehouse.util.Direction;
+import warehouse.util.EventDispatcher;
+import warehouse.util.ItemPickup;
+import warehouse.util.Location;
+import warehouse.util.Robot;
+import warehouse.util.Subscriber;
 
 /**
  * Created by Owen on 22/03/2016.
@@ -262,9 +271,19 @@ public class SingleTest  extends Thread{
             try {
 				Thread.sleep(2000);
 			} catch (InterruptedException e) {
-				// Interrupted for some reason
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+            
+            System.out.println("\nTEST THREAD: Final List of assigned jobs in order: ");
+            for(AssignedJob job : assigner.getFinalList()){
+            	
+            	System.out.println("\nID: " + job.id + " - " + job);
+            }
+            
+            assert(assigner.getCutOffPoint() == numberSuccessful + 1);
+            
+            System.out.println("\nTEST THREAD: Cut off point = " + assigner.getCutOffPoint());
     }
 
     @Subscriber
