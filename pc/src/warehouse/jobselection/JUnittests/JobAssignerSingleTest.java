@@ -42,6 +42,7 @@ public class JobAssignerSingleTest {
 	private JobSelectorSingle testSelector;
 	private CancellationMachine testCancellationMachine;
 	private LinkedList<Job> finalList;
+	private LinkedList<Job> actualSetClone;
 
 	@Before
 	public void setUp() throws Exception {
@@ -131,6 +132,13 @@ public class JobAssignerSingleTest {
 		this.trainingSet = new LinkedList<>(trainingJobs);
 		this.actualSet = new LinkedList<>(actualJobs);
 		
+		this.actualSetClone = new LinkedList<>();
+		
+		for(Job job : this.actualSet){
+			
+			this.actualSetClone.add(job);
+		}
+		
 		try{
 			this.testCancellationMachine = new NaiveBayes(this.trainingSet); 
 		}
@@ -167,15 +175,22 @@ public class JobAssignerSingleTest {
 		this.testSelector = new JobSelectorSingle(number, robot, this.actualSet, this.testCancellationMachine);
 		
 		System.out.println("\nUNIT TEST THREAD: Sending Event");
-		EventDispatcher.onEvent2(new BeginAssigningEvent(this.actualSet, new LinkedList<Location>()));
+		EventDispatcher.onEvent2(new BeginAssigningEvent(this.actualSetClone, new LinkedList<Location>()));
 		
-		Thread.sleep(1000);
+		Thread.sleep(3000);
 		
 		this.checking = true;
+		
+		String id = testAssigner.getCurrentJob().id;
 		
 		while(this.checking){
 			
 			Thread.sleep(1000);
+			
+			System.out.println("\nUNIT TEST THREAD: Our list is length " + this.testSelector.getSelectedList().size());
+			System.out.println("\nUNIT TEST THREAD: Our list: " + this.testSelector.getSelectedList());
+			System.out.println("\nUNIT TEST THREAD: Their list is length " + testAssigner.getAssignJobs().size());
+			System.out.println("\nUNIT TEST THREAD: Their list: " + testAssigner.getAssignJobs());
 			
 			JobWorth bestJob = this.testSelector.getSelectedList().removeFirst();
 			
@@ -188,6 +203,11 @@ public class JobAssignerSingleTest {
 			
 			System.out.println("\nUNIT TEST THREAD: Expected Job ID of   " + bestJob.getJob().id);
 			System.out.println("\nUNIT TEST THREAD: Actual   Job ID of   " + testAssigner.getCurrentJob().id);
+			
+			assertEquals(testAssigner.getCurrentJob().id, id);
+			
+			id = testAssigner.getAssignJobs().getFirst().getJob().id;
+			System.out.println("\nUNIT TEST THREAD: First Job in list of ID " + testAssigner.getAssignJobs().getFirst().getJob().id);
 			
 			assertEquals(testAssigner.getCurrentJob().id, bestJob.getJob().id);
 			

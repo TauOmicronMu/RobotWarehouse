@@ -290,6 +290,16 @@ public class JobAssignerSingle extends Thread {
 	}
 	
 	/**
+	 * Method to get the current list of jobs to be assigned
+	 * 
+	 * @return the current list of jobs to be assigned
+	 */
+	public LinkedList<JobWorth> getAssignJobs(){
+		
+		return this.assignJobs;
+	}
+	
+	/**
 	 * Method to get the current cancellation machine being used by the assigner
 	 * 
 	 * @return the current cancellation machine
