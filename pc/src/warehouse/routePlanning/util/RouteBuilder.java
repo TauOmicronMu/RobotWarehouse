@@ -1,6 +1,7 @@
 package warehouse.routePlanning.util;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 
 import warehouse.action.Action;
@@ -113,7 +114,7 @@ public class RouteBuilder {
 	 * @return the total route
 	 */
 	private Route appendRoute(Route r1, Route r2) {
-		LinkedList<Action> totalPath = new LinkedList<Action>();
+		List<Action> totalPath = new LinkedList<Action>();
 		totalPath = r1.actions;
 		if (r1.end.x == dropLocation.x && r1.end.y == dropLocation.y) {
 			totalPath.add(new DropoffAction());
