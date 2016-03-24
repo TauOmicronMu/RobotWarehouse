@@ -265,6 +265,8 @@ public class JobAssignerSingleTest {
 				
 				this.testSelector = new JobSelectorSingle(number, robot2, this.actualSetClone, this.testCancellationMachine);
 				
+				number++;
+				this.testSelector2 = new JobSelectorSingle(number, robot3, this.actualSetClone2, this.testCancellationMachine);
 				Thread.sleep(1000);
 				
             	EventDispatcher.onEvent2(new JobCancellationEvent(testAssigner.getCurrentJob()));
