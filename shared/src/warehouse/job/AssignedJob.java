@@ -20,6 +20,7 @@ public class AssignedJob extends Job {
 
     public AssignedJob(Job job, Route route, Robot robot) {
         this(job.dropLocation, job.pickups, job.id, route, robot);
+        this.cancelledInTrainingSet = job.cancelledInTrainingSet;
     }
 
     @Override
@@ -33,5 +34,14 @@ public class AssignedJob extends Job {
                 "route=" + route +
                 ", robot=" + robot +
                 '}';
+    }
+
+    public String toPacketString() {
+        String s = super.toPacketString();
+        s += ",";
+        s += robot.toPacketString();
+        s += ",";
+        s += route.toPacketString();
+        return s;
     }
 }

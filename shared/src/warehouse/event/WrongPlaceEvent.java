@@ -5,8 +5,6 @@ package warehouse.event;
  * @author txs
  *
  */
-public class WrongPlaceEvent
-{
 
 import warehouse.util.Robot;
 
@@ -17,5 +15,13 @@ public class WrongPlaceEvent extends Event {
 
     public WrongPlaceEvent(Robot robot) {
         super(robot);
+    }
+
+    public String toPacketString() {
+        String s = "";
+        s += "WrongPlace";
+        s += ",";
+        s += robot.toPacketString();
+        return s;
     }
 }
