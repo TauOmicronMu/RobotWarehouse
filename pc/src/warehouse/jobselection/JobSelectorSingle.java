@@ -109,7 +109,7 @@ public class JobSelectorSingle extends Thread {
 				break runLoop;
 			}
 
-			System.out.println("\nSELECTOR THREAD " + this.id + ": Converting list NOW");
+			//System.out.println("\nSELECTOR THREAD " + this.id + ": Converting list NOW");
 
 			// Work out how good each job is by creating a jobworth object for
 			// each
@@ -117,26 +117,27 @@ public class JobSelectorSingle extends Thread {
 
 			assert (this.convertedList != null);
 
-			System.out.println("\nSELECTOR THREAD " + this.id + ": Converted list, sending event...");
+			//System.out.println("\nSELECTOR THREAD " + this.id + ": Converted list, sending event...");
 
 			// get the best one
 			bestJob = this.selectBestJob(this.convertedList);
 
-			System.out.println("\nSELECTOR THREAD " + this.id + ": The best Job is: " + bestJob);
+			//System.out.println("\nSELECTOR THREAD " + this.id + ": The best Job is: " + bestJob);
 
 			// remove it from the reference job list
 			this.jobsClone.remove(bestJob.getJob());
 
 			// add it to the list of selected jobs
 			this.selectedList.add(bestJob);
-
+			
+			System.out.println("\nSELECTOR THREAD " + this.id + ": Adding ID " + bestJob.getJob().id + ": " + bestJob + " to the list");
 			// Dispatch an event to let subscribers know we have added an item
 			// to the list
 			AddedToSelectedListEvent e = new AddedToSelectedListEvent();
 
 			EventDispatcher.onEvent2(e);
 
-			System.out.println("\nSELECTOR THREAD " + this.id + ": Adding : " + bestJob + " to the list");
+			
 			// System.out.println("\nSELECTOR THREAD " + this.id + ": Current
 			// list of selected jobs: " + this.selectedList);
 
