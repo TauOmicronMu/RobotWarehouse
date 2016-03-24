@@ -1,5 +1,6 @@
 package warehouse.networking;
 
+<<<<<<< HEAD
 import java.io.IOException;
 
 import lejos.nxt.LCD;
@@ -19,8 +20,16 @@ import warehouse.event.RobotLostEvent;
 import warehouse.event.RobotOffEvent;
 import warehouse.event.WrongPlaceEvent;
 import warehouse.event.manager.RobotEventManager;
+=======
+import samtebbs33.net.event.SocketEvent;
+import samtebbs33.net.event.SocketEvent.SocketExceptionEvent;
+import samtebbs33.net.event.SocketEvent.SocketPacketEvent;
+>>>>>>> 63c66ca0aa46fd7db0e9462d07f0cc170bbd0b4c
 import warehouse.util.EventDispatcher;
-import warehouse.util.MultiSubscriber;
+
+import java.io.IOException;
+
+import lejos.nxt.LCD;
 
 public class WarehouseClient extends Client {
 
@@ -32,6 +41,7 @@ public class WarehouseClient extends Client {
 
 	@Override
 	public void onPacketReceived(SocketPacketEvent event) {
+<<<<<<< HEAD
 		Event e = (Event)event.packet;
 		
 		if(e instanceof ActionCompleteEvent){
@@ -82,6 +92,10 @@ public class WarehouseClient extends Client {
 			//╰━━━━━━━━━━╯ 
 		}
 		
+=======
+		LCD.clear();
+		LCD.drawString("Msg: " + event.packet.toString(), 0, 0);
+>>>>>>> 63c66ca0aa46fd7db0e9462d07f0cc170bbd0b4c
 	}
 
 	@Override
@@ -110,10 +124,13 @@ public class WarehouseClient extends Client {
 		
 	}
 	
+<<<<<<< HEAD
 	private void p(String s) {
 		LCD.clearDisplay();
 		LCD.drawString(s, 1, 1);
 	}
 	
+=======
+>>>>>>> 63c66ca0aa46fd7db0e9462d07f0cc170bbd0b4c
 
 }
