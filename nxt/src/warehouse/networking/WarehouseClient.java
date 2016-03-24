@@ -110,11 +110,6 @@ public class WarehouseClient extends Client {
 		
 	}
 	
-	@MultiSubscriber
-	public void onEvent(Event event) throws IOException {
-		send(event.toPacketString());
-	}
-	
 	private void p(String s) {
 		LCD.clearDisplay();
 		LCD.drawString(s, 1, 1);
