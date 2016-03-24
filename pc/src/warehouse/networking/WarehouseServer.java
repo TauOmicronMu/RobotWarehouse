@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import lejos.pc.comm.NXTCommException;
@@ -34,7 +35,7 @@ public class WarehouseServer extends Server {
 	
 	private SocketStream[] robotConnections = new SocketStream[3];
 	private int numRobots = 0;
-	public static final ArrayList<Robot> robots = new ArrayList(); 
+	public static final List<Robot> robots = new ArrayList();
 
 	public WarehouseServer() throws IOException, NXTCommException {
 		super();
@@ -125,7 +126,7 @@ public class WarehouseServer extends Server {
 		return set;
 	}
 	
-	public void send(int robotID, Serializable event) {
+	public void send(int robotID, Event event) {
 		
 		try {
 			robotConnections[robotID].write(event);

@@ -11,6 +11,7 @@ import lejos.nxt.comm.NXTConnection;
 import samtebbs33.net.SocketStream;
 import samtebbs33.net.event.SocketEvent;
 import samtebbs33.net.event.SocketEventListener;
+import warehouse.event.Event;
 
 /**
  * Created by samtebbs on 30/01/2016.
@@ -33,9 +34,11 @@ public abstract class Client implements SocketEventListener {
      * @param string
      * @throws IOException
      */
-    public void send(String s) throws IOException {
+    public void send(Event event) throws IOException {
         try {
-            out.write(s.getBytes(), 0, s.length());
+            byte[] bytes = event.toPacketString().getBytes();
+            out.write(bytes.length);
+            out.write(bytes);
         } catch (IOException e) {
             //TODO : DO something here.
         }

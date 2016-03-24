@@ -1,6 +1,8 @@
 package samtebbs33.net;
 
 
+import warehouse.event.Event;
+
 import java.io.*;
 
 /**
@@ -9,20 +11,24 @@ import java.io.*;
 public class SocketStream implements Closeable {
 
     public long id;
-    private ObjectInputStream in;
-    private ObjectOutputStream out;
+    private InputStream in;
+    private OutputStream out;
 
     public SocketStream(OutputStream out, InputStream in) throws IOException {
-        this.out = new ObjectOutputStream(out);
-        this.in = new ObjectInputStream(in);
+        this.out = out;
+        this.in = in;
     }
 
-    public void write(Serializable obj) throws IOException {
-        this.out.writeObject(obj);
+    public void write(Event obj) throws IOException {
+        byte[] bytes = obj.toPacketString().getBytes();
+        out.write(bytes.length);
+        out.write(bytes);
     }
 
-    public Serializable read() throws IOException, ClassNotFoundException {
-        return (Serializable) this.in.readObject();
+    public Event read() throws IOException, ClassNotFoundException {
+        byte[] bytes = new byte[in.read()];
+        in.read(bytes);
+        return Event.fromPacketString(new String(bytes));
     }
 
     @Override
