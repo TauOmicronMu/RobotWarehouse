@@ -207,23 +207,17 @@ public class TSP {
 		// checks impact of adding or removing nodes on the adjacency matrix and
 		// modifies accordingly
 		for (int x = 0; x < branches.length; x++) {
-			// System.out.println();
-			// System.out.println("BRANCH: " + x);
 
 			// check to see if an edge must be added as it would not be possible
 			// for either node to have two edges without it
-			// System.out.println("Adds needed connections");
 			branches[x].addEssentialConnections(allLocations);
 
 			// checks for potential cycles in branch
-			// System.out.println("Checking for cycles");
 			branches[x].checkForCycles(allLocations);
 
 			// calculate the lower bound for the branch
-			// System.out.println("calculating the lower bound");
 			branches[x].setLowerBound();
 
-			// System.out.println("END OF BRANCH");
 		}
 
 		// deals with the two different routes in order of lowest lower bound
@@ -302,6 +296,7 @@ public class TSP {
 			}
 			if (totalWeight >= 50) {
 				finalPath.add(j.dropLocation);
+				totalWeight = 0;
 			}
 			finalPath.add(l);
 		}
