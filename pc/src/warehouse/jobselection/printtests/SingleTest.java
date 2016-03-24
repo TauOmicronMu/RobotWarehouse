@@ -4,8 +4,8 @@ import warehouse.event.BeginAssigningEvent;
 import warehouse.event.JobCancellationEvent;
 import warehouse.event.JobCompleteEvent;
 import warehouse.job.Job;
-import warehouse.jobselection.SelectorHasCurrentJobEvent;
 import warehouse.jobselection.JobAssignerSingle;
+import warehouse.jobselection.event.SelectorHasCurrentJobEvent;
 import warehouse.util.*;
 import warehouse.util.Location;
 
@@ -23,13 +23,11 @@ public class SingleTest  extends Thread{
 
     private List<Job> trainingJobs;
     private List<Job> actualJobs;
-    private ArrayList<List<Job>> jobSet;
     private boolean hasCurrentJob;
 	private int cancelledJobs;
 
     public static void main(String[] args) throws IOException{
 
-        ArrayList<List<Job>> jobSet = new ArrayList<>();
         ArrayList<String[]> fileSet = new ArrayList<>();
 
         String filePath = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test";
@@ -92,8 +90,6 @@ public class SingleTest  extends Thread{
         fileSet.add(1,actualFiles);
 
         int counter = 0;
-        int cancelled = 0;
-
         List<Job> trainingJobs = new LinkedList<>();
         List<Job> actualJobs = new LinkedList<>();
 
@@ -138,7 +134,6 @@ public class SingleTest  extends Thread{
                 });
             }
 
-            List<Location> dropLocations = new ArrayList<>();
             parseFile(fileNameArray[4], values -> jobs.values().forEach(job -> job.dropLocation = new Location(Integer.parseInt(values[0]), Integer.parseInt(values[1].trim()))));
 
             // Convert the job map to a list
@@ -156,7 +151,8 @@ public class SingleTest  extends Thread{
             counter++;
         }
 
-        SingleTest tester = new SingleTest(trainingJobs, actualJobs);
+        @SuppressWarnings("unused")
+		SingleTest tester = new SingleTest(trainingJobs, actualJobs);
         
         
     }
@@ -284,6 +280,7 @@ public class SingleTest  extends Thread{
             if(!line.isEmpty()) consumer.accept(line.trim().split(","));
         }
         
+        in.close();
     }
     
     public static void print(Object o){

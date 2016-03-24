@@ -1,4 +1,4 @@
-package warehouse.jobselection;
+package warehouse.jobselection.event;
 
 /**
  * Created by Owen on 22/03/2016.

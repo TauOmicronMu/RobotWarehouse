@@ -1,0 +1,38 @@
+README FOR JOBSELECTION:
+
+To use job selection classes for a single robot:
+
+-Create a new JobAssignerSingle object:
+
+	Constructor format: 
+	
+	JobAssignerSingle(Robot robot, LinkedList<Job> trainingJobs)
+	
+	where robot is the Robot object the jobs are being assigned to, and trainingJobs is a LinkedList<Job>.
+	trainingJobs MUST have cancellation booleans parsed and set, otherwise the Naive Bayes will return incorrect
+	probabilities.
+
+	This JobAssignerSingle object will then wait until it receives a BeginAssingingEvent, and once it does recieve it, it will 
+	begin assigning the jobs in the list the event contains. These do not need to have cancellation booleans parsed.
+	
+	The JobAssignerSingle will then create a new JobAssignedEvent whenever it assigns a job to the robot,
+	containing the robot and the assigned job - any class which needs to know which robot has which job (route execution,
+	management interface, robot interface etc.) can listen for this event and recieve it whenever the robot is assigned
+	a new AssignedJob. 	
+	
+	The JobAssignerSingle will wait once a job has been assigned, until it receives either:
+	
+		- a JobCompleteEvent, upon which it will assign the next best job.
+		- a JobCancelledEvent, upon which it will recalculate based on the Robot object's current location field and reassign.
+		- a RobotLostEvent, upon which it will recalculate based on the Robot object's current location field and reassign.
+	
+	The JobAssignerSingle will stop and terminate once either:
+	
+		- the JobAssignerSingle.stopAssigning() method is called.
+		- the JobAssignerSingle runs out of jobs to assign.
+
+TODO:
+
+	The classes JobAssignerMultiple and JobSelectorMultiple exist, but will not properly work without the robots colliding until there
+	is a multi agent TSP method in route planning.
+		

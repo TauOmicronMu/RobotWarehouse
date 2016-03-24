@@ -12,9 +12,12 @@ import warehouse.job.Job;
 import warehouse.jobselection.cancellation.Backup;
 import warehouse.jobselection.cancellation.CancellationMachine;
 import warehouse.jobselection.cancellation.NaiveBayes;
+import warehouse.jobselection.event.AddedToSelectedListEvent;
+import warehouse.jobselection.event.FinishedAssigningEvent;
+import warehouse.jobselection.event.FinishedSelectionEvent;
+import warehouse.jobselection.event.SelectorHasCurrentJobEvent;
 import warehouse.util.EventDispatcher;
 import warehouse.util.ItemPickup;
-import warehouse.util.Location;
 import warehouse.util.Robot;
 import warehouse.util.Subscriber;
 
@@ -225,6 +228,9 @@ public class JobAssignerSingle extends Thread {
 		
 		//DEBUG
 		System.out.println("\nASSIGNER THREAD: Reached end of job list, or was told to stop ----> WAITING TO DIE X_X");
+		
+		EventDispatcher.onEvent2(new FinishedAssigningEvent());
+		
 		System.out.println("Total Reward = " + this.totalReward);
 	}
 

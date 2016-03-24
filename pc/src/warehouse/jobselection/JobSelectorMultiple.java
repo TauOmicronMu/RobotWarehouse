@@ -2,6 +2,7 @@ package warehouse.jobselection;
 
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import warehouse.job.Job;
 import warehouse.jobselection.cancellation.CancellationMachine;
@@ -14,17 +15,17 @@ import warehouse.util.Robot;
 
 /**
  * 
- * JOB SELECTION - (JobSelectorSingle class):
+ * JOB SELECTION - (JobSelectorMultiple class):
  * 
  * Created by Owen on 28/02/2016
  * 
- * Class to: Select the best job for a single robot, Base selection
+ * Class to: Select the best job for multiple robots, Base selection
  * on the 'worth' of a job
  * 
  * @author Owen
  *
  */
-public class JobSelectorSingle extends Thread {
+public class JobSelectorMultiple extends Thread {
 
 	private Robot robot;
 	private boolean run;
@@ -37,6 +38,7 @@ public class JobSelectorSingle extends Thread {
 
 	private CancellationMachine cancellationMachine;
 	private final int id;
+	private ConcurrentLinkedQueue<Job> checkList;
 
 	/**
 	 * Create a job selector that chooses jobs for a single robot based on a
@@ -51,11 +53,14 @@ public class JobSelectorSingle extends Thread {
 	 * @param cancellationMachine
 	 *            the cancellation machine that this selector can use for its
 	 *            probabilities
+	 * @param checList the shared list to check if other selectors have selected a job or not
 	 */
-	public JobSelectorSingle(int number, Robot robot, LinkedList<Job> jobs, CancellationMachine cancellationMachine) {
+	public JobSelectorMultiple(int number, Robot robot, LinkedList<Job> jobs, CancellationMachine cancellationMachine, ConcurrentLinkedQueue<Job> checkList) {
 
 		EventDispatcher.subscribe2(this);
 
+		this.checkList = checkList;
+		
 		// Set the fields
 		this.robot = robot;
 		this.robotStartLocation = this.robot.position;
@@ -74,9 +79,6 @@ public class JobSelectorSingle extends Thread {
 		// Set the id of the thread for debugging
 		this.id = number;
 
-		// Start the thread
-		System.out.println("\nSELECTOR THREAD " + this.id + ": starting thread");
-
 		// start the selector thread
 		this.start();
 	}
@@ -93,8 +95,6 @@ public class JobSelectorSingle extends Thread {
 		JobWorth bestJob;
 		this.selectedList = new LinkedList<>();
 
-		System.out.println("\nSELECTOR THREAD " + this.id + ": ready to run with " + this.jobsClone.size() + " jobs");
-
 		runLoop: while (run) {
 
 			// convert it into a list of jobworths
@@ -102,14 +102,10 @@ public class JobSelectorSingle extends Thread {
 			// If the entire list has been selected, stop
 			if (this.jobsClone.size() <= 0) {
 
-				System.out.println(
-						"\nSELECTOR THREAD " + this.id + ": FINISHED ALL SELECTIONS -----> WAITING TO DIE x_x");
 				FinishedSelectionEvent e2 = new FinishedSelectionEvent();
 				EventDispatcher.onEvent2(e2);
 				break runLoop;
 			}
-
-			System.out.println("\nSELECTOR THREAD " + this.id + ": Converting list NOW");
 
 			// Work out how good each job is by creating a jobworth object for
 			// each
@@ -117,13 +113,11 @@ public class JobSelectorSingle extends Thread {
 
 			assert (this.convertedList != null);
 
-			System.out.println("\nSELECTOR THREAD " + this.id + ": Converted list, sending event...");
-
 			// get the best one
 			bestJob = this.selectBestJob(this.convertedList);
 
-			System.out.println("\nSELECTOR THREAD " + this.id + ": The best Job is: " + bestJob);
-
+			this.checkList.add(bestJob.getJob());
+			
 			// remove it from the reference job list
 			this.jobsClone.remove(bestJob.getJob());
 
@@ -135,10 +129,6 @@ public class JobSelectorSingle extends Thread {
 			AddedToSelectedListEvent e = new AddedToSelectedListEvent();
 
 			EventDispatcher.onEvent2(e);
-
-			System.out.println("\nSELECTOR THREAD " + this.id + ": Adding : " + bestJob + " to the list");
-			// System.out.println("\nSELECTOR THREAD " + this.id + ": Current
-			// list of selected jobs: " + this.selectedList);
 
 			// update the start location and facing to be that which it will be
 			// once this route ends
@@ -206,7 +196,23 @@ public class JobSelectorSingle extends Thread {
 
 		// check that there are elements in the list
 		assert (jobworths.size() > 0);
-		return Collections.max(jobworths);
+		
+		LinkedList<JobWorth> jobworthsclone = new LinkedList<JobWorth>();
+		
+		for(JobWorth jobworth : jobworths){
+			
+			jobworthsclone.add(jobworth);
+		}
+		
+		JobWorth best = Collections.max(jobworthsclone);
+		
+		if(this.checkList.contains(best)){
+			
+			jobworthsclone.remove(best);
+			best = Collections.max(jobworthsclone);
+		}
+		
+		return best;
 	}
 
 	/**
