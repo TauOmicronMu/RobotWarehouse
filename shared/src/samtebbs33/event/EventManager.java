@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Created by samtebbs on 29/01/2016.
  */
-public abstract class EventManager<E> implements Startable {
+public abstract class EventManager<E> {
 
     /**
      * The list of listeners that get notified about any event that occurs
