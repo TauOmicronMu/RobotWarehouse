@@ -35,4 +35,27 @@ public class Job {
                 ", cancelledInTrainingSet=" + cancelledInTrainingSet +
                 '}';
     }
+
+    /*
+     * "assigned?,numberofpickups,<name,location,itemcount>*n,id"
+     */
+    public String toPacketString() {
+        String s = "";
+        s += isAssigned();
+        s += ",";
+        s += dropLocation.toPacketString();
+        s += ",";
+        s += pickups.size();
+        s += ",";
+        for(ItemPickup p : pickups) {
+            s += p.itemName;
+            s += ",";
+            s += p.location;
+            s += ",";
+            s += p.itemCount;
+            s += ",";
+        }
+        s += id;
+        return s;
+    }
 }
