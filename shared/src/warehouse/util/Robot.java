@@ -11,7 +11,7 @@ public class Robot {
         this.robotName = robotName;
         this.position = position;
         this.rotation =  rotation;
-        this.id = id;s
+        this.id = id;
     }
 
     @Override
@@ -21,5 +21,13 @@ public class Robot {
                 ", position=" + position +
                 ", rotation=" + rotation +
                 '}';
+    }
+
+    /*
+     * "name,x,y,rotation"
+     */
+    public String toPacketString() {
+        return
+                robotName + "," + position.x + "," + position.y + "," + rotation.name() + "," + id;
     }
 }
