@@ -37,7 +37,7 @@ public class WarehouseServer extends Server {
 
 	@Override
 	public void onPacketReceived(SocketEvent.SocketPacketEvent event) {
-		EventDispatcher.onEvent2(event.packet);
+		Event e = (Event)event.packet
 	}
 
 	@Override
