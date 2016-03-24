@@ -1,4 +1,4 @@
-package warehouse.routePlanning;
+package warehouse.routePlanning.search;
 
 import warehouse.util.Direction;
 import warehouse.util.Location;

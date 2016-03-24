@@ -7,13 +7,20 @@ import java.util.Optional;
 import rp.robotics.mapping.GridMap;
 import rp.robotics.mapping.MapUtils;
 import warehouse.job.Job;
+import warehouse.routePlanning.search.LocationRoute;
+import warehouse.routePlanning.search.SimpleSearch;
+import warehouse.routePlanning.util.Branch;
+import warehouse.routePlanning.util.Edge;
+import warehouse.routePlanning.util.Map;
+import warehouse.routePlanning.util.RouteBuilder;
 import warehouse.util.Direction;
 import warehouse.util.ItemPickup;
 import warehouse.util.Location;
 import warehouse.util.Route;
 
 public class TSP {
-	private Search s;
+	private SimpleSearch ss;
+	private RouteBuilder rb;
 	private int numberOfLocations;
 	private ArrayList<Location> allLocations;
 	private Map m;
@@ -42,7 +49,8 @@ public class TSP {
 	 * @return optional type which should contain the optimal route
 	 */
 	public Optional<Route> getShortestRoute(Job job, Location start, Direction facing) {
-		this.s = new Search(m, job.dropLocation);
+		this.ss = new SimpleSearch(m);
+		this.rb = new RouteBuilder(job.dropLocation, m);
 		// builds full list of locations
 		allLocations = makeListLocations(job, start);
 
@@ -78,7 +86,7 @@ public class TSP {
 		LinkedList<Edge> route = new LinkedList<Edge>();
 
 		// creates the initial branch
-		Branch initial = new Branch(adjacencyMatrix, route, edgesLeft, edgesConnected, 0, 1, currentGroups, 0);
+		Branch initial = new Branch(adjacencyMatrix, route, edgesLeft, edgesConnected, 0, 1, currentGroups);
 
 		// starts the first call of the route finding algorithm
 		getRoute(initial);
@@ -94,7 +102,7 @@ public class TSP {
 
 		LinkedList<Location> path = createLocationList(start, job);
 
-		return s.getRoute(path, facing);
+		return rb.getRoute(path, facing);
 	}
 
 	/**
@@ -134,8 +142,6 @@ public class TSP {
 		}
 		return adjacencyMatrix;
 	}
-	
-	
 
 	/**
 	 * Places initial values into the adjacency matrix
@@ -161,11 +167,11 @@ public class TSP {
 					adjacencyMatrix[Node2][Node1] = 0;
 				} else {
 					// normal creation
-					Optional<Integer> foundDistance = s.getEstimatedDistance(allLocations.get(Node1),
+					Optional<LocationRoute> foundDistance = ss.getRoute(allLocations.get(Node1),
 							allLocations.get(Node2));
 					if (foundDistance.isPresent()) {
-						adjacencyMatrix[Node1][Node2] = foundDistance.get();
-						adjacencyMatrix[Node2][Node1] = foundDistance.get();
+						adjacencyMatrix[Node1][Node2] = foundDistance.get().getDistance();
+						adjacencyMatrix[Node2][Node1] = foundDistance.get().getDistance();
 					} else {
 					}
 				}
@@ -191,7 +197,7 @@ public class TSP {
 		for (int i = 0; i < 2; i++) {
 			branches[i] = new Branch(currentBranch.getAdjacencyMatrix(), currentBranch.getRoute(),
 					currentBranch.getEdgesLeft(), currentBranch.getEdgesConnected(), currentNode, connectedNode,
-					currentBranch.getCurrentGroups(), currentBranch.getCurrentWeight());
+					currentBranch.getCurrentGroups());
 		}
 
 		// one branch adds a node, the other removes it
@@ -283,18 +289,18 @@ public class TSP {
 			positions[x][0] = bestRoute.get(x).getStart();
 			positions[x][1] = bestRoute.get(x).getEnd();
 		}
-		
+
 		path = addNext(start, positions, path, j);
-		
+
 		LinkedList<Location> finalPath = new LinkedList<Location>();
 		int totalWeight = 0;
-		for(Location l: path){
-			for(ItemPickup item: j.pickups){
-				if(item.location.x == l.x && item.location.y == l.y){
+		for (Location l : path) {
+			for (ItemPickup item : j.pickups) {
+				if (item.location.x == l.x && item.location.y == l.y) {
 					totalWeight += item.weight;
 				}
 			}
-			if(totalWeight >= 50){
+			if (totalWeight >= 50) {
 				finalPath.add(j.dropLocation);
 			}
 			finalPath.add(l);
