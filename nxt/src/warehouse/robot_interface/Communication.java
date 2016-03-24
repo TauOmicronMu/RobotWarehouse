@@ -1,4 +1,3 @@
-/*
 package warehouse.robot_interface;
 
 <<<<<<< HEAD
@@ -31,7 +30,7 @@ import warehouse.util.Subscriber;
  * private field in RobotInterface, and it's instantiated inside the
  * constructor.
  */
-/*<<<<<<< HEAD
+<<<<<<< HEAD
 public class Communication
 {
 
@@ -41,18 +40,18 @@ public class Communication
 	AssignedJob job;
 	boolean dropOff;
 
-	static
+	static 
 	{
         EventDispatcher.subscribe2(Communication.class);
     }
-
+	
 	public Communication()
 	{
 		EventDispatcher.subscribe2(this);
 		pickup = null;
 		dropOff = false;
 	}
-
+	
 	@Subscriber
 	public void onDropOff(DropOffReachedEvent e)
 	{
@@ -60,11 +59,11 @@ public class Communication
 		if(e.robot.isPresent()){
 			robot = e.robot.get();
 		}
-
+		
 		job = e.job;
 		EventDispatcher.onEvent2(new JobCompleteEvent(job));
 	}
-
+	
 	@Subscriber
 	public void onPickup(PickupReachedEvent e)
 	{
@@ -78,31 +77,30 @@ public class Communication {
 	static {
         EventDispatcher.subscribe2(Communication.class);
     }
-
+	
 	public Communication() {
 		EventDispatcher.subscribe2(this);
 		pickup = null;
 		message = null;
 	}
-
+	
 	@Subscriber
 	public void onDropOff(DropOffEvent e) {
 		message = e.getMessage();
 		EventDispatcher.onEvent2(new JobCompleteEvent(e.getJob()));
 	}
-
+	
 	@Subscriber
 	public void onPickup(PickupEvent e) {
 		pickup = e.getPickup();
 >>>>>>> c38831639d5da111cb4562e6a5ec6cee90de0c6f
 	}
-
+	
 	/**
 	 * Gets the message
-	 *
+	 * 
 	 * @return The message
 	 */
-/*
 <<<<<<< HEAD
 	public boolean atDropOff()
 	{
@@ -118,10 +116,9 @@ public class Communication {
 
 	/**
 	 * Tells whether the robot is at a pickup point
-	 *
+	 * 
 	 * @return whether the robot is at a pickup point
 	 */
-/*
 	public boolean hasJob()
 	{
 		return pickup != null;
@@ -130,7 +127,6 @@ public class Communication {
 	/**
 	 * Tells the server that the robot was turned off
 	 */
-/*
 <<<<<<< HEAD
 	public void robotOff()
 	{
@@ -145,7 +141,6 @@ public class Communication {
 	/**
 	 * Tells the server that the current job was cancelled
 	 */
-        /*
 <<<<<<< HEAD
 	public void jobCancelled()
 	{
@@ -160,7 +155,6 @@ public class Communication {
 	/**
 	 * Tells the server that the robot is in the wrong place
 	 */
-        /*
 <<<<<<< HEAD
 	public void wrongPlace()
 	{
@@ -174,10 +168,9 @@ public class Communication {
 
 	/**
 	 * Returns the name of the items that need to be picked
-	 *
+	 * 
 	 * @return The name of the item
 	 */
-        /*
 <<<<<<< HEAD
 	public String getItemName()
 	{
@@ -189,10 +182,9 @@ public class Communication {
 
 	/**
 	 * Returns the number of items that need to be picked
-	 *
+	 * 
 	 * @return The number of items
 	 */
-        /*
 <<<<<<< HEAD
 	public int getItemNumber()
 	{
@@ -205,7 +197,6 @@ public class Communication {
 	/**
 	 * Tells the server that the job is done
 	 */
-        /*
 <<<<<<< HEAD
 	public void jobDone()
 	{
@@ -220,4 +211,3 @@ public class Communication {
 	}
 >>>>>>> c38831639d5da111cb4562e6a5ec6cee90de0c6f
 }
-*/

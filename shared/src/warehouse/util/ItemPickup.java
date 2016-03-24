@@ -39,14 +39,4 @@ public class ItemPickup {
                 ", weight=" + weight +
                 '}';
     }
-
-    public String toPacketString() {
-        String s = "";
-        s += itemName;
-        s += ",";
-        s += location.toPacketString();
-        s += ",";
-        s += itemCount;
-        return s;
-    }
 }

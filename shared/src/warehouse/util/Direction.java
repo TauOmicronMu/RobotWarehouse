@@ -19,7 +19,4 @@ public enum Direction {
         return values()[i];
     }
 
-    public String toPacketString() {
-        return this.name();
-    }
 }
