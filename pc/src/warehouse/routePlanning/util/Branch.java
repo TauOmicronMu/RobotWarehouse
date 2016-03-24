@@ -1,4 +1,4 @@
-package warehouse.routePlanning;
+package warehouse.routePlanning.util;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -14,7 +14,6 @@ public class Branch {
 	private int connectedNode;
 	private LinkedList<LinkedList<Edge>> currentGroups;
 	private double lowerBound;
-	private int currentWeight;
 
 	/**
 	 * Constructor which creates a branch given the branch information
@@ -35,7 +34,7 @@ public class Branch {
 	 *            the list of groups for this branch
 	 */
 	public Branch(double[][] adjacencyMatrix, LinkedList<Edge> route, int[] edgesLeft, int[] edgesConnected,
-			int currentNode, int connectedNode, LinkedList<LinkedList<Edge>> currentGroups, int currentWeight) {
+			int currentNode, int connectedNode, LinkedList<LinkedList<Edge>> currentGroups) {
 		setAdjacencyMatrix(adjacencyMatrix);
 		setRoute(route);
 		setEdgesLeft(edgesLeft);
@@ -43,7 +42,6 @@ public class Branch {
 		setCurrentNode(currentNode);
 		setConnectedNode(connectedNode);
 		setCurrentGroups(currentGroups);
-		setCurrentWeight(currentWeight);
 	}
 
 	/**
@@ -143,9 +141,6 @@ public class Branch {
 	private void setRoute(LinkedList<Edge> route) {
 		this.route = new LinkedList<Edge>();
 		for (Edge z : route) {
-			// System.out.println("Adding: " +z.getStart().x +", " +
-			// z.getStart().y + " ---> " + z.getEnd().x +", " +z.getEnd().y +"
-			// to route");
 			this.route.add(z);
 		}
 	}
@@ -249,9 +244,6 @@ public class Branch {
 	 *            the edge to add
 	 */
 	public void addToRoute(Edge temp) {
-		// System.out.println("Adding: " +temp.getStart().x +", " +
-		// temp.getStart().y + " ---> " + temp.getEnd().x +", " +temp.getEnd().y
-		// +" to route");
 		route.add(temp);
 	}
 
@@ -276,8 +268,6 @@ public class Branch {
 	 */
 	public void trimFullyConnected(ArrayList<Location> allLocations) {
 		for (int node = 0; node < edgesConnected.length; node++) {
-			// System.out.println("Current connected Edges: " +
-			// edgesConnected[i]);
 			// if a node already has two connected edges then it can have no
 			// more connections
 			if (edgesConnected[node] == 2) {
@@ -312,8 +302,6 @@ public class Branch {
 					}
 				}
 			} else if (edgesLeft[i] == 0 && edgesConnected[i] != 2) {
-				// System.err.println("Too many edges have been removed: Error
-				// in addEssentialConnections");
 			}
 		}
 	}
@@ -383,14 +371,10 @@ public class Branch {
 		Location end = allLocations.get(node2);
 		for (Edge e : route) {
 			// if the route already contains the edge then it is not available
-			// System.out.println("Found Edge: " +e.getStart().x +", " +
-			// e.getStart().y + " ---> " + e.getEnd().x +", " +e.getEnd().y);;
 			if ((e.getStart().equals(start) && e.getEnd().equals(end))
 					|| (e.getStart().equals(end) && e.getEnd().equals(start))) {
-				// System.out.println("added: " + node1 +", " + node2);
 				notAdded = false;
 			} else {
-				// System.out.println("not added: " + node1 +", " + node2);
 			}
 		}
 		// if the edge has been removed then it's distance will be infinity
@@ -407,7 +391,6 @@ public class Branch {
 	 *            the second node
 	 */
 	public void removeEdge(int node1, int node2) {
-		// System.out.println("Removing edge between: " + node1 +", " + node2);
 		// removes edge from the adjacency matrix
 		setWeight(node1, node2, Double.POSITIVE_INFINITY);
 		decrementEdgesLeft(node1, node2);
@@ -425,7 +408,6 @@ public class Branch {
 	 *            the second node
 	 */
 	public void addEdge(ArrayList<Location> allLocations, int node1, int node2) {
-		// System.out.println("Adding edge between: " + node1 +", " + node2);
 		// adds the edge to the route and updates values
 		Edge temp1 = new Edge(allLocations.get(node1), allLocations.get(node2));
 		addToRoute(temp1);
@@ -461,15 +443,20 @@ public class Branch {
 			}
 			lowerBound = lowerBound + secondWeight + bestWeight;
 		}
-		// System.out.println("LowerBound: " + lowerBound/2);
 		this.lowerBound = lowerBound / 2;
 	}
 
+	/**
+	 * Adds an edge to whichever group it belongs to and merges groups if needed
+	 * 
+	 * @param pairToAdd
+	 *            the edge to add
+	 */
 	private void addToGroups(Edge pairToAdd) {
 		// adds a new edge to whichever group it belongs in and merges groups
 		// checks to see if it is the first node ever added
 		if (currentGroups.isEmpty()) {
-			LinkedList<Edge> g = new LinkedList<>();
+			LinkedList<Edge> g = new LinkedList<Edge>();
 			g.add(pairToAdd);
 			currentGroups.add(g);
 		} else {
@@ -491,10 +478,12 @@ public class Branch {
 			int numberOfAdds = 0;
 			for (int x = 0; x < groupsAddedTo.length; x++) {
 				if (groupsAddedTo[x]) {
+					// only in this group
 					if (numberOfAdds == 0) {
 						currentGroups.get(x).add(pairToAdd);
 						numberOfAdds++;
 					} else {
+						// must merge groups
 						for (int i = 0; i < groupsAddedTo.length; i++) {
 							if (groupsAddedTo[i]) {
 								if (x != i) {
@@ -508,7 +497,7 @@ public class Branch {
 			}
 			// creates a new group if it did not fit into any groups
 			if (numberOfAdds == 0) {
-				LinkedList<Edge> g = new LinkedList<>();
+				LinkedList<Edge> g = new LinkedList<Edge>();
 				g.add(pairToAdd);
 				currentGroups.add(g);
 			}
@@ -522,14 +511,11 @@ public class Branch {
 	 */
 	public boolean checkComplete() {
 		// checks if this branch is complete
-		// System.out.println("Checking complete");
 		for (int connected : edgesConnected) {
 			if (connected != 2) {
-				// System.out.println("Not Complete");
 				return false;
 			}
 		}
-		// System.out.println("Complete");
 		return true;
 	}
 
@@ -549,8 +535,6 @@ public class Branch {
 					currentNode++;
 					connectedNode = currentNode + 1;
 				} else {
-					// System.err.println("Reached end of array without finding
-					// any valid route, error in TSP");
 				}
 			} else {
 				connectedNode++;
@@ -559,7 +543,7 @@ public class Branch {
 	}
 
 	/**
-	 * Prints the adjacency matrix: for testing!
+	 * Prints the adjacency matrix
 	 */
 	public void printAdjacencyMatrix() {
 		for (double[] x : adjacencyMatrix) {
@@ -569,39 +553,5 @@ public class Branch {
 			System.out.println();
 		}
 		System.out.println();
-	}
-
-	/**
-	 * @return the currentWeight
-	 */
-	public int getCurrentWeight() {
-		return currentWeight;
-	}
-
-	/**
-	 * @param currentWeight
-	 *            the currentWeight to set
-	 */
-	private void setCurrentWeight(int currentWeight) {
-		this.currentWeight = currentWeight;
-	}
-
-	/**
-	 * Adds a weight to current the current weight and returns a boolean
-	 * representing whether the robot needs to return to the drop off location
-	 * before continuing
-	 * 
-	 * @param weightToAdd
-	 *            the weight to add
-	 * @return boolean representing whether the robot must go to the drop
-	 *         location
-	 */
-	public boolean addWeight(int weightToAdd) {
-		currentWeight += weightToAdd;
-		if (currentWeight >= 50) {
-			currentWeight = currentWeight - 50;
-			return true;
-		}
-		return false;
 	}
 }
