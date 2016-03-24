@@ -1,33 +1,27 @@
 package warehouse.localisation;
 
-import lejos.nxt.LightSensor;
-import lejos.nxt.Motor;
-import lejos.nxt.SensorPort;
-import lejos.nxt.addon.OpticalDistanceSensor;
-import lejos.robotics.navigation.DifferentialPilot;
 import rp.robotics.mapping.GridMap;
 import rp.robotics.mapping.MapUtils;
 import rp.robotics.navigation.GridPose;
 
 public class MainClass {
 
-	public void beginLocalise() {
-		// Work on this map
+	public static void main(String[] args) {
+		// The actual map of the warehouse
 		GridMap map = MapUtils.createMarkingWarehouseMap();
-
-		DifferentialPilot pilot = new DifferentialPilot(0.056, 0.12, Motor.B, Motor.C);
-		LightSensor left = new LightSensor(SensorPort.S1);
-		LightSensor right = new LightSensor(SensorPort.S2);
-		OpticalDistanceSensor infraRed = new OpticalDistanceSensor(SensorPort.S3);
-		Part2_LineFollow lineFollower = new Part2_LineFollow(pilot, left, right);
 		
+		//line following robot
+		LineFollowTest lineFollower = new LineFollowTest();
 		
-
+		//pose of the grid
+		//initialy heading is set to PLUS_X direction
 		GridPose gridStart = new GridPose();
-
-
+		
+		//object of the distances in the map
 		Distances dist = new Distances(map);
-		LocalistaionMain ml = new LocalistaionMain(map, gridStart, dist,lineFollower,
-				infraRed, pilot);
+		
+		//Actual localisation 
+		LocalistaionMain ml = new LocalistaionMain(map, gridStart, dist,lineFollower);
+		ml.run();
 	}
 }
