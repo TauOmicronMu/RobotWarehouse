@@ -9,7 +9,8 @@ My package contains:
 -jobselection - all files relating purely to job selection.
 -cancellation - all files relating to job cancellation.
 -printtests - test that simulates a robot sending JobComplete/JobCancellation Events based on the actual format files.
--JUnittests - test that asserts the robot assigner always has a current job to assign to the robot.
+-JUnittests - test that asserts the robot assigner always has a current job to assign to the robot, 
+	      by sending JobComplete/JobCancellation events and based on the actual format files.
 
 To test my subsystem:
 
