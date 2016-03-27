@@ -1,4 +1,4 @@
-package warehouse.routePlanning.search;
+package warehouse.routePlanning.util;
 
 import java.util.LinkedList;
 

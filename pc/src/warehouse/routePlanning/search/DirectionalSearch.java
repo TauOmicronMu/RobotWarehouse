@@ -9,6 +9,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import warehouse.routePlanning.util.Map;
+import warehouse.routePlanning.util.State;
+import warehouse.routePlanning.util.StateRoute;
 import warehouse.util.Direction;
 import warehouse.util.Location;
 
@@ -111,7 +113,7 @@ public class DirectionalSearch extends Search {
 			if (current.getLocation().x == goal.x && current.getLocation().y == goal.y) {
 				// return the optimal route
 				LinkedList<State> path = getPath(cameFrom, current);
-				StateRoute route = new StateRoute(path, path.size() -1);
+				StateRoute route = new StateRoute(path, path.size() - 1);
 				return Optional.of(route);
 			}
 			// else continue

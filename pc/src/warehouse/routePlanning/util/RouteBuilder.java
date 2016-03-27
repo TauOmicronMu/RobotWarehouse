@@ -11,8 +11,6 @@ import warehouse.action.MoveAction;
 import warehouse.action.PickupAction;
 import warehouse.action.TurnAction;
 import warehouse.routePlanning.search.DirectionalSearch;
-import warehouse.routePlanning.search.State;
-import warehouse.routePlanning.search.StateRoute;
 import warehouse.util.Direction;
 import warehouse.util.Location;
 import warehouse.util.Route;
@@ -43,7 +41,7 @@ public class RouteBuilder {
 		Route finalRoute = new Route(new LinkedList<Action>(), toVisit.getFirst(), toVisit.getFirst(), facing);
 
 		// sets the initial route to be the first edge in the search
-		if(!(toVisit.size() > 1)){
+		if (!(toVisit.size() > 1)) {
 			return Optional.empty();
 		}
 		Optional<StateRoute> currentEdge = ds.getRoute(toVisit.get(0), toVisit.get(1), facing);

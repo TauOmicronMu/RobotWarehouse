@@ -9,8 +9,8 @@ import org.junit.Test;
 
 import rp.robotics.mapping.GridMap;
 import rp.robotics.mapping.MapUtils;
-import warehouse.routePlanning.search.LocationRoute;
 import warehouse.routePlanning.search.SimpleSearch;
+import warehouse.routePlanning.util.LocationRoute;
 import warehouse.routePlanning.util.Map;
 import warehouse.util.Location;
 

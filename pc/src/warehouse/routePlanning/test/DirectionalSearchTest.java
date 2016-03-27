@@ -10,8 +10,8 @@ import org.junit.Test;
 import rp.robotics.mapping.GridMap;
 import rp.robotics.mapping.MapUtils;
 import warehouse.routePlanning.search.DirectionalSearch;
-import warehouse.routePlanning.search.StateRoute;
 import warehouse.routePlanning.util.Map;
+import warehouse.routePlanning.util.StateRoute;
 import warehouse.util.Direction;
 import warehouse.util.Location;
 

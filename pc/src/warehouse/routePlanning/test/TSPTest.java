@@ -165,7 +165,7 @@ public class TSPTest {
 		o = tsp.getShortestRoute(new Job(dropOff, pickups), start, facing);
 		assertEquals(o.isPresent(), true);
 		returnedRoute = o.get();
-		assertEquals(returnedRoute.totalDistance, 42 + dropOffTime + + pickUpTime * pickups.size());
+		assertEquals(returnedRoute.totalDistance, 42 + dropOffTime + +pickUpTime * pickups.size());
 		assertEquals(returnedRoute.end.x, dropOff.x);
 		assertEquals(returnedRoute.end.y, dropOff.y);
 		assertEquals(returnedRoute.start.x, start.x);
@@ -183,7 +183,7 @@ public class TSPTest {
 		o = tsp.getShortestRoute(new Job(dropOff, pickups), start, facing);
 		assertEquals(o.isPresent(), true);
 		returnedRoute = o.get();
-		assertEquals(returnedRoute.totalDistance, 44 + dropOffTime + + pickUpTime * pickups.size());
+		assertEquals(returnedRoute.totalDistance, 44 + dropOffTime + +pickUpTime * pickups.size());
 		assertEquals(returnedRoute.end.x, dropOff.x);
 		assertEquals(returnedRoute.end.y, dropOff.y);
 		assertEquals(returnedRoute.start.x, start.x);
@@ -218,7 +218,7 @@ public class TSPTest {
 		o = tsp.getShortestRoute(new Job(dropOff, pickups), start, facing);
 		assertEquals(o.isPresent(), true);
 		returnedRoute = o.get();
-		assertEquals(returnedRoute.totalDistance, 70 + dropOffTime*2 + + pickUpTime * pickups.size());
+		assertEquals(returnedRoute.totalDistance, 70 + dropOffTime * 2 + +pickUpTime * pickups.size());
 		assertEquals(returnedRoute.end.x, dropOff.x);
 		assertEquals(returnedRoute.end.y, dropOff.y);
 		assertEquals(returnedRoute.start.x, start.x);
@@ -240,7 +240,7 @@ public class TSPTest {
 		o = tsp.getShortestRoute(new Job(dropOff, pickups), start, facing);
 		assertEquals(o.isPresent(), true);
 		returnedRoute = o.get();
-		assertEquals(returnedRoute.totalDistance, 67 + dropOffTime*2 + + pickUpTime * pickups.size());
+		assertEquals(returnedRoute.totalDistance, 67 + dropOffTime * 2 + +pickUpTime * pickups.size());
 		assertEquals(returnedRoute.end.x, dropOff.x);
 		assertEquals(returnedRoute.end.y, dropOff.y);
 		assertEquals(returnedRoute.start.x, start.x);
@@ -263,7 +263,7 @@ public class TSPTest {
 		o = tsp.getShortestRoute(new Job(dropOff, pickups), start, facing);
 		assertEquals(o.isPresent(), true);
 		returnedRoute = o.get();
-		assertEquals(returnedRoute.totalDistance, 84 + dropOffTime*3 + + pickUpTime * pickups.size());
+		assertEquals(returnedRoute.totalDistance, 84 + dropOffTime * 3 + +pickUpTime * pickups.size());
 		assertEquals(returnedRoute.end.x, dropOff.x);
 		assertEquals(returnedRoute.end.y, dropOff.y);
 		assertEquals(returnedRoute.start.x, start.x);
