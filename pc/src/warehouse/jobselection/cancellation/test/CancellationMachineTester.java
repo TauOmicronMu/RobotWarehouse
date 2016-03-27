@@ -1,29 +1,34 @@
 package warehouse.jobselection.cancellation.test;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Scanner;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+
 import warehouse.job.Job;
 import warehouse.jobselection.cancellation.CancellationMachine;
 import warehouse.jobselection.cancellation.NaiveBayes;
 import warehouse.util.ItemPickup;
 import warehouse.util.Location;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
-
 public class CancellationMachineTester {
 
-    public CancellationMachineTester(double percentage, String[]... fileNames) throws IOException{
+    public CancellationMachineTester(double percentage, URI[]... fileNames) throws IOException{
 
         assert((percentage >= 0) && (percentage <= 1.0));
 
-        for(String[] fileNameArray : fileNames){
+        for(URI[] fileNameArray : fileNames){
 
             String s = "";
 
-            for(String string : fileNameArray){
+            for(URI string : fileNameArray){
 
                 s += " '" + string + "' ";
             }
@@ -32,7 +37,7 @@ public class CancellationMachineTester {
         }
     }
 
-    public double testMachine(String[] fileNameArray, double percentage) throws IOException{
+    public double testMachine(URI[] fileNameArray, double percentage) throws IOException{
 
         assert(fileNameArray.length == 5);
 
@@ -112,9 +117,10 @@ public class CancellationMachineTester {
         return (percentageCorrect/numberJobsCancelled)*100;
     }
 
-    public static void parseFile(String filePath, Consumer<String[]> consumer) throws FileNotFoundException {
+    public static void parseFile(URI filePath, Consumer<String[]> consumer) throws FileNotFoundException {
 		Scanner in = new Scanner(new File(filePath));
 		while(in.hasNextLine()) consumer.accept(in.nextLine().trim().split(","));
-	}
+		in.close();
+    }
 
 }

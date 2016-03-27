@@ -1,7 +1,7 @@
 package warehouse.jobselection;
 
 import java.util.Collections;
-import java.util.LinkedList;
+import java.util.Vector;
 
 import warehouse.job.Job;
 import warehouse.jobselection.cancellation.CancellationMachine;
@@ -28,15 +28,16 @@ public class JobSelectorSingle extends Thread {
 
 	private Robot robot;
 	private boolean run;
-	private LinkedList<Job> jobsClone;
+	private Vector<Job> jobsClone;
 	private Location robotStartLocation;
 	private Direction robotFacing;
 
-	private LinkedList<JobWorth> convertedList;
-	private LinkedList<JobWorth> selectedList;
+	private Vector<JobWorth> convertedList;
+	private Vector<JobWorth> selectedList;
 
 	private CancellationMachine cancellationMachine;
 	private final int id;
+	private boolean testing;
 
 	/**
 	 * Create a job selector that chooses jobs for a single robot based on a
@@ -52,11 +53,12 @@ public class JobSelectorSingle extends Thread {
 	 *            the cancellation machine that this selector can use for its
 	 *            probabilities
 	 */
-	public JobSelectorSingle(int number, Robot robot, LinkedList<Job> jobs, CancellationMachine cancellationMachine) {
+	public JobSelectorSingle(int number, Robot robot, Vector<Job> jobs, CancellationMachine cancellationMachine, boolean testing) {
 
 		EventDispatcher.subscribe2(this);
 
 		// Set the fields
+		this.testing = testing;
 		this.robot = robot;
 		this.robotStartLocation = this.robot.position;
 		this.robotFacing = this.robot.rotation;
@@ -64,7 +66,7 @@ public class JobSelectorSingle extends Thread {
 		this.cancellationMachine = cancellationMachine;
 
 		// Get a copy of the list of available jobs
-		this.jobsClone = new LinkedList<Job>();
+		this.jobsClone = new Vector<Job>();
 
 		for (Job job : jobs) {
 
@@ -91,7 +93,7 @@ public class JobSelectorSingle extends Thread {
 		this.run = true;
 
 		JobWorth bestJob;
-		this.selectedList = new LinkedList<>();
+		this.selectedList = new Vector<>();
 
 		System.out.println("\nSELECTOR THREAD " + this.id + ": ready to run with " + this.jobsClone.size() + " jobs");
 
@@ -104,7 +106,7 @@ public class JobSelectorSingle extends Thread {
 
 				System.out.println(
 						"\nSELECTOR THREAD " + this.id + ": FINISHED ALL SELECTIONS -----> WAITING TO DIE x_x");
-				FinishedSelectionEvent e2 = new FinishedSelectionEvent();
+				FinishedSelectionEvent e2 = new FinishedSelectionEvent(this.testing);
 				EventDispatcher.onEvent2(e2);
 				break runLoop;
 			}
@@ -133,10 +135,11 @@ public class JobSelectorSingle extends Thread {
 			System.out.println("\nSELECTOR THREAD " + this.id + ": Adding ID " + bestJob.getJob().id + ": " + bestJob + " to the list");
 			// Dispatch an event to let subscribers know we have added an item
 			// to the list
-			AddedToSelectedListEvent e = new AddedToSelectedListEvent();
+			AddedToSelectedListEvent e = new AddedToSelectedListEvent(this.testing);
 
 			EventDispatcher.onEvent2(e);
 
+			System.out.println("\nSELECTOR THREAD: Sent event");
 			
 			// System.out.println("\nSELECTOR THREAD " + this.id + ": Current
 			// list of selected jobs: " + this.selectedList);
@@ -146,6 +149,13 @@ public class JobSelectorSingle extends Thread {
 			this.robotStartLocation = bestJob.getRoute().end;
 
 			this.robotFacing = bestJob.getRoute().finalFacing;
+			
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 	}
 
@@ -159,13 +169,13 @@ public class JobSelectorSingle extends Thread {
 	 *            the start facing to use for each job
 	 * @return the converted list of jobs
 	 */
-	public LinkedList<JobWorth> convertList(Location startLocation, Direction startFacing) {
+	public Vector<JobWorth> convertList(Location startLocation, Direction startFacing) {
 
 		// check that there are still jobs to convert
 		assert (this.jobsClone.size() > 0);
 
 		// make an empty list of jobworths
-		LinkedList<JobWorth> jobworths = new LinkedList<JobWorth>();
+		Vector<JobWorth> jobworths = new Vector<JobWorth>();
 
 		// Calculate the worth of each job and add them to the list
 		for (Job job : this.jobsClone) {
@@ -203,7 +213,7 @@ public class JobSelectorSingle extends Thread {
 	 *            the list of job worths
 	 * @return the best one in the list
 	 */
-	public JobWorth selectBestJob(LinkedList<JobWorth> jobworths) {
+	public JobWorth selectBestJob(Vector<JobWorth> jobworths) {
 
 		// check that there are elements in the list
 		assert (jobworths.size() > 0);
@@ -224,7 +234,7 @@ public class JobSelectorSingle extends Thread {
 	 * 
 	 * @return the current list of selected jobs
 	 */
-	public LinkedList<JobWorth> getSelectedList() {
+	public Vector<JobWorth> getSelectedList() {
 
 		return this.selectedList;
 	}

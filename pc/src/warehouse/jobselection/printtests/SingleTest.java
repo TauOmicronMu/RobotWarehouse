@@ -3,11 +3,13 @@ package warehouse.jobselection.printtests;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Vector;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -35,11 +37,9 @@ public class SingleTest  extends Thread{
     private boolean hasCurrentJob;
 	private int cancelledJobs;
 
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws IOException, URISyntaxException{
 
-        ArrayList<String[]> fileSet = new ArrayList<>();
-
-        String filePath = "C:\\Users\\Owen\\Documents\\cssync\\robot_programming\\Team Project Files\\RobotWarehouse\\pc\\src\\warehouse\\jobselection\\cancellation\\test";
+        ArrayList<URI[]> fileSet = new ArrayList<>();
 
 //        String[] files1 = new String[5];
 //        files1[0] = filePath + "\\1\\locations.csv";
@@ -82,27 +82,27 @@ public class SingleTest  extends Thread{
 //        fileSet.add(files5);
 
         
-        String[] trainingFiles = new String[5];
-        trainingFiles[0] = filePath + "\\actual\\locations.csv";
-        trainingFiles[1] = filePath + "\\actual\\items.csv";
-        trainingFiles[2] = filePath + "\\actual\\training_jobs.csv";
-        trainingFiles[3] = filePath + "\\actual\\cancellations.csv";
-        trainingFiles[4] = filePath + "\\actual\\drops.csv";
+        URI[] trainingFiles = new URI[5];
+        trainingFiles[0] = SingleTest.class.getResource("\\actual\\locations.csv").toURI();
+        trainingFiles[1] = SingleTest.class.getResource("\\actual\\items.csv").toURI();
+        trainingFiles[2] = SingleTest.class.getResource("\\actual\\training_jobs.csv").toURI();
+        trainingFiles[3] = SingleTest.class.getResource("\\actual\\cancellations.csv").toURI();
+        trainingFiles[4] = SingleTest.class.getResource("\\actual\\drops.csv").toURI();
         fileSet.add(0,trainingFiles);
 
-        String[] actualFiles = new String[5];
-        actualFiles[0] = filePath + "\\actual\\locations.csv";
-        actualFiles[1] = filePath + "\\actual\\items.csv";
-        actualFiles[2] = filePath + "\\actual\\jobs.csv";
-        actualFiles[3] = filePath + "\\actual\\marking_file.csv";
-        actualFiles[4] = filePath + "\\actual\\drops.csv";
+        URI[] actualFiles = new URI[5];
+        actualFiles[0] = SingleTest.class.getResource("\\actual\\locations.csv").toURI();
+        actualFiles[1] = SingleTest.class.getResource("\\actual\\items.csv").toURI();
+        actualFiles[2] = SingleTest.class.getResource("\\actual\\jobs.csv").toURI();
+        actualFiles[3] = SingleTest.class.getResource("\\actual\\marking_file.csv").toURI();
+        actualFiles[4] = SingleTest.class.getResource("\\actual\\drops.csv").toURI();
         fileSet.add(1,actualFiles);
 
         int counter = 0;
-        List<Job> trainingJobs = new LinkedList<>();
-        List<Job> actualJobs = new LinkedList<>();
+        List<Job> trainingJobs = new Vector<>();
+        List<Job> actualJobs = new Vector<>();
 
-        for(String[] fileNameArray : fileSet) {
+        for(URI[] fileNameArray : fileSet) {
 
             assert (fileNameArray.length == 5);
 
@@ -117,7 +117,7 @@ public class SingleTest  extends Thread{
             // Parse jobs file
             HashMap<String, Job> jobs = new HashMap<>();
             parseFile(fileNameArray[2], values -> {
-                List<ItemPickup> jobPickups = new LinkedList<>();
+                List<ItemPickup> jobPickups = new Vector<>();
                 for (int i = 1; i < values.length; i += 2) {
                     ItemPickup p = (ItemPickup) itemPickups.get(values[i]).clone();
                     p.itemCount = Integer.parseInt(values[i + 1]);
@@ -188,7 +188,8 @@ public class SingleTest  extends Thread{
         this.start();
     }
 
-    @Override
+    @SuppressWarnings("deprecation")
+	@Override
     public void run() {
 
     	int cancelled = 0;
@@ -212,9 +213,9 @@ public class SingleTest  extends Thread{
     	
             Robot robot = new Robot("testRobot", new Location(0, 0), Direction.NORTH, 0);
 
-            JobAssignerSingle assigner = new JobAssignerSingle(robot, new LinkedList<>(this.trainingJobs));
+            JobAssignerSingle assigner = new JobAssignerSingle(robot, new Vector<>(this.trainingJobs));
 
-            EventDispatcher.onEvent2(new BeginAssigningEvent(this.actualJobs, new LinkedList<Location>()));
+            EventDispatcher.onEvent2(new BeginAssigningEvent(this.actualJobs, new Vector<Location>()));
 
             int cancellationCounter = 0;
             int jobCounter = 0;
@@ -230,7 +231,7 @@ public class SingleTest  extends Thread{
                     try {
 
                         //System.out.println("\nTEST THREAD: Sleeping");
-                        Thread.sleep(100);
+                        Thread.sleep(1000);
                         //System.out.println("\nTEST THREAD: Woke up");
                     } catch (InterruptedException e) {
                         // Sleep was interrupted for some reason
@@ -292,7 +293,7 @@ public class SingleTest  extends Thread{
         this.hasCurrentJob = true;
     }
     
-    public static void parseFile(String filePath, Consumer<String[]> consumer) throws FileNotFoundException {
+    public static void parseFile(URI filePath, Consumer<String[]> consumer) throws FileNotFoundException {
         Scanner in = new Scanner(new File(filePath));
         while(in.hasNextLine()){
             String line = in.nextLine();

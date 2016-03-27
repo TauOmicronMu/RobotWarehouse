@@ -7,9 +7,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Vector;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -19,11 +19,8 @@ import org.junit.Test;
 import warehouse.event.BeginAssigningEvent;
 import warehouse.event.JobCancellationEvent;
 import warehouse.event.JobCompleteEvent;
-import warehouse.job.AssignedJob;
 import warehouse.job.Job;
 import warehouse.jobselection.JobAssignerSingle;
-import warehouse.jobselection.JobSelectorSingle;
-import warehouse.jobselection.JobWorth;
 import warehouse.jobselection.cancellation.Backup;
 import warehouse.jobselection.cancellation.CancellationMachine;
 import warehouse.jobselection.cancellation.NaiveBayes;
@@ -37,14 +34,10 @@ import warehouse.util.Subscriber;
 
 public class JobAssignerSingleTest {
 
-	private LinkedList<Job> trainingSet;
-	private LinkedList<Job> actualSet;
+	private Vector<Job> trainingSet;
+	private Vector<Job> actualSet;
 	private boolean checking;
-	private JobSelectorSingle testSelector;
 	private CancellationMachine testCancellationMachine;
-	private LinkedList<Job> finalList;
-	private LinkedList<Job> actualSetClone;
-
 	@Before
 	public void setUp() throws Exception {
 	
@@ -69,8 +62,8 @@ public class JobAssignerSingleTest {
         fileSet.add(1,actualFiles);
 
         int counter = 0;
-        List<Job> trainingJobs = new LinkedList<>();
-        List<Job> actualJobs = new LinkedList<>();
+        List<Job> trainingJobs = new Vector<>();
+        List<Job> actualJobs = new Vector<>();
 
         for(String[] fileNameArray : fileSet) {
 
@@ -87,7 +80,7 @@ public class JobAssignerSingleTest {
             // Parse jobs file
             HashMap<String, Job> jobs = new HashMap<>();
             parseFile(fileNameArray[2], values -> {
-                List<ItemPickup> jobPickups = new LinkedList<>();
+                List<ItemPickup> jobPickups = new Vector<>();
                 for (int i = 1; i < values.length; i += 2) {
                     ItemPickup p = (ItemPickup) itemPickups.get(values[i]).clone();
                     p.itemCount = Integer.parseInt(values[i + 1]);
@@ -130,15 +123,8 @@ public class JobAssignerSingleTest {
             counter++;
         }
 
-		this.trainingSet = new LinkedList<>(trainingJobs);
-		this.actualSet = new LinkedList<>(actualJobs);
-		
-		this.actualSetClone = new LinkedList<>();
-		
-		for(Job job : this.actualSet){
-			
-			this.actualSetClone.add(job);
-		}
+		this.trainingSet = new Vector<>(trainingJobs);
+		this.actualSet = new Vector<>(actualJobs);
 		
 		try{
 			this.testCancellationMachine = new NaiveBayes(this.trainingSet); 
@@ -156,14 +142,13 @@ public class JobAssignerSingleTest {
 		EventDispatcher.subscribe2(this);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Test
 	public void test() throws InterruptedException {
 		
-		this.finalList = new LinkedList<>();
+		new Vector<>();
 		
 		Robot robot1 = new Robot("testRobot1", new Location(0, 0), Direction.NORTH, 0);
-		
-		Robot robot2 = new Robot("testRobot2", new Location(0, 0), Direction.NORTH, 0);
 		
 		JobAssignerSingle testAssigner = new JobAssignerSingle(robot1, this.trainingSet);
 		
@@ -171,93 +156,27 @@ public class JobAssignerSingleTest {
 		
 		assertEquals(this.testCancellationMachine, testAssigner.getCancellationMachine());
 		
-		int number = 100;
+		EventDispatcher.onEvent2(new BeginAssigningEvent(this.actualSet, new Vector<Location>()));
 		
-		System.out.println("\nUNIT TEST THREAD: Our cancellation machine: \n" + this.testCancellationMachine);
-		
-		this.testSelector = new JobSelectorSingle(number, robot2, this.actualSetClone, this.testCancellationMachine);
-		
-		System.out.println("\nUNIT TEST THREAD: Sending Event");
-		EventDispatcher.onEvent2(new BeginAssigningEvent(this.actualSet, new LinkedList<Location>()));
-		
-		Thread.sleep(2000);
+		Thread.sleep(1000);
 		
 		this.checking = true;
-		
-		//String id = testAssigner.getCurrentJob().id;
 		
 		while(this.checking){
 			
 			Thread.sleep(1000);
 			
-			LinkedList<JobWorth> comparableList = new LinkedList<JobWorth>();
-			
-			//System.out.println("\nUNIT TEST THREAD: Our list is length " + this.testSelector.getSelectedList().size());
-			//System.out.println("\nUNIT TEST THREAD: Our list: " + this.testSelector.getSelectedList());
-			//System.out.println("\nUNIT TEST THREAD: Their list is length " + testAssigner.getAssignJobs().size());
-			//System.out.println("\nUNIT TEST THREAD: Their list: " + testAssigner.getAssignJobs());
-			
-			for(int i = 1; i < this.testSelector.getSelectedList().size(); i++){
-				
-				comparableList.add(this.testSelector.getSelectedList().get(i));
-			}
-			
-			//System.out.println("\nUNIT TEST THREAD: Comparable list: " + comparableList);
-			
-			//assertEquals(comparableList, testAssigner.getAssignJobs());
-			
-			//JobWorth bestJob = this.testSelector.getSelectedList().removeFirst();
-			
-			//System.out.println("\nUNIT TEST THREAD: Our best job is ID " + bestJob.getJob().id + ": " + bestJob);
-			
-			//this.actualSet.remove(bestJob);
-			//this.finalList.add(new AssignedJob(bestJob.getJob(), bestJob.getRoute(), robot2));
-			
-			//assertNotNull(bestJob);
 			assertNotNull(testAssigner.getCurrentJob());
-			
-			//System.out.println("\nUNIT TEST THREAD: Expected Job ID of   " + bestJob.getJob().id);
-			//System.out.println("\nUNIT TEST THREAD: Actual   Job ID of   " + testAssigner.getCurrentJob().id);
-			
-			//assertEquals(testAssigner.getCurrentJob().id, id);
-			
-			//id = testAssigner.getAssignJobs().getFirst().getJob().id;
-			//System.out.println("\nUNIT TEST THREAD: First Job in list of ID " + testAssigner.getAssignJobs().getFirst().getJob().id);
-			
-			/*System.out.print("\nUNIT TEST THREAD: Our list:   ");
-			for(JobWorth jobworth : this.testSelector.getSelectedList()){
-				
-				System.out.print(jobworth.getJob().id + ", ");
-			}
-			
-			
-			System.out.print("\nUNIT TEST THREAD: Their list: ");
-			for(JobWorth jobworth : testAssigner.getAssignJobs()){
-				
-				System.out.print(jobworth.getJob().id + ", ");
-			}*/
-			
-			//assertEquals(testAssigner.getCurrentJob().id, bestJob.getJob().id);
 			
 			if(testAssigner.getCurrentJob().cancelledInTrainingSet){
             	
-				number++;
-				
-				//this.testSelector = new JobSelectorSingle(number, robot2, this.actualSetClone, this.testCancellationMachine);
-				
-				Thread.sleep(1000);
-				
             	EventDispatcher.onEvent2(new JobCancellationEvent(testAssigner.getCurrentJob()));
             	
             }else{
             
             	EventDispatcher.onEvent2(new JobCompleteEvent(testAssigner.getCurrentJob()));
             }
-			
-			
 		}
-		
-		//assertEquals(testAssigner.getFinalList(), this.finalList);
 	}
 
 	@Subscriber

@@ -2,13 +2,12 @@ package warehouse.jobselection;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.LinkedList;
+import java.util.Vector;
 import java.util.List;
 import java.util.Scanner;
 import java.util.function.Consumer;
 
 import warehouse.event.BeginAssigningEvent;
-import warehouse.event.JobCancellationEvent;
 import warehouse.event.JobCompleteEvent;
 import warehouse.job.AssignedJob;
 import warehouse.job.Job;
@@ -27,13 +26,11 @@ public class RunAssigner  extends Thread{
     private List<Job> actualJobs;
     private boolean hasCurrentJob;
 	private Robot robot;
-	private LinkedList<AssignedJob> finalList;
-	private int firstCancelled;
-	
-    public RunAssigner(Robot robot, List<Job> trainingJobs, List<Job> actualJobs){
+	private Vector<AssignedJob> finalList;
+	public RunAssigner(Robot robot, List<Job> trainingJobs, List<Job> actualJobs){
 
-    	trainingJobs = new LinkedList<>(trainingJobs);
-    	actualJobs = new LinkedList<>(actualJobs);
+    	trainingJobs = new Vector<>(trainingJobs);
+    	actualJobs = new Vector<>(actualJobs);
     	
         this.trainingJobs = trainingJobs;
         this.actualJobs = actualJobs;
@@ -45,12 +42,13 @@ public class RunAssigner  extends Thread{
         this.start();
     }
 
-    @Override
+    @SuppressWarnings("deprecation")
+	@Override
     public void run() {
 
-            JobAssignerSingle assigner = new JobAssignerSingle(this.robot, new LinkedList<>(this.trainingJobs));
+            JobAssignerSingle assigner = new JobAssignerSingle(this.robot, new Vector<>(this.trainingJobs));
 
-            EventDispatcher.onEvent2(new BeginAssigningEvent(this.actualJobs, new LinkedList<Location>()));
+            EventDispatcher.onEvent2(new BeginAssigningEvent(this.actualJobs, new Vector<Location>()));
 
             for (int i = 0; i < actualJobs.size(); i++) {
 

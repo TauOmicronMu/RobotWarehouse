@@ -1,31 +1,36 @@
 package warehouse.jobselection.cancellation.test;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Scanner;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+
 import warehouse.job.Job;
 import warehouse.jobselection.cancellation.CancellationMachine;
 import warehouse.jobselection.cancellation.NaiveBayes;
 import warehouse.util.ItemPickup;
 import warehouse.util.Location;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
-
 /**
  * Created by Owen on 22/03/2016.
  */
 public class CancellationActualTester {
 
-    public CancellationActualTester(String[] trainingSet, String[] testSet) throws IOException {
+    public CancellationActualTester(URI[] trainingSet, URI[] testSet) throws IOException {
 
 
         System.out.println("\nFOR ACTUAL FILES: \nPercentage correct: " + testMachine(trainingSet, testSet) + "\n");
 
     }
 
-    public double testMachine(String[] trainingSet, String[] testSet) throws IOException{
+    public double testMachine(URI[] trainingSet, URI[] testSet) throws IOException{
 
         assert(trainingSet.length == 5);
         assert(testSet.length == 5);
@@ -53,6 +58,7 @@ public class CancellationActualTester {
         });
 
         // Parse cancellations file (I'm not sure of the actual file name)
+        
         parseFile(trainingSet[3], values -> jobs.get(values[0]).cancelledInTrainingSet = values[1].equals("0") ? false : true);
 
         List<Location> dropLocations = new ArrayList<>();
@@ -146,9 +152,21 @@ public class CancellationActualTester {
         return ((percentageCancelledCorrect + percentageNotCancelledCorrect)/knownJobsList.size())*100;
     }
 
-    public static void parseFile(String filePath, Consumer<String[]> consumer) throws FileNotFoundException {
-        Scanner in = new Scanner(new File(filePath));
-        while(in.hasNextLine()) consumer.accept(in.nextLine().trim().split(","));
+    public static void parseFile(URI filePath, Consumer<String[]> consumer) throws FileNotFoundException {
+        
+    	File file = new File(filePath);
+    	
+    	//System.out.println(file);
+    	
+    	Scanner in = new Scanner(file);
+    
+    	while(in.hasNextLine()){
+        	
+    		String nextLine = in.nextLine();
+    		//System.out.println(nextLine);
+        	consumer.accept(nextLine.trim().split(","));
+        }
+        in.close();
     }
 
 }

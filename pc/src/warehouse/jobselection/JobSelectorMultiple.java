@@ -37,7 +37,6 @@ public class JobSelectorMultiple extends Thread {
 	private LinkedList<JobWorth> selectedList;
 
 	private CancellationMachine cancellationMachine;
-	private final int id;
 	private ConcurrentLinkedQueue<Job> checkList;
 
 	/**
@@ -76,9 +75,6 @@ public class JobSelectorMultiple extends Thread {
 			this.jobsClone.add(job);
 		}
 
-		// Set the id of the thread for debugging
-		this.id = number;
-
 		// start the selector thread
 		this.start();
 	}
@@ -102,7 +98,7 @@ public class JobSelectorMultiple extends Thread {
 			// If the entire list has been selected, stop
 			if (this.jobsClone.size() <= 0) {
 
-				FinishedSelectionEvent e2 = new FinishedSelectionEvent();
+				FinishedSelectionEvent e2 = new FinishedSelectionEvent(false);
 				EventDispatcher.onEvent2(e2);
 				break runLoop;
 			}
@@ -126,7 +122,7 @@ public class JobSelectorMultiple extends Thread {
 
 			// Dispatch an event to let subscribers know we have added an item
 			// to the list
-			AddedToSelectedListEvent e = new AddedToSelectedListEvent();
+			AddedToSelectedListEvent e = new AddedToSelectedListEvent(false);
 
 			EventDispatcher.onEvent2(e);
 

@@ -8,4 +8,10 @@ import warehouse.util.Robot;
 public class AddedToSelectedListEvent {
 
 	public Robot robot;
+	public boolean testing;
+	
+	public AddedToSelectedListEvent(boolean testing){
+		
+		this.testing = testing;
+	};
 }

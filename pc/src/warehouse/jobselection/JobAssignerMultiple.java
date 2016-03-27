@@ -18,9 +18,7 @@ import warehouse.jobselection.event.AddedToSelectedListEvent;
 import warehouse.jobselection.event.FinishedAssigningEvent;
 import warehouse.jobselection.event.FinishedSelectionEvent;
 import warehouse.jobselection.event.SelectorHasCurrentJobEvent;
-import warehouse.routePlanning.TSP;
 import warehouse.util.EventDispatcher;
-import warehouse.util.ItemPickup;
 import warehouse.util.Robot;
 import warehouse.util.Route;
 import warehouse.util.Subscriber;
@@ -66,11 +64,7 @@ public class JobAssignerMultiple extends Thread {
 	
 	private CancellationMachine cancellationMachine;
 	
-	private double totalReward;
-	
 	private ConcurrentLinkedQueue<Job> checkList;
-
-	private TSP TSP;
 
 	/**
 	 * Create a new Job Assigner for multiple robot based on a list of jobs
@@ -581,15 +575,6 @@ public class JobAssignerMultiple extends Thread {
 	 */
 	@Subscriber
 	public void onJobCompleteEvent(JobCompleteEvent e) {
-
-		double reward = 0;
-		
-		for(ItemPickup pickup : e.job.pickups){
-			
-			reward += pickup.reward * pickup.itemCount;
-		}
-		
-		this.totalReward += reward;
 		
 		if(e.robot == null){
 			

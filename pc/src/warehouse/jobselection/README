@@ -1,5 +1,21 @@
 README FOR JOBSELECTION:
 
+My branch on Git:
+
+https://github.com/TauOmicronMu/RobotWarehouse/tree/job-selection
+
+My package contains:
+
+-jobselection - all files relating purely to job selection.
+-cancellation - all files relating to job cancellation.
+-printtests - test that simulates a robot sending JobComplete/JobCancellation Events based on the actual format files.
+-JUnittests - test that asserts the robot assigner always has a current job to assign to the robot.
+
+To test my subsystem:
+
+-Utilise the printtests and JUnittests packages to observe the output from the JobAssignerSingle/JobSelectorSingle/JobWorth
+ classes.
+
 To use job selection classes for a single robot:
 
 -Create a new JobAssignerSingle object:

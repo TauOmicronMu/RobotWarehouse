@@ -1,8 +1,6 @@
 package warehouse.jobselection.cancellation;
 
 import java.util.*;
-import java.util.Map.Entry;
-
 import warehouse.job.Job;
 import warehouse.jobselection.cancellation.enums.NumRange;
 import warehouse.jobselection.cancellation.enums.RewardRange;

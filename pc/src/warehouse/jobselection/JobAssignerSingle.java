@@ -1,6 +1,6 @@
 package warehouse.jobselection;
 
-import java.util.LinkedList;
+import java.util.Vector;
 
 import warehouse.event.BeginAssigningEvent;
 import warehouse.event.JobAssignedEvent;
@@ -44,15 +44,15 @@ public class JobAssignerSingle extends Thread {
 	private boolean readyToStart;
 	private boolean jobComplete;
 	private boolean robotGotLost;
-	private LinkedList<Job> jobs;
-	private LinkedList<JobWorth> assignJobs;
+	private Vector<Job> jobs;
+	private Vector<JobWorth> assignJobs;
 	private AssignedJob currentJob;
 	private boolean jobCancelled;
 	
 	private CancellationMachine cancellationMachine;
 	private double totalReward;
 	
-	private LinkedList<AssignedJob> finalList;
+	private Vector<AssignedJob> finalList;
 	private int cutOffPoint;
 
 	/**
@@ -62,13 +62,13 @@ public class JobAssignerSingle extends Thread {
 	 *            the robot
 	 * @param trainingJobs the list of training jobs for the cancellation machine to use
 	 */
-	public JobAssignerSingle(Robot robot, LinkedList<Job> trainingJobs) {
+	public JobAssignerSingle(Robot robot, Vector<Job> trainingJobs) {
 
 		EventDispatcher.subscribe2(this);
 
 		// Set the variables and create the selector
 		this.robot = robot;
-		this.assignJobs = new LinkedList<>();
+		this.assignJobs = new Vector<>();
 		this.readyToStart = false;
 
 		this.jobCancelled = false;
@@ -114,7 +114,7 @@ public class JobAssignerSingle extends Thread {
 		int selectorNumber = 0;
 		int jobNumber = 0;
 		
-		this.finalList = new LinkedList<>();
+		this.finalList = new Vector<>();
 		this.cutOffPoint = 0;	
 		
 		boolean firstCancelled = true;
@@ -127,7 +127,7 @@ public class JobAssignerSingle extends Thread {
 
 				System.out.println("\nASSIGNER THREAD: Received BeginAssigningEvent, sorting jobs");
 
-				this.selector = new JobSelectorSingle(selectorNumber, this.robot, this.jobs, this.cancellationMachine);
+				this.selector = new JobSelectorSingle(selectorNumber, this.robot, this.jobs, this.cancellationMachine, false);
 
 				System.out.println("\nASSIGNER THREAD: Created Single Robot Selector, assigning jobs");
 
@@ -160,7 +160,7 @@ public class JobAssignerSingle extends Thread {
 							this.selector.stopSelection();
 							
 							selectorNumber++;
-							this.selector = new JobSelectorSingle(selectorNumber, this.robot, this.jobs, this.cancellationMachine);
+							this.selector = new JobSelectorSingle(selectorNumber, this.robot, this.jobs, this.cancellationMachine, false);
 
 							this.gotList = false;
 
@@ -177,10 +177,10 @@ public class JobAssignerSingle extends Thread {
 							}
 						}
 
-						if (gotList) {
+						if (this.gotList) {
 
 							jobNumber++;
-							System.out.println("\nASSIGNER THREAD: " + jobNumber);
+							System.out.println("\nASSIGNER THREAD: Job Number " + jobNumber);
 							
 							try {
 								Thread.sleep(100);
@@ -196,7 +196,7 @@ public class JobAssignerSingle extends Thread {
 							assert(this.assignJobs.size() > 0);
 							
 							// Get the next job to be assigned
-							jobToBeAssigned = this.assignJobs.removeFirst();
+							jobToBeAssigned = this.assignJobs.remove(0);
 
 							System.out.println("\nASSIGNER THREAD: The chosen best job is ID " + jobToBeAssigned.getJob().id + ": " + jobToBeAssigned);
 
@@ -232,7 +232,7 @@ public class JobAssignerSingle extends Thread {
 							e.printStackTrace();
 						}
 
-						if((assignedJobsFinished) && (this.assignJobs.size() <= 0)){
+						if((this.assignedJobsFinished) && (this.assignJobs.size() <= 0)){
 
 							this.run = false;
 						}
@@ -294,7 +294,7 @@ public class JobAssignerSingle extends Thread {
 	 * 
 	 * @return the current list of jobs to be assigned
 	 */
-	public LinkedList<JobWorth> getAssignJobs(){
+	public Vector<JobWorth> getAssignJobs(){
 		
 		return this.assignJobs;
 	}
@@ -314,7 +314,7 @@ public class JobAssignerSingle extends Thread {
 	 * 
 	 * @return the final linked list of assigned jobs
 	 */
-	public LinkedList<AssignedJob> getFinalList(){
+	public Vector<AssignedJob> getFinalList(){
 		
 		return this.finalList;
 	}
@@ -338,7 +338,17 @@ public class JobAssignerSingle extends Thread {
 	@Subscriber
 	public void onBeginAssigningEvent(BeginAssigningEvent e) {
 
-		this.jobs = new LinkedList<>(e.jobs);
+		this.jobs = new Vector<>(e.jobs);
+		
+		System.out.println("\nASSIGNER THREAD: Got list of size = " + this.jobs.size());
+		
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		this.readyToStart = true;
 	}
 
@@ -350,7 +360,17 @@ public class JobAssignerSingle extends Thread {
 	@Subscriber
 	public void onAddedToSelectedListEvent(AddedToSelectedListEvent e){
 
-		this.gotList = true;
+		boolean testing = e.testing;
+		
+		System.out.println("\nASSIGNER THREAD: Got a list event, testing = " + testing);
+		if(testing == false){
+			System.out.println("\nASSIGNER THREAD: Got a nontest event");
+			this.gotList = true;
+		}
+		else{
+			
+			System.out.println("\nASSIGNER THREAD: Whoops, only testing");
+		}
 	}
 
 	/**
@@ -395,8 +415,7 @@ public class JobAssignerSingle extends Thread {
 		
 		//DEBUG
 		System.out.println("\nASSIGNER THREAD: JOB COMPLETED ----> REWARD OF " + reward + " ACQUIRED. TOTAL REWARD = " + this.totalReward);
-		//System.out.println("\nASSIGNER THREAD: Job Complete, assigning new job");
-
+		
 		this.jobComplete = true;
 	}
 

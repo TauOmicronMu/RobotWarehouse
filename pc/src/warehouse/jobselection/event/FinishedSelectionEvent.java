@@ -8,4 +8,10 @@ import warehouse.util.Robot;
 public class FinishedSelectionEvent {
 	
 	public Robot robot;
+	public boolean testing;
+	
+	public FinishedSelectionEvent(boolean testing){
+		
+		this.testing = testing;
+	}
 }
