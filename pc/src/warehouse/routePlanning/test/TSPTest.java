@@ -45,8 +45,6 @@ public class TSPTest {
 				Direction.NORTH);
 		if (chosenRoute.isPresent()) {
 			Route r = chosenRoute.get();
-			System.out.println(r.totalDistance);
-			System.out.println(r.finalFacing);
 			for (Action a : r.actions) {
 				if (a instanceof MoveAction) {
 					System.out.println("Moving forwards to: " + ((MoveAction) a).destination.x + " "
@@ -59,6 +57,8 @@ public class TSPTest {
 					System.out.println("Dropping off");
 				}
 			}
+			System.out.println("total distance: " + r.totalDistance);
+			System.out.println("final facing: " + r.finalFacing);
 		} else {
 			System.out.println("Could not find a route");
 		}
