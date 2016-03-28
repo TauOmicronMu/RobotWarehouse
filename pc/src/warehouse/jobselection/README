@@ -16,6 +16,9 @@ To test my subsystem:
 
 -Utilise the printtests and JUnittests packages to observe the output from the JobAssignerSingle/JobSelectorSingle/JobWorth
  classes.
+-To test cancellation, I have written a class 'NaiveBayesTest' which calculates a Naive Bayes Classifier using my code based
+on the 5 files from the morejobs folder distributed on canvas, and the actual format files, and then tests a selection of
+the jobs against it to determine the accuracy of the Classifier.
 
 To use job selection classes for a single robot:
 
