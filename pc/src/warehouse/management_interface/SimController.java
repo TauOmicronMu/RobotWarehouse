@@ -81,7 +81,7 @@ public class SimController implements StoppableRunnable {
 	 */
 	@Subscriber
 	public void onActionCompleteEvent(ActionCompleteEvent e) {
-		if (e.robot.get().robotName.equals(myName)) {
+		if (e.robot.robotName.equals(myName)) {
 			Action action = e.action;
 			
 			if (action instanceof MoveAction) 
