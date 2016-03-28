@@ -22,14 +22,7 @@ public class SocketEventManager extends EventManager<SocketEventListener> implem
     /**
      * Start the event manager and begin listening for socket events
      */
-    @Override
-    public void start() {
-        try {
-            super.start(this);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+
 
     /**
      * Called by the event manager thread

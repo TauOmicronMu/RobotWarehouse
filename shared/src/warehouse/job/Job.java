@@ -36,9 +36,32 @@ public class Job {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Job job = (Job) o;
+
+        if (cancelledInTrainingSet != job.cancelledInTrainingSet) return false;
+        if (dropLocation != null ? !dropLocation.equals(job.dropLocation) : job.dropLocation != null) return false;
+        if (!pickups.equals(job.pickups)) return false;
+        return id.equals(job.id);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = dropLocation != null ? dropLocation.hashCode() : 0;
+        result = 31 * result + pickups.hashCode();
+        result = 31 * result + id.hashCode();
+        result = 31 * result + (cancelledInTrainingSet ? 1 : 0);
+        return result;
+    }
+
     /*
-     * "assigned?,numberofpickups,<name,location,itemcount>*n,id"
-     */
+         * "assigned?,numberofpickups,<name,location,itemcount>*n,id"
+         */
     public String toPacketString() {
         String s = "";
         s += isAssigned();

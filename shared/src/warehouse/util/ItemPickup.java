@@ -25,6 +25,35 @@ public class ItemPickup {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ItemPickup that = (ItemPickup) o;
+
+        if (itemCount != that.itemCount) return false;
+        if (Double.compare(that.reward, reward) != 0) return false;
+        if (Double.compare(that.weight, weight) != 0) return false;
+        if (!itemName.equals(that.itemName)) return false;
+        return !(location != null ? !location.equals(that.location) : that.location != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = itemName.hashCode();
+        result = 31 * result + (location != null ? location.hashCode() : 0);
+        result = 31 * result + itemCount;
+        temp = Double.doubleToLongBits(reward);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(weight);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
+    }
+
+    @Override
     public Object clone() {
         return new ItemPickup(itemName, location, itemCount, reward, weight);
     }
